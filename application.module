@@ -1,0 +1,363 @@
+<?php
+function application_menu() {
+  $items['application/generalcollegeapplication'] = array(
+    'title' => t('General College Application'),
+    'page callback' => 'application_form',
+    'access arguments' => array('access content'),
+    'description' => t('General College Application'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+function application_form() {
+  return drupal_get_form('application_my_form');
+}
+
+// We add some logic to our form builder to give it two pages. It checks a
+// value in $form_state['storage'] to see if we should display page 2.
+function application_my_form($form_state) {
+  // Display page 2 if $form_state['storage']['page_two'] is set
+  if (isset($form_state['storage']['page_two'])) {
+    return application_my_form_page_two();
+  }
+  // Page 1 is displayed if $form_state['storage']['page_two'] is not set
+//
+// Name
+  $form['Name'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Name'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  $form['Name']['preferred'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Preferred Name or Nickname'),
+    '#default_value' => $form_state['values']['first'], 
+    '#description' => "The name you would like us to refer to you by. For example, <em>Bob</em> if your first name is <em>Robert</em>.",
+    '#maxlength' => 20,
+  );
+  $form['Name']['first'] = array(
+    '#type' => 'textfield',
+    '#title' => t('First Name'),
+    '#default_value' => $form_state['values']['first'], 
+    '#required' => TRUE,
+    '#maxlength' => 20,
+  );
+  $form['Name']['middle'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Middle Name'),
+    '#default_value' => $form_state['values']['middle'], 
+    '#required' => FALSE,
+    '#maxlength' => 20,
+  );
+  $form['Name']['last'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Last Name'),
+    '#default_value' => $form_state['values']['last'], 
+    '#required' => TRUE,
+    '#maxlength' => 20,
+  );
+
+// Birthplace Information
+  $form['Birthplace Information'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Birthplace Information'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+
+  $form['Birthplace Information']['dateofbirth'] = array(
+    '#type' => 'date',
+    '#title' => t('Date of Birth'),
+    '#default_value' => $form_state['values']['dateofbirth'], 
+     '#required' => TRUE,
+  );
+  $form['Birthplace Information']['countryofbirth'] = array(
+    '#type' => 'select',
+    '#title' => t('Country of Birth'),
+    '#default_value' => $form_state['values']['countryofbirth'], 
+  '#options' => array(
+    'USA' => t('USA'),
+    'Chile' => t('Chile'),
+    'Italy' => t('Italy'),
+  ),
+    '#required' => TRUE,
+  );
+  $form['Birthplace Information']['cityofbirth'] = array(
+    '#type' => 'textfield',
+    '#title' => t('City of Birth'),
+    '#default_value' => $form_state['values']['cityofbirth'], 
+     '#required' => TRUE,
+  );
+  $form['Birthplace Information']['stateofbirth'] = array(
+    '#type' => 'select',
+    '#title' => t('State of Birth'),
+    '#default_value' => $form_state['values']['stateofbirth'], 
+  '#options' => array(
+    'FL' => t('Florida'),
+    'MS' => t('Mississippi'),
+    'NY' => t('New York'),
+  ),
+    '#required' => FALSE,
+  );
+  $form['Birthplace Information']['countryofcitizenship'] = array(
+    '#type' => 'select',
+    '#title' => t('Country of Citizenship'),
+    '#default_value' => $form_state['values']['countryofbirth'], 
+  '#options' => array(
+    'USA' => t('USA'),
+    'Chile' => t('Chile'),
+    'Italy' => t('Italy'),
+  ),
+    '#required' => FALSE,
+  );
+
+  $form['Birthplace Information']['ssn'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Social Security Number'),
+    '#default_value' => $form_state['values']['ssn'], 
+     '#required' => TRUE,
+  );
+  $form['Birthplace Information']['aliennumber'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Alien Number'),
+    '#default_value' => $form_state['values']['aliennumber'], 
+     '#required' => TRUE,
+  );
+  $form['Birthplace Information']['aliennumberapplied'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Alien Number applied for'),
+    '#default_value' => $form_state['values']['aliennumberapplied'], 
+     '#required' => TRUE,
+  );
+  $form['Birthplace Information']['visa'] = array(
+    '#type' => 'select',
+    '#title' => t('Current Visa Status'),
+    '#default_value' => $form_state['values']['countryofbirth'], 
+  '#options' => array(
+    'F1' => t('F1'),
+    'F2' => t('F2'),
+    'AppliedFor' => t('Visa Applied For'),
+  ),
+    '#required' => FALSE,
+  );
+
+// Contact Information
+  $form['Contact Information'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Contact Information'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  $form['Contact Information']['countryofresidence'] = array(
+    '#type' => 'select',
+    '#title' => t('Country of Residence'),
+    '#default_value' => $form_state['values']['countryofresidence'], 
+  '#options' => array(
+    'USA' => t('USA'),
+    'Chile' => t('Chile'),
+    'Italy' => t('Italy'),
+  ),
+    '#required' => FALSE,
+  );
+  $form['Contact Information']['streetaddress'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Street of Address'),
+    '#default_value' => $form_state['values']['streetaddress'], 
+    '#required' => TRUE,
+  );
+  $form['Contact Information']['addresscity'] = array(
+    '#type' => 'textfield',
+    '#title' => t('City'),
+    '#default_value' => $form_state['values']['addresscity'], 
+    '#required' => TRUE,
+  );
+  $form['Contact Information']['addresscity'] = array(
+    '#type' => 'textfield',
+    '#title' => t('City'),
+    '#default_value' => $form_state['values']['addresscity'], 
+    '#required' => TRUE,
+  );
+  $form['Contact Information']['state'] = array(
+    '#type' => 'select',
+    '#title' => t('State'),
+    '#default_value' => $form_state['values']['state'], 
+  '#options' => array(
+    'FL' => t('Florida'),
+    'MS' => t('Mississippi'),
+    'NY' => t('New York'),
+  ),
+    '#required' => TRUE,
+  );
+  $form['Contact Information']['postalcode'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Postal Code'),
+    '#default_value' => $form_state['values']['postalcode'], 
+    '#required' => TRUE,
+	'#maxlength' => 10,
+	'#size' => 10,
+  );
+  $form['Contact Information']['primaryphone'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Primary Phone Number'),
+    '#default_value' => $form_state['values']['primaryphone'], 
+    '#required' => TRUE,
+	'#description' => "The first number we should dial when trying to reach you.",
+  );
+  $form['Contact Information']['alternatephone'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Alternate Phone Number'),
+    '#default_value' => $form_state['values']['alternatephone'], 
+    '#required' => FALSE,
+    '#description' => "If we can't reach you at the first number, we'll try this one.",
+  );
+
+
+
+
+
+
+  // Add new elements to the form
+  if (!empty($form_state['new_name'])) {
+    $form['name2'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Name #2'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+    );
+    $form['name2']['first2'] = array(
+      '#type' => 'textfield',
+      '#title' => t('First name'),
+      '#description' => "Please enter your first name.",
+      '#size' => 20,
+      '#maxlength' => 20,
+      '#default_value' => $form_state['values']['first2'],
+    );
+    $form['name2']['last2'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Last name'),
+      '#default_value' => $form_state['values']['last2'],
+    );
+    $form['year_of_birth2'] = array(
+      '#type' => 'textfield',
+      '#title' => "Year of birth",
+      '#description' => 'Format is "YYYY"',
+      '#default_value' => $form_state['values']['year_of_birth2'],
+    );
+  }
+  $form['clear'] = array(
+    '#type' => 'submit',
+    '#value' => 'Reset form',
+    '#validate' => array('application_my_form_clear'),
+  );
+  if (empty($form_state['new_name'])) {
+    $form['new_name'] = array(
+      '#type' => 'submit',
+      '#value' => 'Add another name',
+      '#validate' => array('application_my_form_new_name'),
+    );
+  }
+  $form['next'] = array(
+    '#type' => 'submit',
+    '#value' => 'Next >>',
+  );
+  return $form;
+}
+
+// New function created to help make the code more manageable
+function application_my_form_page_two() {
+  $form['color'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Favorite color',
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+  );
+  return $form;
+}
+
+function application_my_form_new_name($form, &$form_state) {
+  $form_state['new_name'] = TRUE;
+  $form_state['rebuild'] = TRUE; // Will cause the default submit function
+                                 // to be skipped.
+}
+
+function application_my_form_clear($form, &$form_state) {
+  unset ($form_state['values']); // ensures our fields are blank after reset
+                                 // button is clicked
+  $form_state['rebuild'] = TRUE;
+}
+
+// We modify this function so it can validate page 2
+function application_my_form_validate($form, &$form_state) {
+  // Validate page 2 here
+  if (isset($form_state['storage']['page_two'])) {
+    $color = $form_state['values']['color'];
+    if (!$color) {
+      form_set_error('color', 'Please enter a color.');
+    }
+    return;
+  }
+ 
+  $year_of_birth = $form_state['values']['year_of_birth'];
+  $first_name = $form_state['values']['first'];
+  $last_name = $form_state['values']['last'];
+  if (!$first_name) {
+    form_set_error('first', 'Please enter your first name.');
+  }
+  if (!$last_name) {
+    form_set_error('last', 'Please enter your last name.');
+  }
+  if ($year_of_birth && ($year_of_birth < 1900 || $year_of_birth > 2000)) {
+    form_set_error('year_of_birth', 'Enter a year between 1900 and 2000.');
+  }
+  if ($form_state['new_name']) {
+    $year_of_birth = $form_state['values']['year_of_birth2'];
+    $first_name = $form_state['values']['first2'];
+    $last_name = $form_state['values']['last2'];
+    if (!$first_name) {
+      form_set_error('first2', 'Please enter your first name.');
+    }
+    if (!$last_name) {
+      form_set_error('last2', 'Please enter your last name.');
+    }
+    if ($year_of_birth && ($year_of_birth < 1900 || $year_of_birth > 2000)) {
+      form_set_error('year_of_birth2', 'Enter a year between 1900 and 2000.');
+    }
+  }
+}
+
+// We modify this function so that it will respond appropriately based on
+// which page was submitted. If the first page is being submitted,
+// we save the values in the 'storage' array and form gets automatically reloaded.
+// If page 2 was submitted, we display a message and redirect the user to another page.
+function application_my_form_submit($form, &$form_state) {
+  // Handle page 1 submissions
+  if ($form_state['clicked_button']['#id'] == 'edit-next') {
+    $form_state['storage']['page_two'] = TRUE; // We set this to determine
+                                               // which elements to display
+                                               // when the page reloads.
+                                              
+    // We save our values below in the $form_state['storage'] array so they
+    // will carry forward to subsequent pages in the form.
+    $form_state['storage']['page_one_values'] = $form_state['values'];
+  }
+  // Handle page 2 submissions
+  else {
+    /*
+     Normally, some code would go here to alter the database with the data
+     collected from the form. Here we just set a message with drupal_set_message()
+     so you know the code is working.
+     */
+    drupal_set_message('Your form has been submitted');
+    unset ($form_state['storage']); // This value must be unset or we will
+                                    // not be redirected! This is because
+                                    // $form_state['rebuild'] gets set to TRUE
+                                    // when 'storage' is set. See code sample
+                                    // #9 for more on this.
+                                   
+    $form_state['redirect'] = 'node'; // Here's how we redirect the user.
+  }
+}
