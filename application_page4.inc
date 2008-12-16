@@ -1,6 +1,10 @@
 <?php
 
-function application_form_page4() {
+function application_form_page4($form_state) {
+  $form = array();
+
+  ahah_helper_register($form, $form_state);
+
 // page 4
 // Statistical Data
 $form['Statistical Data'] = array(

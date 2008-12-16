@@ -1,3 +1,4 @@
 name = Application
-description = Module for form api tutorial
+description = Module for Online Application
+dependencies[] = ahah_helper
 core = 6.x

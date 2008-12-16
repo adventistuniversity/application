@@ -1,6 +1,10 @@
 <?php
 
 function application_form_page1($form_state) {
+  $form = array();
+
+  ahah_helper_register($form, $form_state);
+
 //
 // Name
   $form['Name'] = array(
@@ -39,19 +43,21 @@ function application_form_page1($form_state) {
   );
 
 // Birthplace Information
-  $form['Birthplace Information'] = array(
+  $form['Birthplace_Information'] = array(
     '#type' => 'fieldset',
     '#title' => t('Birthplace Information'),
+    '#prefix' => '<div id="birthplace-information-wrapper">', // This is our wrapper div.
+    '#suffix' => '</div>',
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
-  $form['Birthplace Information']['dateofbirth'] = array(
+  $form['Birthplace_Information']['dateofbirth'] = array(
     '#type' => 'date',
     '#title' => t('Date of Birth'),
     '#default_value' => $form_state['values']['dateofbirth'],
      '#required' => TRUE,
   );
-  $form['Birthplace Information']['countryofbirth'] = array(
+  $form['Birthplace_Information']['countryofbirth'] = array(
     '#type' => 'select',
     '#title' => t('Country of Birth'),
     '#default_value' => $form_state['values']['countryofbirth'],
@@ -59,123 +65,139 @@ function application_form_page1($form_state) {
       'USA' => t('USA'),
       'Chile' => t('Chile'),
       'Italy' => t('Italy'),
-  ),
-	'#ahah' => array(
-	  'path' => 'application/js',
-	  'wrapper' => 'edit-stateofbirth-wrapper',
-	  'method' => 'replace',
-	  'event' => 'change',
-	  'effect' => 'fade',
-	),
+     ),
+   '#ahah' => array(
+     'path' => ahah_helper_path(array('Birthplace_Information')),
+	   'wrapper' => 'birthplace-information-wrapper',
+	   'method' => 'replace',
+	   'event' => 'change',
+	   'effect' => 'fade',
+  	),
     '#required' => TRUE,
   );
-  $form['Birthplace Information']['cityofbirth'] = array(
-    '#type' => 'textfield',
-    '#title' => t('City of Birth'),
-    '#default_value' => $form_state['values']['cityofbirth'],
-     '#required' => TRUE,
-  );
-  $form['Birthplace Information']['stateofbirth'] = array(
-    '#type' => 'select',
-    '#title' => t('State of Birth'),
-    '#default_value' => $form_state['values']['stateofbirth'],
-  '#options' => array(
-	'AL' => t('Alabama'),
-	'AK' => t('Alaska'),
-	'AZ' => t('Arizona'),
-	'AR' => t('Arkansas'),
-	'CA' => t('California'),
-	'CO' => t('Colorado'),
-	'CT' => t('Connecticut'),
-	'DE' => t('Delaware'),
-	'DC' => t('District of Columbia'),
-	'FL' => t('Florida'),
-	'GA' => t('Georgia'),
-	'HI' => t('Hawaii'),
-	'ID' => t('Idaho'),
-	'IL' => t('Illinois'),
-	'IN' => t('Indiana'),
-	'IA' => t('Iowa'),
-	'KS' => t('Kansas'),
-	'KY' => t('Kentucky'),
-	'LA' => t('Louisiana'),
-	'ME' => t('Maine'),
-	'MD' => t('Maryland'),
-	'MA' => t('Massachusetts'),
-	'MI' => t('Michigan'),
-	'MN' => t('Minnesota'),
-	'MS' => t('Mississippi'),
-	'MO' => t('Missouri'),
-	'MT' => t('Montana'),
-	'NE' => t('Nebraska'),
-	'NV' => t('Nevada'),
-	'NH' => t('New Hampshire'),
-	'NJ' => t('New Jersey'),
-	'NM' => t('New Mexico'),
-	'NY' => t('New York'),
-	'NC' => t('North Carolina'),
-	'ND' => t('North Dakota'),
-	'OH' => t('Ohio'),
-	'OK' => t('Oklahoma'),
-	'OR' => t('Oregon'),
-	'PA' => t('Pennsylvania'),
-	'RI' => t('Rhode Island'),
-	'SC' => t('South Carolina'),
-	'SD' => t('South Dakota'),
-	'TN' => t('Tennessee'),
-	'TX' => t('Texas'),
-	'UT' => t('Utah'),
-	'VT' => t('Vermont'),
-	'VA' => t('Virginia'),
-	'WA' => t('Washington'),
-	'WV' => t('West Virginia'),
-	'WI' => t('Wisconsin'),
-	'WY' => t('Wyoming'),
-  ),
-    '#required' => FALSE,
-  );
-  $form['Birthplace Information']['countryofcitizenship'] = array(
-    '#type' => 'select',
-    '#title' => t('Country of Citizenship'),
-    '#default_value' => $form_state['values']['countryofbirth'],
-  '#options' => array(
-    'USA' => t('USA'),
-    'Chile' => t('Chile'),
-    'Italy' => t('Italy'),
-  ),
-    '#required' => FALSE,
+  $form['Birthplace_Information']['update_countryofbirth'] = array(
+    '#type' => 'submit',
+    '#value' => t('Country of Birth'),
+    // Note that we can simply use the generic submit callback provided by the
+    // ahah_helper module here!
+    // All it does, is set $form_state['rebuild'] = TRUE.
+    '#submit' => array('ahah_helper_generic_submit'),
+    // We set the 'no-js' class, which means this submit button will be hidden
+    // automatically by Drupal if JS is enabled.
+    '#attributes' => array('class' => 'no-js'),
   );
 
-  $form['Birthplace Information']['ssn'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Social Security Number'),
-    '#default_value' => $form_state['values']['ssn'],
-     '#required' => TRUE,
-  );
-  $form['Birthplace Information']['aliennumber'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Naturalized Citizen or Permanent Resident Number'),
-    '#default_value' => $form_state['values']['aliennumber'],
-    '#required' => TRUE,
-  );
-  $form['Birthplace Information']['aliennumberapplied'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Permanent Resident Number applied for'),
-    '#default_value' => $form_state['values']['aliennumberapplied'],
-     '#required' => TRUE,
-  );
-  $form['Birthplace Information']['visa'] = array(
-    '#type' => 'select',
-    '#title' => t('Current Visa Status'),
-    '#default_value' => $form_state['values']['countryofbirth'],
-    '#description' => "FHCHS is not currently accepting applicants requiring an F visa.",
-  '#options' => array(
-    'Ask Zoe' => t(':)'),
-    'or Katie' => t('F2'),
-    'AppliedFor' => t('Visa Applied For'),
-  ),
-    '#required' => FALSE,
-  );
+  if ($form_state['values']['countryofbirth'] == "" || $form_state['values']['countryofbirth'] == "USA") {
+    $form['Birthplace_Information']['cityofbirth'] = array(
+      '#type' => 'textfield',
+      '#title' => t('City of Birth'),
+      '#default_value' => $form_state['values']['cityofbirth'],
+       '#required' => TRUE,
+    );
+    $form['Birthplace_Information']['stateofbirth'] = array(
+      '#type' => 'select',
+      '#title' => t('State of Birth'),
+      '#default_value' => $form_state['values']['stateofbirth'],
+      '#options' => array(
+        	'AL' => t('Alabama'),
+        	'AK' => t('Alaska'),
+        	'AZ' => t('Arizona'),
+        	'AR' => t('Arkansas'),
+        	'CA' => t('California'),
+        	'CO' => t('Colorado'),
+        	'CT' => t('Connecticut'),
+        	'DE' => t('Delaware'),
+        	'DC' => t('District of Columbia'),
+        	'FL' => t('Florida'),
+        	'GA' => t('Georgia'),
+        	'HI' => t('Hawaii'),
+        	'ID' => t('Idaho'),
+        	'IL' => t('Illinois'),
+        	'IN' => t('Indiana'),
+        	'IA' => t('Iowa'),
+        	'KS' => t('Kansas'),
+        	'KY' => t('Kentucky'),
+        	'LA' => t('Louisiana'),
+        	'ME' => t('Maine'),
+        	'MD' => t('Maryland'),
+        	'MA' => t('Massachusetts'),
+        	'MI' => t('Michigan'),
+        	'MN' => t('Minnesota'),
+        	'MS' => t('Mississippi'),
+        	'MO' => t('Missouri'),
+        	'MT' => t('Montana'),
+        	'NE' => t('Nebraska'),
+        	'NV' => t('Nevada'),
+        	'NH' => t('New Hampshire'),
+        	'NJ' => t('New Jersey'),
+        	'NM' => t('New Mexico'),
+        	'NY' => t('New York'),
+        	'NC' => t('North Carolina'),
+        	'ND' => t('North Dakota'),
+        	'OH' => t('Ohio'),
+        	'OK' => t('Oklahoma'),
+        	'OR' => t('Oregon'),
+        	'PA' => t('Pennsylvania'),
+        	'RI' => t('Rhode Island'),
+        	'SC' => t('South Carolina'),
+        	'SD' => t('South Dakota'),
+        	'TN' => t('Tennessee'),
+        	'TX' => t('Texas'),
+        	'UT' => t('Utah'),
+        	'VT' => t('Vermont'),
+        	'VA' => t('Virginia'),
+        	'WA' => t('Washington'),
+        	'WV' => t('West Virginia'),
+        	'WI' => t('Wisconsin'),
+        	'WY' => t('Wyoming'),
+      ),
+      '#required' => FALSE,
+    );
+    $form['Birthplace_Information']['ssn'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Social Security Number'),
+      '#default_value' => $form_state['values']['ssn'],
+       '#required' => TRUE,
+    );
+  }
+  else {
+    $form['Birthplace_Information']['countryofcitizenship'] = array(
+      '#type' => 'select',
+      '#title' => t('Country of Citizenship'),
+      '#default_value' => $form_state['values']['countryofbirth'],
+    '#options' => array(
+      'USA' => t('USA'),
+      'Chile' => t('Chile'),
+      'Italy' => t('Italy'),
+    ),
+      '#required' => FALSE,
+    );
+
+    $form['Birthplace_Information']['aliennumber'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Naturalized Citizen or Permanent Resident Number'),
+      '#default_value' => $form_state['values']['aliennumber'],
+      '#required' => TRUE,
+    );
+    $form['Birthplace_Information']['aliennumberapplied'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Permanent Resident Number applied for'),
+      '#default_value' => $form_state['values']['aliennumberapplied'],
+       '#required' => TRUE,
+    );
+    $form['Birthplace_Information']['visa'] = array(
+      '#type' => 'select',
+      '#title' => t('Current Visa Status'),
+      '#default_value' => $form_state['values']['countryofbirth'],
+      '#description' => "FHCHS is not currently accepting applicants requiring an F visa.",
+    '#options' => array(
+      'Ask Zoe' => t(':)'),
+      'or Katie' => t('F2'),
+      'AppliedFor' => t('Visa Applied For'),
+    ),
+      '#required' => FALSE,
+    );
+  }
 
 // Contact Information
   $form['Contact Information'] = array(

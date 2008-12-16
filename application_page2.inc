@@ -1,6 +1,10 @@
 <?php
 
-function application_form_page2() {
+function application_form_page2($form_state) {
+  $form = array();
+
+  ahah_helper_register($form, $form_state);
+
 // Academic Plans and Experience - Page 2
 //
 $form['High School Experience'] = array(

@@ -10,12 +10,6 @@ function application_menu() {
     'file path' => drupal_get_path('module', 'application'),
     'type' => MENU_NORMAL_ITEM,
   );
-  $items['application/js'] = array(
-	'title' => 'Application Validity Check',
-	'page callback' => 'application_validity_check',
-	'access arguments' => array('access content'),
-	'type' => MENU_CALLBACK,
-	);
   $items['application/generalcollegeapplication2'] = array(
     'title' => t('General College Application - Academic Experience'),
     'page callback' => 'drupal_get_form',
@@ -47,21 +41,4 @@ function application_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   return $items;
-}
-function application_validity_check() {
-	//variable_set('countryofbirth', "Mike can set variables");
-
-	  if ($_POST['op'] == "USA") {
-    variable_set('countryofbirth', "USA");
-  }
-	  $form_state = array('storage' => NULL, 'submitted' => FALSE);
-
-
-	  $form_build_id = $_POST['form_build_id'];
-	  if (!$form = form_get_cache($form_build_id, $form_state)) {
-		exit();
-	  }
-	 $output = theme('status_messages') . drupal_render($form);
-	return drupal_json(array('status' => TRUE, 'data' => $form_state['values']['countryofbirth'] ));
-
 }

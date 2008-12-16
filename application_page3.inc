@@ -1,15 +1,34 @@
 <?php
 
-function application_form_page3() {
+function application_form_page3($form_state) {
+  $form = array();
+
+  ahah_helper_register($form, $form_state);
+
 // Page 3
 // Educational Experience - Plans for Study at FHCHS
 $form['Plans for Study'] = array(
     '#type' => 'fieldset',
     '#title' => t('Plans for Study at FHCHS'),
-	'#description' => "Once accepted to take general courses, what program would you like to study?",
+	'#description' => "Once accepted to take general courses, what type of degree or certificate program would you like to apply to study in?",
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
+  $form['Plans for Study']['asprogramanddate'] = array(
+    '#type' => 'radios',
+    '#title' => t('AS Department of Choice'),
+    '#default_value' => $form_state['values']['asprogramanddate'], 
+  '#options' => array(
+    'AS Nursing - Fall 2009' => t('AS Nursing - Fall 2009'),
+    'AS Nursing - Spring 2010' => t('AS Nursing - Spring 2010'),
+    'AS Nursing - Summer 2010' => t('AS Nursing - Summer 2010'),
+    'AS Health and Biomedical Sciences - Fall 2009' => t('AS Health and Biomedical Sciences - Fall 2009'),
+    'AS Health and Biomedical Sciences - Spring 2010' => t('AS Health and Biomedical Sciences - Spring 2010'),
+    'AS Health and Biomedical Sciences - Summer 2010' => t('AS Health and Biomedical Sciences - Summer 2010'),
+  ),
+    '#required' => FALSE,
+  );
+
   $form['Plans for Study']['asprogramanddate'] = array(
     '#type' => 'checkboxes',
     '#title' => t('AS Department of Choice'),
