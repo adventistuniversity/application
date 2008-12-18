@@ -10,76 +10,77 @@ function application_form_page3($form_state) {
 $form['Plans for Study'] = array(
     '#type' => 'fieldset',
     '#title' => t('Plans for Study at FHCHS'),
-	'#description' => "Once accepted to take general courses, what type of degree or certificate program would you like to apply to study in?",
+	'#description' => "Please select the year, term, department and programs you would like to apply for.",
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
-  $form['Plans for Study']['asprogramanddate'] = array(
-    '#type' => 'radios',
-    '#title' => t('AS Department of Choice'),
-    '#default_value' => $form_state['values']['asprogramanddate'], 
-  '#options' => array(
-    'AS Nursing - Fall 2009' => t('AS Nursing - Fall 2009'),
-    'AS Nursing - Spring 2010' => t('AS Nursing - Spring 2010'),
-    'AS Nursing - Summer 2010' => t('AS Nursing - Summer 2010'),
-    'AS Health and Biomedical Sciences - Fall 2009' => t('AS Health and Biomedical Sciences - Fall 2009'),
-    'AS Health and Biomedical Sciences - Spring 2010' => t('AS Health and Biomedical Sciences - Spring 2010'),
-    'AS Health and Biomedical Sciences - Summer 2010' => t('AS Health and Biomedical Sciences - Summer 2010'),
-  ),
-    '#required' => FALSE,
-  );
-
-  $form['Plans for Study']['asprogramanddate'] = array(
+$form['Plans for Study']['yearofinterest'] = array(
+    '#type' => 'select',
+    '#title' => t('School Year'),
+    '#default_value' => $form_state['values']['yearofinterest'], 
+    '#options' => array(
+      '1964' => t('1964-1965'),
+      '1965' => t('1965-1966'),
+      '1966' => t('1966-1967'),
+    ),
+    '#required' => TRUE,
+);
+$form['Plans for Study']['termofinterest'] = array(
+    '#type' => 'select',
+    '#title' => t('Start Term'),
+    '#default_value' => $form_state['values']['termofinterest'], 
+    '#options' => array(
+      'Fall' => t('Fall'),
+      'Spring' => t('Spring'),
+      'Summer' => t('Summer'),
+    ),
+    '#required' => TRUE,
+);
+$form['Plans for Study']['department1'] = array(
+    '#type' => 'select',
+    '#title' => t('First Department Choice'),
+    '#default_value' => $form_state['values']['department1'], 
+    '#options' => array(
+      'Nursing' => t('Department of Nursing'),
+      'OTA' => t('Department of Occupational Therapy Assistant'),
+      'Something else' => t('Department of Radiography'),
+    ),
+    '#required' => TRUE,
+);
+$form['Plans for Study']['programs1'] = array(
     '#type' => 'checkboxes',
-    '#title' => t('AS Department of Choice'),
-    '#default_value' => $form_state['values']['asprogramanddate'], 
-  '#options' => array(
-    'AS Nursing - Fall 2009' => t('AS Nursing - Fall 2009'),
-    'AS Nursing - Spring 2010' => t('AS Nursing - Spring 2010'),
-    'AS Nursing - Summer 2010' => t('AS Nursing - Summer 2010'),
-    'AS Health and Biomedical Sciences - Fall 2009' => t('AS Health and Biomedical Sciences - Fall 2009'),
-    'AS Health and Biomedical Sciences - Spring 2010' => t('AS Health and Biomedical Sciences - Spring 2010'),
-    'AS Health and Biomedical Sciences - Summer 2010' => t('AS Health and Biomedical Sciences - Summer 2010'),
-  ),
+    '#title' => t('Programs'),
+    '#default_value' => $form_state['values']['programs1'], 
+    '#options' => array(
+      'Nursing' => t('AS Nursing'),
+      'OTA' => t('BS Nursing'),
+      'Something else' => t('Nursing Certificates'),
+    ),
+    '#required' => TRUE,
+);
+$form['Plans for Study']['department2'] = array(
+    '#type' => 'select',
+    '#title' => t('Second Department Choice'),
+	'#description' => t('The second department choice is optional.'),
+    '#default_value' => $form_state['values']['department2'], 
+    '#options' => array(
+      'Nursing' => t('Department of Nursing'),
+      'OTA' => t('Department of Occupational Therapy Assistant'),
+      'Something else' => t('Department of Radiography'),
+    ),
     '#required' => FALSE,
-  );
-$form['Plans for Study']['bsprogramanddate'] = array(
+);
+$form['Plans for Study']['programs2'] = array(
     '#type' => 'checkboxes',
-    '#title' => t('BS Department of Choice'),
-'#description' => "If you have an eligible license, you my apply to our Bachelor's completion programs.",
-    '#default_value' => $form_state['values']['bsprogramanddate'], 
-  '#options' => array(
-    'BS Nursing - Fall 2009' => t('BS Nursing - Fall 2009'),
-    'BS Nursing - Spring 2010' => t('BS Nursing - Spring 2010'),
-    'BS Nursing - Summer 2010' => t('BS Nursing - Summer 2010'),
-    'BS Health and Biomedical Sciences - Fall 2009' => t('BS Health and Biomedical Sciences - Fall 2009'),
-    'BS Health and Biomedical Sciences - Spring 2010' => t('BS Health and Biomedical Sciences - Spring 2010'),
-    'BS Health and Biomedical Sciences - Summer 2010' => t('BS Health and Biomedical Sciences - Summer 2010'),
-  ),
+    '#title' => t('Programs'),
+    '#default_value' => $form_state['values']['programs2'], 
+    '#options' => array(
+      'Nursing' => t('AS Nursing'),
+      'OTA' => t('BS Nursing'),
+      'Something else' => t('Nursing Certificates'),
+    ),
     '#required' => FALSE,
-  );
-// BS Health Sciences before other BS programs
-$form['Plans for Study']['bsprogramanddate'] = array(
-    '#type' => 'checkboxes',
-    '#title' => t('BS Program of Choice'),
-'#description' => "If you have an eligible license, you my apply to our Bachelor's completion programs.",
-    '#default_value' => $form_state['values']['bsprogramanddate'], 
-  '#options' => array(
-    'BS Nursing - Fall 2009' => t('BS Nursing - Fall 2009'),
-    'BS Nursing - Spring 2010' => t('BS Nursing - Spring 2010'),
-    'BS Nursing - Summer 2010' => t('BS Nursing - Summer 2010'),
-    'BS Health Sciences - Fall 2009' => t('BS Health Sciences - Fall 2009'), // If checked then provide choice of tracks: 3-6 tracks.
-    'BS Health and Biomedical Sciences - Spring 2010' => t('BS Health and Biomedical Sciences - Spring 2010'),
-    'BS Health and Biomedical Sciences - Summer 2010' => t('BS Health and Biomedical Sciences - Summer 2010'),
-  ),
-    '#required' => FALSE,
-  );
-//      Certificates
-//   	M.S. Nurse Anesthetist 
-//  	Graduate General Studies 
-// ? Maybe this should use jQuery Acordian ?
-//
-
+);
 return ($form);
 
 }

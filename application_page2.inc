@@ -1,10 +1,12 @@
 <?php
-
+  require_once('CFsoap.php');
 function application_form_page2($form_state) {
   $form = array();
 
   ahah_helper_register($form, $form_state);
-
+  $states = get_sonis_drop_box("state");
+  $countries = get_sonis_drop_box("country");
+  
 // Academic Plans and Experience - Page 2
 //
 $form['High School Experience'] = array(
@@ -32,11 +34,7 @@ $form['High School Experience']['high schoolcountry'] = array(
     '#type' => 'select',
     '#title' => t('high school Country'),
     '#default_value' => $form_state['values']['high schoolcountry'], 
-  '#options' => array(
-    'USA' => t('USA'),
-    'Chile' => t('Chile'),
-    'Italy' => t('Italy'),
-  ),
+  '#options' => $countries,
     '#required' => TRUE,
   );
   $form['High School Experience']['high schoolcity'] = array(
@@ -49,11 +47,7 @@ $form['High School Experience']['high schoolcountry'] = array(
     '#type' => 'select',
     '#title' => t('high school State'),
     '#default_value' => $form_state['values']['high schoolstate'], 
-  '#options' => array(
-    'FL' => t('Florida'),
-    'MS' => t('Mississippi'),
-    'NY' => t('New York'),
-  ),
+  '#options' => $states,
     '#required' => FALSE,
   );
 // GED

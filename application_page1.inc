@@ -1,9 +1,12 @@
 <?php
-
+  require_once('CFsoap.php');
 function application_form_page1($form_state) {
+
   $form = array();
 
   ahah_helper_register($form, $form_state);
+  $states = get_sonis_drop_box("state");
+  $countries = get_sonis_drop_box("country");
 
 //
 // Name
@@ -61,11 +64,7 @@ function application_form_page1($form_state) {
     '#type' => 'select',
     '#title' => t('Country of Birth'),
     '#default_value' => $form_state['values']['countryofbirth'],
-    '#options' => array(
-      'USA' => t('USA'),
-      'Chile' => t('Chile'),
-      'Italy' => t('Italy'),
-     ),
+    '#options' => $countries,
    '#ahah' => array(
      'path' => ahah_helper_path(array('Birthplace_Information')),
 	   'wrapper' => 'birthplace-information-wrapper',
@@ -87,7 +86,7 @@ function application_form_page1($form_state) {
     '#attributes' => array('class' => 'no-js'),
   );
 
-  if ($form_state['values']['countryofbirth'] == "" || $form_state['values']['countryofbirth'] == "USA") {
+  if ($form_state['values']['countryofbirth'] == "" || $form_state['values']['countryofbirth'] == "UNITED STATES") {
     $form['Birthplace_Information']['cityofbirth'] = array(
       '#type' => 'textfield',
       '#title' => t('City of Birth'),
@@ -98,59 +97,7 @@ function application_form_page1($form_state) {
       '#type' => 'select',
       '#title' => t('State of Birth'),
       '#default_value' => $form_state['values']['stateofbirth'],
-      '#options' => array(
-        	'AL' => t('Alabama'),
-        	'AK' => t('Alaska'),
-        	'AZ' => t('Arizona'),
-        	'AR' => t('Arkansas'),
-        	'CA' => t('California'),
-        	'CO' => t('Colorado'),
-        	'CT' => t('Connecticut'),
-        	'DE' => t('Delaware'),
-        	'DC' => t('District of Columbia'),
-        	'FL' => t('Florida'),
-        	'GA' => t('Georgia'),
-        	'HI' => t('Hawaii'),
-        	'ID' => t('Idaho'),
-        	'IL' => t('Illinois'),
-        	'IN' => t('Indiana'),
-        	'IA' => t('Iowa'),
-        	'KS' => t('Kansas'),
-        	'KY' => t('Kentucky'),
-        	'LA' => t('Louisiana'),
-        	'ME' => t('Maine'),
-        	'MD' => t('Maryland'),
-        	'MA' => t('Massachusetts'),
-        	'MI' => t('Michigan'),
-        	'MN' => t('Minnesota'),
-        	'MS' => t('Mississippi'),
-        	'MO' => t('Missouri'),
-        	'MT' => t('Montana'),
-        	'NE' => t('Nebraska'),
-        	'NV' => t('Nevada'),
-        	'NH' => t('New Hampshire'),
-        	'NJ' => t('New Jersey'),
-        	'NM' => t('New Mexico'),
-        	'NY' => t('New York'),
-        	'NC' => t('North Carolina'),
-        	'ND' => t('North Dakota'),
-        	'OH' => t('Ohio'),
-        	'OK' => t('Oklahoma'),
-        	'OR' => t('Oregon'),
-        	'PA' => t('Pennsylvania'),
-        	'RI' => t('Rhode Island'),
-        	'SC' => t('South Carolina'),
-        	'SD' => t('South Dakota'),
-        	'TN' => t('Tennessee'),
-        	'TX' => t('Texas'),
-        	'UT' => t('Utah'),
-        	'VT' => t('Vermont'),
-        	'VA' => t('Virginia'),
-        	'WA' => t('Washington'),
-        	'WV' => t('West Virginia'),
-        	'WI' => t('Wisconsin'),
-        	'WY' => t('Wyoming'),
-      ),
+      '#options' => $states,
       '#required' => FALSE,
     );
     $form['Birthplace_Information']['ssn'] = array(
@@ -165,11 +112,7 @@ function application_form_page1($form_state) {
       '#type' => 'select',
       '#title' => t('Country of Citizenship'),
       '#default_value' => $form_state['values']['countryofbirth'],
-    '#options' => array(
-      'USA' => t('USA'),
-      'Chile' => t('Chile'),
-      'Italy' => t('Italy'),
-    ),
+    '#options' => $countries,
       '#required' => FALSE,
     );
 
@@ -210,11 +153,7 @@ function application_form_page1($form_state) {
     '#type' => 'select',
     '#title' => t('Country of Residence'),
     '#default_value' => $form_state['values']['countryofresidence'],
-  '#options' => array(
-    'USA' => t('USA'),
-    'Chile' => t('Chile'),
-    'Italy' => t('Italy'),
-  ),
+  '#options' => $countries,
     '#required' => FALSE,
   );
   $form['Contact Information']['streetaddress'] = array(
@@ -239,11 +178,7 @@ function application_form_page1($form_state) {
     '#type' => 'select',
     '#title' => t('State'),
     '#default_value' => $form_state['values']['state'],
-  '#options' => array(
-    'FL' => t('Florida'),
-    'MS' => t('Mississippi'),
-    'NY' => t('New York'),
-  ),
+  '#options' => $states,
     '#required' => TRUE,
   );
   $form['Contact Information']['postalcode'] = array(
