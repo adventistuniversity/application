@@ -40,5 +40,15 @@ function application_menu() {
     'file path' => drupal_get_path('module', 'application'),
     'type' => MENU_NORMAL_ITEM,
   );
+$items['application/generalcollegeapplication5'] = array(
+  'title' => t('General College Application - Review'),
+  'page callback' => 'drupal_get_form',
+  'page arguments' => array('application_form_page5'),
+  'access arguments' => array('access content'),
+  'description' => t('General College Application - Review'),
+  'file' => 'application_page5.inc',
+  'file path' => drupal_get_path('module', 'application'),
+  'type' => MENU_NORMAL_ITEM,
+);
   return $items;
 }
