@@ -203,6 +203,17 @@ function application_form_page1($form_state) {
     '#required' => FALSE,
     '#description' => "If we can't reach you at the first number, we'll try this one.",
   );
+  $form['Contact Information']['email'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Email Address'),
+    '#default_value' => $form_state['values']['email'],
+    '#required' => FALSE,
+    '#description' => "",
+  );
+  $form['Submit'] = array(
+	'#type' => 'submit',
+	'#value' => t('Save and Continue'),
+	);
 return ($form);
 
 }
