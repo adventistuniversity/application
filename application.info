@@ -2,3 +2,4 @@ name = Application
 description = Module for Online Application
 dependencies[] = ahah_helper
 core = 6.x
+php = 5.1
