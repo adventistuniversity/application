@@ -4,15 +4,15 @@ function get_sonis_drop_box($method) {
 	require_once('nusoap/nusoap.php');
 
 	//Get a handle to the webservice
-	$tmp_variable_client = new nusoap_client('http://fhcdv-mars/sonisweb200/soap.cfc', false, '', '', '', '');
+	$client = new nusoap_client('http://fhcdv-mars/sonisweb200/soap.cfc', false, '', '', '', '');
 
 	//Error Handleing
-	$tmp_variable_err = $tmp_variable_client->getError();
-	if ($tmp_variable_err) {
-		$tmp_variable_result = array('error' => t('An error has occured'));
+	$err = $client->getError();
+	if ($err) {
+		$result = array('error' => t('An error has occured'));
 	}
 
-	$tmp_variable_result = $tmp_variable_client->call("doSomething", array('component' => "CFC.drp_box",
+	$result = $client->call("doSomething", array('component' => "CFC.drp_box",
 												 'method' => $method,
 												 'hasReturnVariable' => "no",
 												 'argumentdata' => array(array('sonis_ds', '#sonis.ds#'),
@@ -23,32 +23,32 @@ function get_sonis_drop_box($method) {
                                    array('hide_excludes', 'yes'))
 												  ));
 
-	 $tmp_variable_result = preg_replace("/\s/", " ", $tmp_variable_result);
-	 $tmp_variable_result = preg_replace("/<select name=\".*?\" >/", "", $tmp_variable_result);
+	 $result = preg_replace("/\s/", " ", $result);
+	 $result = preg_replace("/<select name=\".*?\" >/", "", $result);
 	 
-	 $tmp_variable_resulta = preg_replace("/.*?\"(.*?)\".*?/", "$1|", $tmp_variable_result);
-	 $tmp_variable_resulta = explode("|", $tmp_variable_resulta);
-	 array_push($tmp_variable_resulta, preg_replace("/>.*$/", "$1", array_pop($tmp_variable_resulta)));
-	 array_pop($tmp_variable_resulta);
+	 $resulta = preg_replace("/.*?\"(.*?)\".*?/", "$1|", $result);
+	 $resulta = explode("|", $resulta);
+	 array_push($resulta, preg_replace("/>.*$/", "$1", array_pop($resulta)));
+	 array_pop($resulta);
 
-	 $tmp_variable_resultb = preg_replace("/.*?(>(.*?)<).*?/", "$2|", $tmp_variable_result);
-	 $tmp_variable_resultb = explode("|", $tmp_variable_resultb);
-	 array_push($tmp_variable_resultb, preg_replace("/\/.*$/", "$1", array_pop($tmp_variable_resultb)));
-	 array_pop($tmp_variable_resultb);
+	 $resultb = preg_replace("/.*?(>(.*?)<).*?/", "$2|", $result);
+	 $resultb = explode("|", $resultb);
+	 array_push($resultb, preg_replace("/\/.*$/", "$1", array_pop($resultb)));
+	 array_pop($resultb);
 
-	 $tmp_variable_result = array_combine($tmp_variable_resulta, $tmp_variable_resultb);
+	 $result = array_combine($resulta, $resultb);
 
 	// Check for a fault
-	if ($tmp_variable_client->fault) {
-		$tmp_variable_result = array('fault' => t('A fault has occured'));
+	if ($client->fault) {
+		$result = array('fault' => t('A fault has occured'));
 	} else {
 		// Check for errors
-		$tmp_variable_err = $tmp_variable_client->getError();
-		if ($tmp_variable_err) {
+		$err = $client->getError();
+		if ($err) {
 			// Display the error
-		   $tmp_variable_result = array('error' => t('An error has occured'));
+		   $result = array('error' => t('An error has occured'));
 		}
 	}
-	return $tmp_variable_result;
+	return $result;
 }
 ?>
