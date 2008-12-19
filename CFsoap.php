@@ -1,8 +1,8 @@
 <?php
-function get_sonis_drop_box($method) {
-	//Import the SOAP library
-	require_once('nusoap/nusoap.php');
+//Import the SOAP library
+require_once('nusoap/nusoap.php');
 
+function get_sonis_drop_box($method) {
 	//Get a handle to the webservice
 	$client = new nusoap_client('http://fhcdv-mars/sonisweb200/soap.cfc', false, '', '', '', '');
 
