@@ -79,8 +79,10 @@
   		'effect' => 'fade',
     	),
   	'#options' => array(
+      '' => '',
   		'Yes' => t('Yes'),
-  		'No' => t('No')
+  		'No' => t('No'),
+  		'I prefer not to share.' => t('I prefer not to share.')
   		),
   );
 
