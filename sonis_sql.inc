@@ -1,6 +1,6 @@
 <?php
 
-  function _application_query_to_form_array($query, $blank_first_value = FALSE) {
+  function _application_query_to_form_array($query, $blank_first_value = FALSE, $extra_values = array()) {
     if(stristr($query, "insert") === FALSE &&
        stristr($query, "update") === FALSE &&
        stristr($query, "drop") === FALSE &&
@@ -34,6 +34,12 @@
 
         //Close Database connection
         mssql_close($dbhandle);
+        
+        if ($extra_values != array()) {
+          foreach ($extra_values as $key => $values) {
+            $output[$key] = $values;
+          }
+        }
         
         return($output);
     }
