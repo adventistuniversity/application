@@ -51,4 +51,30 @@ function get_sonis_drop_box($method) {
 	}
 	return $result;
 }
+
+function get_sonis_instutition_dropdown_list($name = '', $city = '', $state = '') {
+
+  $output = array();
+	$client = new nusoap_client('http://fhcdv-mars/sonisweb200/soap.cfc', false, '', '', '', '');
+	if ($client->getError()) { $output = array(t('An error has occured')); }
+
+	$result = $client->call("doSomething", array('component' => "CFC.education",
+												 'method' => 'institutsearch',
+												 'hasReturnVariable' => "yes",
+												 'argumentdata' => array(array('sonis_ds', '#sonis.ds#'),
+                                                 array('inst_txt', $name),
+                                                 array('inst_city', $city),
+                                                 array('inst_state', $state))
+												  ));
+  foreach ($result['data'] as $resulta) {
+    array_push($output, check_plain(trim($resulta[1])));
+  }
+
+	// Check for errors
+	if ($client->fault) { $output = array(t('A fault has occured')); }
+  else { if ($client->getError()) { $output = array(t('An error has occured')); } }
+
+	return array_combine($output, $output);
+}
+
 ?>
