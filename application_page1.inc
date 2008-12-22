@@ -1,7 +1,7 @@
 <?php
   require_once('CFsoap.php');
 function application_form_page1($form_state) {
-
+  global $user;
   $form = array();
 
   ahah_helper_register($form, $form_state);
@@ -109,25 +109,62 @@ function application_form_page1($form_state) {
   }
   else {
     $form['Birthplace_Information']['countryofcitizenship'] = array(
-      '#type' => 'select',
-      '#title' => t('Country of Citizenship'),
-      '#default_value' => $form_state['values']['countryofbirth'],
-    '#options' => $countries,
-      '#required' => FALSE,
+		'#type' => 'select',
+		'#title' => t('Country of Citizenship'),
+		'#default_value' => $form_state['values']['countryofcitizenship'],
+		'#ahah' => array(
+		'path' => ahah_helper_path(array('Birthplace_Information')),
+			'wrapper' => 'birthplace-information-wrapper',
+			'method' => 'replace',
+			'event' => 'change',
+			'effect' => 'fade',
+		),
+		'#options' => $countries,
+		'#required' => FALSE,
     );
-
-    $form['Birthplace_Information']['aliennumber'] = array(
+  $form['Birthplace_Information']['update_countryofcitizenship'] = array(
+    '#type' => 'submit',
+    '#value' => t('Country of Citizenship'),
+    // Note that we can simply use the generic submit callback provided by the
+    // ahah_helper module here!
+    // All it does, is set $form_state['rebuild'] = TRUE.
+    '#submit' => array('ahah_helper_generic_submit'),
+    // We set the 'no-js' class, which means this submit button will be hidden
+    // automatically by Drupal if JS is enabled.
+    '#attributes' => array('class' => 'no-js'),
+  );
+  if ($form_state['values']['countryofbirth'] == "")
+  {
+	      $form['Birthplace_Information']['cow'] = array(
       '#type' => 'textfield',
-      '#title' => t('Naturalized Citizen or Permanent Resident Number'),
-      '#default_value' => $form_state['values']['aliennumber'],
+      '#title' => t('I am a cow'),
+      '#default_value' => $form_state['values']['cow'],
       '#required' => TRUE,
     );
-    $form['Birthplace_Information']['aliennumberapplied'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Permanent Resident Number applied for'),
-      '#default_value' => $form_state['values']['aliennumberapplied'],
-       '#required' => TRUE,
+  }
+    $form['Birthplace_Information']['numberquestion'] = array(
+      '#type' => 'select',
+      '#title' => t('Please indicate the immigration or citizenship number you have'),
+      '#default_value' => $form_state['values']['numberquestion'],
+	  '#options' => array(
+		'Please Select' => t(''),
+		// US Social Security Number makes SS Field appear and Number field go away
+		'US Social Security Number' => t('US Social Security Number'),
+		'Naturalized Citizen Number' => t('Naturalized Citizen Number'),
+		'Permanent Resident Number' => t('Permanent Resident Number'),
+		// Applied for and Online Only makes number field go away
+		'Permanent Resident Number Applied For' => t('Permanent Resident Number Applied For'),
+		'Taking Online Courses Only' => t('Taking Online Courses Only'),
+		),
+      '#required' => TRUE,
     );
+    $form['Birthplace_Information']['number'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Naturalized Citizen or Permanent Resident Number'),
+      '#default_value' => $form_state['values']['number'],
+      '#required' => TRUE,
+    );
+
     $form['Birthplace_Information']['visa'] = array(
       '#type' => 'select',
       '#title' => t('Current Visa Status'),
@@ -206,7 +243,7 @@ function application_form_page1($form_state) {
   $form['Contact Information']['email'] = array(
     '#type' => 'textfield',
     '#title' => t('Email Address'),
-    '#default_value' => $form_state['values']['email'],
+    '#default_value' => ($form_state['values']['email'] == ""?$user->mail:$form_state['values']['email']),
     '#required' => FALSE,
     '#description' => "",
   );
