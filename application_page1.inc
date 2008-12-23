@@ -28,21 +28,21 @@ function application_form_page1($form_state) {
     '#title' => t('Legal First Name'),
     '#default_value' => $form_state['values']['first'],
     '#required' => TRUE,
-    '#maxlength' => 20,
+    '#maxlength' => 30,
   );
   $form['Name']['middle'] = array(
     '#type' => 'textfield',
     '#title' => t('Middle Name'),
     '#default_value' => $form_state['values']['middle'],
     '#required' => FALSE,
-    '#maxlength' => 20,
+    '#maxlength' => 15,
   );
   $form['Name']['last'] = array(
     '#type' => 'textfield',
     '#title' => t('Last Name'),
     '#default_value' => $form_state['values']['last'],
     '#required' => TRUE,
-    '#maxlength' => 20,
+    '#maxlength' => 30,
   );
 
 // Birthplace Information
@@ -180,45 +180,61 @@ function application_form_page1($form_state) {
   }
 
 // Contact Information
-  $form['Contact Information'] = array(
+  $form['Contact_Information'] = array(
     '#type' => 'fieldset',
     '#title' => t('Contact Information'),
+	'#prefix' => '<div id="contact-information-wrapper">', // This is our wrapper div.
+    '#suffix' => '</div>',
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
-  $form['Contact Information']['countryofresidence'] = array(
+  $form['Contact_Information']['countryofresidence'] = array(
     '#type' => 'select',
     '#title' => t('Country of Residence'),
     '#default_value' => $form_state['values']['countryofresidence'],
-  '#options' => $countries,
+	'#ahah' => array(
+     'path' => ahah_helper_path(array('Contact_Information')),
+	   'wrapper' => 'contact-information-wrapper',
+	   'method' => 'replace',
+	   'event' => 'change',
+	   'effect' => 'fade',
+  	),
+    '#options' => $countries,
     '#required' => FALSE,
   );
-  $form['Contact Information']['streetaddress'] = array(
+  $form['Contact_Information']['update_countryofresidence'] = array(
+    '#type' => 'submit',
+    '#value' => t('Country of Residence'),
+    // Note that we can simply use the generic submit callback provided by the
+    // ahah_helper module here!
+    // All it does, is set $form_state['rebuild'] = TRUE.
+    '#submit' => array('ahah_helper_generic_submit'),
+    // We set the 'no-js' class, which means this submit button will be hidden
+    // automatically by Drupal if JS is enabled.
+    '#attributes' => array('class' => 'no-js'),
+  );
+  $form['Contact_Information']['streetaddress'] = array(
     '#type' => 'textfield',
     '#title' => t('Street Address'),
     '#default_value' => $form_state['values']['streetaddress'],
     '#required' => TRUE,
   );
-  $form['Contact Information']['addresscity'] = array(
+  $form['Contact_Information']['addresscity'] = array(
     '#type' => 'textfield',
     '#title' => t('City'),
     '#default_value' => $form_state['values']['addresscity'],
     '#required' => TRUE,
   );
-  $form['Contact Information']['addresscity'] = array(
-    '#type' => 'textfield',
-    '#title' => t('City'),
-    '#default_value' => $form_state['values']['addresscity'],
-    '#required' => TRUE,
-  );
-  $form['Contact Information']['state'] = array(
-    '#type' => 'select',
-    '#title' => t('State'),
-    '#default_value' => $form_state['values']['state'],
-  '#options' => $states,
-    '#required' => TRUE,
-  );
-  $form['Contact Information']['postalcode'] = array(
+  if ($form_state['values']['countryofresidence'] == "" || $form_state['values']['countryofresidence'] == "UNITED STATES") {
+	  $form['Contact_Information']['state'] = array(
+		'#type' => 'select',
+		'#title' => t('State'),
+		'#default_value' => $form_state['values']['state'],
+		'#options' => $states,
+		'#required' => TRUE,
+	  );
+  }
+  $form['Contact_Information']['postalcode'] = array(
     '#type' => 'textfield',
     '#title' => t('Postal Code'),
     '#default_value' => $form_state['values']['postalcode'],
@@ -226,21 +242,21 @@ function application_form_page1($form_state) {
 	'#maxlength' => 10,
 	'#size' => 10,
   );
-  $form['Contact Information']['primaryphone'] = array(
+  $form['Contact_Information']['primaryphone'] = array(
     '#type' => 'textfield',
     '#title' => t('Primary Phone Number'),
     '#default_value' => $form_state['values']['primaryphone'],
     '#required' => TRUE,
 	'#description' => "The first number we should dial when trying to reach you.",
   );
-  $form['Contact Information']['alternatephone'] = array(
+  $form['Contact_Information']['alternatephone'] = array(
     '#type' => 'textfield',
     '#title' => t('Alternate Phone Number'),
     '#default_value' => $form_state['values']['alternatephone'],
     '#required' => FALSE,
     '#description' => "If we can't reach you at the first number, we'll try this one.",
   );
-  $form['Contact Information']['email'] = array(
+  $form['Contact_Information']['email'] = array(
     '#type' => 'textfield',
     '#title' => t('Email Address'),
     '#default_value' => ($form_state['values']['email'] == ""?$user->mail:$form_state['values']['email']),
