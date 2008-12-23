@@ -104,6 +104,7 @@
   		'#default_value' => $form_state['values']['nativelanguage'],
   		'#required' => TRUE,
   		'#options' => array(
+        '' => t(''),
   			'abk' => t('Abkhaz'),
   			'ace' => t('Achinese'),
   			'ach' => t('Acoli'),
@@ -638,12 +639,16 @@
   		'#title' => t('Home Church City'),
   		'#default_value' => $form_state['values']['religionhomechurchcity'],
   		'#required' => FALSE,
+      '#maxlength' => 50,
+      '#size' => 50,      
   	);
   	$form['Statistical Data']['religionhomechurch'] = array(
   		'#type' => 'textfield',
   		'#title' => t('Name of Home Church'),
   		'#default_value' => $form_state['values']['religionhomechurch'],
   		'#required' => FALSE,
+      '#maxlength' => 50,
+      '#size' => 50,      
   	);
   }
 

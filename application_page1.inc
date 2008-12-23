@@ -22,6 +22,7 @@ function application_form_page1($form_state) {
     '#default_value' => $form_state['values']['first'],
     '#description' => "The name you would like us to refer to you by. For example, <em>Bob</em> if your first name is <em>Robert</em>.",
     '#maxlength' => 20,
+	'#size' => 20,
   );
   $form['Name']['first'] = array(
     '#type' => 'textfield',
@@ -29,6 +30,7 @@ function application_form_page1($form_state) {
     '#default_value' => $form_state['values']['first'],
     '#required' => TRUE,
     '#maxlength' => 30,
+    '#size' => 30,
   );
   $form['Name']['middle'] = array(
     '#type' => 'textfield',
@@ -36,6 +38,7 @@ function application_form_page1($form_state) {
     '#default_value' => $form_state['values']['middle'],
     '#required' => FALSE,
     '#maxlength' => 15,
+    '#size' => 15,
   );
   $form['Name']['last'] = array(
     '#type' => 'textfield',
@@ -43,6 +46,7 @@ function application_form_page1($form_state) {
     '#default_value' => $form_state['values']['last'],
     '#required' => TRUE,
     '#maxlength' => 30,
+    '#size' => 30,
   );
 
 // Birthplace Information
@@ -91,7 +95,9 @@ function application_form_page1($form_state) {
       '#type' => 'textfield',
       '#title' => t('City of Birth'),
       '#default_value' => $form_state['values']['cityofbirth'],
-       '#required' => TRUE,
+      '#required' => TRUE,
+      '#maxlength' => 35,
+      '#size' => 35,       
     );
     $form['Birthplace_Information']['stateofbirth'] = array(
       '#type' => 'select',
@@ -133,31 +139,22 @@ function application_form_page1($form_state) {
     // automatically by Drupal if JS is enabled.
     '#attributes' => array('class' => 'no-js'),
   );
-  if ($form_state['values']['countryofbirth'] == "")
-  {
-	      $form['Birthplace_Information']['cow'] = array(
-      '#type' => 'textfield',
-      '#title' => t('I am a cow'),
-      '#default_value' => $form_state['values']['cow'],
-      '#required' => TRUE,
-    );
-  }
-    $form['Birthplace_Information']['numberquestion'] = array(
-      '#type' => 'select',
-      '#title' => t('Please indicate the immigration or citizenship number you have'),
-      '#default_value' => $form_state['values']['numberquestion'],
+  $form['Birthplace_Information']['numberquestion'] = array(
+    '#type' => 'select',
+    '#title' => t('Please indicate the immigration or citizenship number you have'),
+    '#default_value' => $form_state['values']['numberquestion'],
 	  '#options' => array(
-		'Please Select' => t(''),
-		// US Social Security Number makes SS Field appear and Number field go away
-		'US Social Security Number' => t('US Social Security Number'),
-		'Naturalized Citizen Number' => t('Naturalized Citizen Number'),
-		'Permanent Resident Number' => t('Permanent Resident Number'),
-		// Applied for and Online Only makes number field go away
-		'Permanent Resident Number Applied For' => t('Permanent Resident Number Applied For'),
-		'Taking Online Courses Only' => t('Taking Online Courses Only'),
-		),
-      '#required' => TRUE,
-    );
+      'Please Select' => t(''),
+      // US Social Security Number makes SS Field appear and Number field go away
+      'US Social Security Number' => t('US Social Security Number'),
+      'Naturalized Citizen Number' => t('Naturalized Citizen Number'),
+      'Permanent Resident Number' => t('Permanent Resident Number'),
+      // Applied for and Online Only makes number field go away
+      'Permanent Resident Number Applied For' => t('Permanent Resident Number Applied For'),
+      'Taking Online Courses Only' => t('Taking Online Courses Only'),
+      ),
+    '#required' => TRUE,
+  );
     $form['Birthplace_Information']['number'] = array(
       '#type' => 'textfield',
       '#title' => t('Naturalized Citizen or Permanent Resident Number'),
@@ -218,12 +215,16 @@ function application_form_page1($form_state) {
     '#title' => t('Street Address'),
     '#default_value' => $form_state['values']['streetaddress'],
     '#required' => TRUE,
+    '#maxlength' => 35,
+    '#size' => 35,
   );
   $form['Contact_Information']['addresscity'] = array(
     '#type' => 'textfield',
     '#title' => t('City'),
     '#default_value' => $form_state['values']['addresscity'],
     '#required' => TRUE,
+    '#maxlength' => 35,
+    '#size' => 35,    
   );
   if ($form_state['values']['countryofresidence'] == "" || $form_state['values']['countryofresidence'] == "UNITED STATES") {
 	  $form['Contact_Information']['state'] = array(
@@ -239,15 +240,17 @@ function application_form_page1($form_state) {
     '#title' => t('Postal Code'),
     '#default_value' => $form_state['values']['postalcode'],
     '#required' => TRUE,
-	'#maxlength' => 10,
-	'#size' => 10,
+    '#maxlength' => 10,
+    '#size' => 10,
   );
   $form['Contact_Information']['primaryphone'] = array(
     '#type' => 'textfield',
     '#title' => t('Primary Phone Number'),
     '#default_value' => $form_state['values']['primaryphone'],
     '#required' => TRUE,
-	'#description' => "The first number we should dial when trying to reach you.",
+    '#description' => "The first number we should dial when trying to reach you.",
+    '#maxlength' => 15,
+    '#size' => 15,    
   );
   $form['Contact_Information']['alternatephone'] = array(
     '#type' => 'textfield',
@@ -255,6 +258,8 @@ function application_form_page1($form_state) {
     '#default_value' => $form_state['values']['alternatephone'],
     '#required' => FALSE,
     '#description' => "If we can't reach you at the first number, we'll try this one.",
+    '#maxlength' => 15,
+    '#size' => 15,    
   );
   $form['Contact_Information']['email'] = array(
     '#type' => 'textfield',
@@ -262,6 +267,8 @@ function application_form_page1($form_state) {
     '#default_value' => ($form_state['values']['email'] == ""?$user->mail:$form_state['values']['email']),
     '#required' => FALSE,
     '#description' => "",
+    '#maxlength' => 100,
+    '#size' => 100,
   );
   $form['Submit'] = array(
 	'#type' => 'submit',

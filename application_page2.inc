@@ -118,6 +118,8 @@ if ($form_state['values']['attendhighschool'] == "Yes" || $form_state['values'][
   		'#title' => t('High School City'),
   		'#default_value' => $form_state['values']['highschoolcity'],
   		'#required' => TRUE,
+      '#maxlength' => 20
+      '#size' => 20,
   	);
     if ($form_state['values']['highschoolcity'] == "not") {
       $form['High School Experience']['highschoolcity']['#value'] = "";
@@ -130,6 +132,8 @@ if ($form_state['values']['attendhighschool'] == "Yes" || $form_state['values'][
   		'#title' => t('Name of last High School attended'),
   		'#default_value' => $form_state['values']['highschoolname'],
   		'#required' => TRUE,
+      '#maxlength' => 50,
+      '#size' => 50,
   	);
   	if ($form_state['values']['highschoolname'] == "not") {
       $form['High School Experience']['highschoolname']['#value'] = "";
@@ -166,6 +170,8 @@ if($form_state['values']['attendhighschool'] == "No")
 		'#title' => t('GED Testing Site'),
 		'#default_value' => $form_state['values']['gedtesting'], 
 		'#required' => TRUE,
+    '#maxlength' => 50,
+    '#size' => 50,    
 	);
 	$form['High School Experience']['geddate'] = array(
 		'#type' => 'date',
@@ -306,6 +312,8 @@ if($form_state['values']['attendpostsecondary'] != "None")
     		'#title' => t('City'),
     		'#default_value' => $form_state['values']['postSecondaryCity'.$i],
     		'#required' => TRUE,
+        '#maxlength' => 50,
+        '#size' => 50,        
     	);
       if ($form_state['values']['postSecondaryCity'.$i] == "not") {
         $form['Postsecondary Educational Experience']['Institution ' . $i]['postSecondaryCity'.$i]['#value'] = "";
@@ -318,6 +326,8 @@ if($form_state['values']['attendpostsecondary'] != "None")
     		'#title' => t('Institution Name'),
     		'#default_value' => $form_state['values']['postSecondaryName'.$i],
     		'#required' => TRUE,
+        '#maxlength' => 20,
+        '#size' => 20,
     	);
     	if ($form_state['values']['postSecondaryName'.$i] == "not") {
         $form['Postsecondary Educational Experience']['Institution ' . $i]['postSecondaryName'.$i]['#value'] = "";
@@ -350,6 +360,8 @@ if($form_state['values']['attendpostsecondary'] != "None")
 			'#title' => t('Major'),
 			'#default_value' => $form_state['values']['postSecondaryMajor'.$i],
 			'#required' => TRUE,
+      '#maxlength' => 32,
+      '#size' => 32,      
 		  );
 		$form['Postsecondary Educational Experience']['Institution ' . $i]['postSecondaryStartYear'.$i] = array(
 			'#type' => 'select',
