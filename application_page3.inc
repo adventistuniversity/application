@@ -1,5 +1,13 @@
 <?php
+// $Id$
 
+/**
+ * @file
+ * FHCHS General College Application
+ *
+ * Page 3.
+ * 
+ */
 require_once('sonis_sql.inc');
 require_once('CFsoap.php');
 
@@ -13,7 +21,7 @@ function application_form_page3($form_state) {
   $form['Plans for Study'] = array(
       '#type' => 'fieldset',
       '#title' => t('Plans for Study at FHCHS'),
-    	'#description' => "Please select the year, term, department and programs you would like to apply for.",
+      '#description' => "Please select the year, term, department and programs you would like to apply for.",
       '#prefix' => '<div id="plans-for-study-wrapper">', // This is our wrapper div.
       '#suffix' => '</div>',
       '#collapsible' => TRUE,
@@ -37,15 +45,15 @@ function application_form_page3($form_state) {
       '#type' => 'select',
       '#title' => t('First Department Choice'),
       '#default_value' => $form_state['values']['department1'],
-      '#options' => _application_query_to_form_array("select dept_cod, dept_txt from dept where disabled = 0 and dept_cod <> '".$form_state['values']['department2']."' order by dept_txt asc", TRUE),
+      '#options' => _application_query_to_form_array("select dept_cod, dept_txt from dept where disabled = 0 and dept_cod <> '". $form_state['values']['department2'] ."' order by dept_txt asc", TRUE),
       '#required' => TRUE,
       '#ahah' => array(
        'path' => ahah_helper_path(array('Plans for Study')),
-  	   'wrapper' => 'plans-for-study-wrapper',
-  	   'method' => 'replace',
-  	   'event' => 'change',
-  	   'effect' => 'fade',
-    	),
+       'wrapper' => 'plans-for-study-wrapper',
+       'method' => 'replace',
+       'event' => 'change',
+       'effect' => 'fade',
+      ),
     '#required' => TRUE,
   );
   $form['Plans for Study']['update_department1'] = array(
@@ -59,23 +67,23 @@ function application_form_page3($form_state) {
         '#type' => 'checkboxes',
         '#title' => t('Programs'),
         '#default_value' => $form_state['values']['programs1'],
-        '#options' => _application_query_to_form_array("select program.prg_cod, program.prg_txt from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '".$form_state['values']['department1']."' order by prg_txt asc", FALSE),
+        '#options' => _application_query_to_form_array("select program.prg_cod, program.prg_txt from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $form_state['values']['department1'] ."' order by prg_txt asc", FALSE),
         '#required' => FALSE,
     );
   }
   $form['Plans for Study']['department2'] = array(
       '#type' => 'select',
       '#title' => t('Second Department Choice'),
-  	'#description' => t('The second department choice is optional.'),
+    '#description' => t('The second department choice is optional.'),
       '#default_value' => $form_state['values']['department2'],
-      '#options' => _application_query_to_form_array("select dept_cod, dept_txt from dept where disabled = 0 and dept_cod <> '".$form_state['values']['department1']."' order by dept_txt asc", TRUE),
+      '#options' => _application_query_to_form_array("select dept_cod, dept_txt from dept where disabled = 0 and dept_cod <> '". $form_state['values']['department1'] ."' order by dept_txt asc", TRUE),
       '#ahah' => array(
        'path' => ahah_helper_path(array('Plans for Study')),
-  	   'wrapper' => 'plans-for-study-wrapper',
-  	   'method' => 'replace',
-  	   'event' => 'change',
-  	   'effect' => 'fade',
-    	),
+       'wrapper' => 'plans-for-study-wrapper',
+       'method' => 'replace',
+       'event' => 'change',
+       'effect' => 'fade',
+      ),
       '#required' => FALSE,
   );
   $form['Plans for Study']['update_department2'] = array(
@@ -89,10 +97,52 @@ function application_form_page3($form_state) {
         '#type' => 'checkboxes',
         '#title' => t('Programs'),
         '#default_value' => $form_state['values']['programs2'],
-        '#options' => _application_query_to_form_array("select program.prg_cod, program.prg_txt from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '".$form_state['values']['department2']."' order by prg_txt asc", FALSE),
+        '#options' => _application_query_to_form_array("select program.prg_cod, program.prg_txt from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $form_state['values']['department2'] ."' order by prg_txt asc", FALSE),
         '#required' => FALSE,
     );
   }
+  $form['Submit'] = array(
+  '#type' => 'submit',
+  '#value' => t('Save and Continue'),
+  );
+
   return ($form);
 
 }
+
+function application_form_page3_submit($form, &$form_state) {
+  global $user;
+
+  //print_r($form_state);
+  $picks = $picks .  "You will be considered for: ";
+   
+  foreach ($form_state['values']['programs1'] as $key => $value) {
+      
+    if ($value != '0') {
+      $picks = $picks ."$key, ";
+      $programs_sql = "INSERT into {application_Programs} (Student_StudentID, Year, Term, Department, Program)VALUES('%s', '%s', '%s', '%s', '%s')";
+      db_query($programs_sql, $user->uid, $form_state['values']['yearofinterest'], $form_state['values']['termofinterest'], $form_state['values']['department1'], $key);
+    }
+    // else {
+     // // $picks = $picks . "$key Not Picked, ";
+    // }    
+  }
+
+  if ($form_state['values']['department2'] != '') {
+    foreach ($form_state['values']['programs2'] as $key => $value) {
+    if ($value != '0') {
+      $picks = $picks ."$key, ";
+      $programs_sql = "INSERT into {application_Programs} (Student_StudentID, Year, Term, Department, Program)VALUES('%s', '%s', '%s', '%s', '%s')";
+      db_query($programs_sql, $user->uid, $form_state['values']['yearofinterest'], $form_state['values']['termofinterest'], $form_state['values']['department2'], $key);
+    }
+    // else {
+     // // $picks = $picks . "$key Not Picked, ";
+    // }    
+    }
+  }
+
+drupal_set_message(t('Thank you for selecting some programs. %programs programs', array('%programs' => $picks)));
+drupal_goto('application/generalcollegeapplication4');
+}
+
+

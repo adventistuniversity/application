@@ -1,10 +1,19 @@
 <?php
+// $Id$
+
+/**
+ * @file
+ * FHCHS General College Application
+ *
+ * Main Module file.
+ * 
+ */
 function application_menu() {
   $items['application/generalcollegeapplication'] = array(
     'title' => t('General College Application'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('application_form_page1'),
-    'access arguments' => array('access content'),
+    'access arguments' => array('applicant'),
     'description' => t('General College Application'),
     'file' => 'application_page1.inc',
     'file path' => drupal_get_path('module', 'application'),
@@ -14,7 +23,7 @@ function application_menu() {
     'title' => t('General College Application - Academic Experience'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('application_form_page2'),
-    'access arguments' => array('access content'),
+    'access arguments' => array('applicant'),
     'description' => t('General College Application'),
     'file' => 'application_page2.inc',
     'file path' => drupal_get_path('module', 'application'),
@@ -24,7 +33,7 @@ function application_menu() {
     'title' => t('General College Application - Academic Plans'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('application_form_page3'),
-    'access arguments' => array('access content'),
+    'access arguments' => array('applicant'),
     'description' => t('General College Application'),
     'file' => 'application_page3.inc',
     'file path' => drupal_get_path('module', 'application'),
@@ -34,21 +43,1088 @@ function application_menu() {
     'title' => t('General College Application - Statistical Data'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('application_form_page4'),
-    'access arguments' => array('access content'),
+    'access arguments' => array('applicant'),
     'description' => t('General College Application'),
     'file' => 'application_page4.inc',
     'file path' => drupal_get_path('module', 'application'),
     'type' => MENU_NORMAL_ITEM,
   );
-$items['application/generalcollegeapplication5'] = array(
-  'title' => t('General College Application - Review'),
-  'page callback' => 'drupal_get_form',
-  'page arguments' => array('application_form_page5'),
-  'access arguments' => array('access content'),
-  'description' => t('General College Application - Review'),
-  'file' => 'application_page5.inc',
-  'file path' => drupal_get_path('module', 'application'),
-  'type' => MENU_NORMAL_ITEM,
-);
+  $items['application/generalcollegeapplication5'] = array(
+    'title' => t('General College Application - Review'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('application_form_page5'),
+    'access arguments' => array('applicant'),
+    'description' => t('General College Application - Review'),
+    'file' => 'application_page5.inc',
+    'file path' => drupal_get_path('module', 'application'),
+    'type' => MENU_NORMAL_ITEM,
+  );
   return $items;
+}
+
+/**
+ * Register application views
+ */
+
+
+function application_views_api() {
+  return array(
+    'api' => 2,
+    'path' => drupal_get_path('module', 'application'),
+  );
+}
+
+
+/**
+* Implementation of hook_views_data()
+*/
+// function application_views_data() {
+  // // ----------------------------------------------------------------
+  // // variable table -- basic table information.
+
+  // // Define the base group of this table. Fields that don't
+  // // have a group defined will go into this field by default.
+  // $data['application']['table']['group']  = t('application');
+
+  // // Advertise this table as a possible base table
+  // // $data['application']['table']['base'] = array(
+    // // 'field' => 'name',
+    // // 'title' => t('Student'),
+    // // 'help' => t("Student provides accress to tables containing student info"),
+    // // 'weight' => -10,
+  // // );
+
+  // // For other base tables, explain how we join - variable does not join with any other tables
+  // // $data['application']['table']['join'] = array(
+  // // );
+
+  // return $data;
+// }
+
+
+
+/**
+ * Implementation of hook_views_data()
+ */
+
+function application_views_data() {
+  
+  $data = array(
+    'application_Institutions' => array(   
+   
+      'table' => array(
+        // Define the base group of this table. Fields that don't
+        // have a group defined will go into this field by default.
+        'group' => t('Institution'),
+        // Link this table into the biographic table
+        // This also allows it to show in the same base as a separate group otherwise unlinked it will never show
+        'join' => array(
+          'application_Biographic' => array(
+            'left_field' => 'Student_StudentID',
+            'field' => 'Student_StudentID',
+          ),
+        ),
+      ),
+      
+      'Institution_ID' => array(
+        'title' => t('Drupal ID of institution'),
+        'help' => t('Drupal ID of institution'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+          'label' => t('Completion'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+      
+      'Institution_Name' => array(
+        'title' => t('Name of institution'),
+        'help' => t('Name of institution'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a name as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a name.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+      
+      
+      'Student_StudentID' => array(
+        'title' => t('Student ID'),
+        'help' => t('Student ID is the drupal user ID for this student'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+          'label' => t('Completion'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+      
+      'Institution_Country' => array(
+        'title' => t('Country'),
+        'help' => t('Country of institution'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_Country as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_Country.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+
+      ),
+      'Institution_City' => array(
+        'title' => t('City'),
+        'help' => t('City of institution'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_City as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_City.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+
+      ),
+      'Institution_State' => array(
+        'title' => t('State'),
+        'help' => t('State of institution'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+      'First_Year_Attended' => array(
+        'title' => t('First year'),
+        'help' => t('First year atended at institution'),
+        'field' => array(
+          'handler' => 'views_handler_field_numeric',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+          'label' => t('Completion'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+      'Last_Year_Attended' => array(
+        'title' => t('Last year'),
+        'help' => t('Last year attended at institution'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+          'label' => t('Completion'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),  
+      'Degree_Certificate_Complete' => array(
+        'title' => t('Completed'),
+        'help' => t('Bool of completeion of degree'),
+        'field' => array(
+         'handler' => 'views_handler_field_boolean',
+         'click sortable' => TRUE,
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_boolean_operator',
+          'label' => t('Completion'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+      'Year_Degree_Completed' => array(
+        'title' => t('Year Completed'),
+        'help' => t('If completed this is the date the degree was completed'),
+        'field' => array(
+          'handler' => 'views_handler_field_numeric',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+          'label' => t('Completion'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+      'Major' => array(
+        'title' => t('Major'),
+        'help' => t('The major the student was taking when at the institution'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Major as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Major.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),    
+      'Sonis_Institution_ID' => array(
+        'title' => t('Sonis Institution ID'),
+        'help' => t('Hopefully contains the institution ID from the student information system'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Major as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Major.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),        
+      ),
+    ),     
+    
+    
+    'application_Programs' => array(
+   
+      'table' => array(
+        // Define the base group of this table. Fields that don't
+        // have a group defined will go into this field by default.
+        'group' => t('Program'),
+        // Link this table into the biographic table
+        // This also allows it to show in the same base as a separate group otherwise unlinked it will never show
+        'join' => array(
+          'application_Biographic' => array(
+            'left_field' => 'Student_StudentID',
+            'field' => 'Student_StudentID',
+          ),
+        ),
+      ),
+      'Program_Applicaiton_ID' => array(
+        'title' => t('Program_Applicaiton_ID'),
+        'help' => t('Numeric row key for the application to a program'),
+        'field' => array(
+          'handler' => 'views_handler_field_numeric',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+          'label' => t('Completion'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),       
+      ),
+      'Student_StudentID' => array(
+        'title' => t('StudentID'),
+        'help' => t('Foriegn key from the biographic table representing the student applying to the program'),
+        'field' => array(
+          'handler' => 'views_handler_field_numeric',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+          'label' => t('Completion'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),       
+      ),    
+      'Year' => array(
+        'title' => t('Year'),
+        'help' => t('The year the student is applying for'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Major as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Major.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),        
+      ),            
+      'Term' => array(
+        'title' => t('Term'),
+        'help' => t('The term the student is applying for'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Major as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Major.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),        
+      ),            
+      'Department' => array(
+        'title' => t('Department'),
+        'help' => t('The department the student is applying for'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Major as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Major.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),        
+      ),      
+      'Program' => array(
+        'title' => t('Program'),
+        'help' => t('The program the student is applying for'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Major as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Major.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),        
+      ),  
+    ),
+    
+    
+    
+    
+    'application_Address' => array(
+   
+      'table' => array(
+        // Define the base group of this table. Fields that don't
+        // have a group defined will go into this field by default.
+        'group' => t('Address'),
+        // Link this table into the biographic table
+        // This also allows it to show in the same base as a separate group otherwise unlinked it will never show
+        'join' => array(
+          'application_Biographic' => array(
+            'left_field' => 'Student_StudentID',
+            'field' => 'Student_StudentID',
+          ),
+        ),
+      ),
+    'Address_ID' => array(
+        'title' => t('Address_ID'),
+        'help' => t('Numeric row key for address entry'),
+        'field' => array(
+          'handler' => 'views_handler_field_numeric',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+          'label' => t('Completion'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),        
+      ),        
+    'Student_StudentID' => array(
+        'title' => t('StudentID'),
+        'help' => t('foriegn key from biographic table represents the student this address is linked to'),
+        'field' => array(
+          'handler' => 'views_handler_field_numeric',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+          'label' => t('Completion'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),       
+      ),
+    'Country' => array(
+        'title' => t('Country'),
+        'help' => t('Country'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Country as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Country.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),        
+      ),          
+    'State' => array(
+        'title' => t('State'),
+        'help' => t('State'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),        
+      ),            
+    'City' => array(
+        'title' => t('City'),
+        'help' => t('City'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a City as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a City.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),        
+      ),              
+    'Postal' => array(
+        'title' => t('Postal'),
+        'help' => t('Postal code'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Postal as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Postal.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),        
+      ),            
+    'Street' => array(
+        'title' => t('Street'),
+        'help' => t('Street address'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Major as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Major.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),        
+      ),            
+    'Primary_phone' => array(
+        'title' => t('Primary_phone'),
+        'help' => t('Primary phone for this contact'),
+        'field' => array(
+          'handler' => 'views_handler_field_numeric',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+          'label' => t('Completion'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),        
+      ),    
+    'Alternate_phone' => array(
+        'title' => t('Alternate_phone'),
+        'help' => t('Alternate phone for this contact'),
+        'field' => array(
+          'handler' => 'views_handler_field_numeric',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+          'label' => t('Completion'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),        
+      ),  
+    'Email' => array(
+        'title' => t('Email'),
+        'help' => t('Email address'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Email as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Email.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),        
+      ),            
+    'Type' => array(
+        'title' => t('Type'),
+        'help' => t('Type of contact this is for expansion when we start asking for emergency contact info'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Major as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Major.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),        
+      ),              
+    'Contact_Name' => array(
+        'title' => t('Contact_Name'),
+        'help' => t('Name of the person in the contact, also designed for expansion of multiple contact types'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Major as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Major.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),        
+      ),      
+    ),
+    
+
+    /**
+    * Definition for biographic table
+    */
+ 
+ 
+    'application_Biographic' => array(   
+   
+      'table' => array(
+        // Define the base group of this table. Fields that don't
+        // have a group defined will go into this field by default.
+        'group' => t('Biographic'),
+        'base'  => array(
+          'field' => 'Student_StudentID',
+          'title' => t('Application'),
+          'help' => t('Provides accress to tables containing student info'),    
+         ),
+      ),
+      
+      'Student_StudentID' => array(
+        'title' => t('Student ID'),
+        'help' => t('Student ID is the drupal user ID for this student'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Student_StudentID as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Student_StudentID.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+      'Student_Nickname' => array(
+        'title' => t('Nickname'),
+        'help' => t('Nickname or perferred name'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),     
+      'Student_Fname' => array(
+        'title' => t('Fname'),
+        'help' => t('Students first name'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),       
+      'Student_Lname' => array(
+        'title' => t('Lname'),
+        'help' => t('Last Name fo the student'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),       
+      'Student_Mname' => array(
+        'title' => t('Mname'),
+        'help' => t('Middle name for the student'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),       
+      'Student_DOB' => array(
+        'title' => t('DOB'),
+        'help' => t('Date of birth'),
+        'field' => array(
+          'handler' => 'views_handler_field_date',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_date',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort_date',
+        ),
+      ),          
+      'Student_SSN' => array(
+        'title' => t('SSN'),
+        'help' => t('Social Security number'),
+        'field' => array(
+          'handler' => 'views_handler_field_numeric',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+          'label' => t('Completion'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),         
+      'Birth_Country' => array(
+        'title' => t('Birth Country'),
+        'help' => t('Country the student was born in'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),       
+      'Birth_City' => array(
+        'title' => t('Birth City'),
+        'help' => t('City the student was born in'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),           
+      'Birth_State' => array(
+        'title' => t('Birth State'),
+        'help' => t('Two letter code for the state the student was born in'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),         
+      'Citizenship_Country' => array(
+        'title' => t('Citizenship country'),
+        'help' => t('The counrty the student is currently a citien of'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),       
+      'Citizenship_ID_Number' => array(
+        'title' => t('Citizenship Number'),
+        'help' => t('The country specific ID given to the student from their country of citizenship'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),     
+      'Citizenship_ID_Type' => array(
+        'title' => t('Citizensip ID type'),
+        'help' => t('The type of ID'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),       
+      'Citizenship_Visa_Status' => array(
+        'title' => t('Visa status'),
+        'help' => t('The current status of the studednts visa'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),   
+      'HighSchool_Name' => array(
+        'title' => t('Highschool'),
+        'help' => t('Name of highschool'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),           
+      'HighSchool_Country' => array(
+        'title' => t('Highschool Country'),
+        'help' => t('The country in which the hichschool is located'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),        
+      'HighSchool_State' => array(
+        'title' => t('Highschool state'),
+        'help' => t('The state in which the highschool is located'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),           
+      'HighSchool_City' => array(
+        'title' => t('Highschool city'),
+        'help' => t('The city in which the highschool is located'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),           
+      'HighSchool_Attendance' => array(
+        'title' => t('Highschool attended'),
+        'help' => t('Bool flag represented if highschool was attended, assumes false will give GED information'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),     
+      'HighSchool_Sonis_ID' => array(
+        'title' => t('Highschool Sonis ID'),
+        'help' => t('The institution ID in sonis which represents the highschool'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),      
+      'GED_Testing_Site' => array(
+        'title' => t('GED testing site'),
+        'help' => t('The GED testing site number or location information'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),           
+      'GED_Date_Of_Issue' => array(
+        'title' => t('GED date'),
+        'help' => t('Date of issuance of the GED for the student'),
+        'field' => array(
+          'handler' => 'views_handler_field_date',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_date',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort_date',
+        ),
+      ),         
+      'Statistics_Gender' => array(
+        'title' => t('Gender'),
+        'help' => t('Gender'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),         
+      'Statistics_Hispanic' => array(
+        'title' => t('Hispanic flag'),
+        'help' => t('Boolean of hispanic ethnic background'),
+        'field' => array(
+         'handler' => 'views_handler_field_boolean',
+         'click sortable' => TRUE,
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_boolean_operator',
+          'label' => t('Hispanic'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),       
+      'Statistics_Ethnic_Origin' => array(
+        'title' => t('Ethnic origin'),
+        'help' => t('Ethnic origin closest matching to values available in the student information system'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),   
+      'Statistics_Native_English' => array(
+        'title' => t('Native English'),
+        'help' => t('Boolean representing if english is the native language'),
+        'field' => array(
+         'handler' => 'views_handler_field_boolean',
+         'click sortable' => TRUE,
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_boolean_operator',
+          'label' => t('English'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+      'Statistics_Native_Language' => array(
+        'title' => t('Native language'),
+        'help' => t('The native language spoken if other than english'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+      'Statistics_Marital_Status' => array(
+        'title' => t('Marital status'),
+        'help' => t('Marital status code matching student information system'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),  
+      'Statistics_Religious_Affiliation' => array(
+        'title' => t('Religis Affiliation'),
+        'help' => t('Religios affiliation code matching the student information system'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+      'Statistics_Home_Church' => array(
+        'title' => t('Home Church'),
+        'help' => t('Home church name, information filled out if Seventh Day adventist'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),     
+      'Statistics_Home_Church_City' => array(
+        'title' => t('Chruch City'),
+        'help' => t('Home church city, information filled out if Seventh Day adventist'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),  
+      'Statistics_Home_Church_State' => array(
+        'title' => t('Church State'),
+        'help' => t('Home church state, information filled out if Seventh Day adventist'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Institution_State as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Institution_State.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),     
+      'Personal_Statement_Agreement' => array(
+        'title' => t('Personal Statement flag'),
+        'help' => t('Boolean represents agreement to student personal statement'),
+        'field' => array(
+         'handler' => 'views_handler_field_boolean',
+         'click sortable' => TRUE,
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_boolean_operator',
+          'label' => t('Agreement'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+    ),
+  );
+return $data;
 }
