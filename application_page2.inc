@@ -436,7 +436,7 @@ function application_form_page2_submit($form, &$form_state) {
 
   //null values are interperted to 0 by the db_query sql injection fixing this makes it difficult to leave GED date NULL an arbitrary date (12/30/1899) was chosen by the developer to represent lack of GED NULL values
   $biographic_sql = "UPDATE {application_Biographic} SET HighSchool_Name = '%s', HighSchool_Country = '%s', HighSchool_State = '%s', HighSchool_City = '%s', HighSchool_Attendance = '%d', HighSchool_Sonis_ID = '%s', GED_Testing_Site = '%s', GED_Date_Of_Issue = '%s' WHERE Student_StudentID = '%s'";
-  db_query($biographic_sql, $hsname, $form_state['values']['highschoolcountry'], $form_state['values']['highschoolstate'], $form_state['values']['highschoolcity'],   $form_state['values']['attendhighschool'], $form_state['values']['highschoolname'], $form_state['values']['gedtesting'], $GED_date, $user->uid);
+  db_query($biographic_sql, $hsname, $form_state['values']['highschoolcountry'], $form_state['values']['highschoolstate'], ($form_state['values']['highschoolcity'] == "-1"?$form_state['values']['highschoolcity_text']:$form_state['values']['highschoolcity']),   $form_state['values']['attendhighschool'], $form_state['values']['highschoolname'], $form_state['values']['gedtesting'], $GED_date, $user->uid);
   
   if ( $form_state['values']['attendpostsecondary'] != 'None') {
     for ($i = 1; $i <= $form_state['values']['attendpostsecondary']; $i++) {
@@ -459,7 +459,7 @@ function application_form_page2_submit($form, &$form_state) {
          $degreecomplete = 1;
        }
       $institutions_sql = "INSERT into {application_Institutions} (Student_StudentID, Institution_Name, Institution_Country, Institution_City, Institution_State, First_Year_Attended, Last_Year_Attended, Degree_Certificate_Complete, Year_Degree_Completed, Major, Sonis_Institution_ID)VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )";
-      db_query($institutions_sql, $user->uid, $psname, $form_state['values']['postSecondaryCountry'. $i], $form_state['values']['postSecondaryCity'. $i], $form_state['values']['postSecondaryState'. $i], $form_state['values']['postSecondaryStartYear'. $i], $form_state['values']['postSecondaryEndYear'. $i], $degreecomplete, $form_state['values']['postSecondaryDegeree'. $i], $form_state['values']['postSecondaryMajor'. $i], $form_state['values']['postSecondaryName'. $i]);
+      db_query($institutions_sql, $user->uid, $psname, $form_state['values']['postSecondaryCountry'. $i], ($form_state['values']['postSecondaryCity'. $i] == "-1"?$form_state['values']['postSecondaryCity'. $i ."_text"]:$form_state['values']['postSecondaryCity'. $i]), $form_state['values']['postSecondaryState'. $i], $form_state['values']['postSecondaryStartYear'. $i], $form_state['values']['postSecondaryEndYear'. $i], $degreecomplete, $form_state['values']['postSecondaryDegeree'. $i], $form_state['values']['postSecondaryMajor'. $i], $form_state['values']['postSecondaryName'. $i]);
     }
   }
    
