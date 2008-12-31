@@ -1,7 +1,15 @@
 <?php
+// $Id$
 
+/**
+ * @file
+ * FHCHS General College Application
+ *
+ * SONIS SQL.
+ * 
+ */
   function _application_query_to_form_array($query, $blank_first_value = FALSE, $extra_values = array()) {
-    if(stristr($query, "insert") === FALSE &&
+    if (stristr($query, "insert") === FALSE &&
        stristr($query, "update") === FALSE &&
        stristr($query, "drop") === FALSE &&
        stristr($query, "delete") === FALSE &&
@@ -28,7 +36,7 @@
 
         $results = mssql_query($query, $dbhandle);
 
-        while($row = mssql_fetch_array($results)) {
+        while ($row = mssql_fetch_array($results)) {
           $output[$row[0]] = t($row[1]);
         }
 
@@ -41,14 +49,13 @@
           }
         }
         
-        return($output);
+        return ($output);
     }
     else {
-      return(array('' => t('')));
+      return (array('' => t('')));
     }
   }
-  function get_years() {	
-	$year = range(date("Y"),(date("Y")-100),-1);
-	return array_combine($year, $year);
- }
-?>
+  function get_years() {
+    $year = range(date("Y"), (date("Y")-100), -1);
+    return array_combine($year, $year);
+  }
