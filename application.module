@@ -50,7 +50,7 @@ function application_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   $items['application/generalcollegeapplication5'] = array(
-    'title' => t('General College Application - Review'),
+    'title' => t('General College Application'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('application_form_page5'),
     'access arguments' => array('applicant'),
@@ -60,6 +60,10 @@ function application_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   return $items;
+}
+
+function application_perm() {
+  return array('applicant');
 }
 
 /**
