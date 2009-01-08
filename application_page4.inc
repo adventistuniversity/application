@@ -12,8 +12,8 @@
   require_once('CFsoap.php');
 
   function application_form_page4($form_state) {
-  $form = array();
-
+  $form = array();  
+  _application_form_page4_load_defaults($form_state);
   ahah_helper_register($form, $form_state);
   $states = get_sonis_drop_box("state");
   // page 4
@@ -24,7 +24,7 @@
     '#description' => "This information is collected for reporting purposes and is not considered for admissions.",
     '#prefix' => '<div id="Statistical-Data-information-wrapper">', // This is our wrapper div.
       '#suffix' => '</div>',
-      '#collapsible' => TRUE,
+      '#collapsible' => FALSE,
       '#collapsed' => FALSE,
     );
   $form['Statistical Data']['gender'] = array(
@@ -693,5 +693,36 @@ function application_form_page4_submit($form, &$form_state) {
 
   drupal_set_message(t('Thank you for your statistical information'));
 drupal_goto('application/generalcollegeapplication5');
+}
+
+function _application_form_page4_load_defaults(&$form_state) {
+  global $user;
+
+  $biographic_sql = "SELECT Statistics_Gender, Statistics_Hispanic, Statistics_Ethnic_Origin, Statistics_Native_English, Statistics_Native_Language, Statistics_Marital_Status, Statistics_Religious_Affiliation, Statistics_Home_Church, Statistics_Home_Church_City, Statistics_Home_Church_State FROM {application_Biographic} WHERE Student_StudentID = '%s'";
+  $a = db_fetch_array(db_query($biographic_sql, $user->uid));
+ 
+  if (!isset($form_state['values']['gender']))
+    $form_state['values']['gender']              = $a['Statistics_Gender'];
+  if (!isset($form_state['values']['ethnicorigin']))
+    $form_state['values']['ethnicorigin']                  = $a['Statistics_Hispanic'];
+  if (!isset($form_state['values']['ethnicorigin2']))
+    $form_state['values']['ethnicorigin2']                 = $a['Statistics_Ethnic_Origin'];
+  if (!isset($form_state['values']['language']))
+    $form_state['values']['language']                   = $a['Statistics_Native_English'];
+  if (!isset($form_state['values']['nativelanguage']))
+    $form_state['values']['nativelanguage']         = $a['Statistics_Native_Language'];
+  if (!isset($form_state['values']['maritalstatus']))
+    $form_state['values']['maritalstatus']            = $a['Statistics_Marital_Status'];
+  if (!isset($form_state['values']['religion']))
+    $form_state['values']['religion']           = $a['Statistics_Religious_Affiliation'];
+  if (!isset($form_state['values']['religionhomechurch']))
+    $form_state['values']['religionhomechurch']   = $a['Statistics_Home_Church'];
+  if (!isset($form_state['values']['religionhomechurchcity']))
+    $form_state['values']['religionhomechurchcity']                 = $a['Statistics_Home_Church_City'];
+  if (!isset($form_state['values']['religionhomechurchstate']))
+    $form_state['values']['religionhomechurchstate']         = $a['Statistics_Home_Church_State'];
+
+ //print_r($form_state);
+  
 }
   

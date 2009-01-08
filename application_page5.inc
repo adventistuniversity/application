@@ -21,7 +21,7 @@ function application_form_page5($form_state) {
       '#description' => "",
       '#prefix' => '<div id="Personal-Statement-study-wrapper">', // This is our wrapper div.
       '#suffix' => '</div>',
-      '#collapsible' => TRUE,
+      '#collapsible' => FALSE,
       '#collapsed' => FALSE,
     );
   $form['Personal Statement']['Iagree'] = array(

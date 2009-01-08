@@ -13,7 +13,7 @@ require_once('CFsoap.php');
 
 function application_form_page3($form_state) {
   $form = array();
-
+  _application_form_page3_load_defaults($form_state);
   ahah_helper_register($form, $form_state);
 
   // Page 3
@@ -22,9 +22,19 @@ function application_form_page3($form_state) {
       '#type' => 'fieldset',
       '#title' => t('Plans for Study at FHCHS'),
       '#description' => "Please select the year, term, department and programs you would like to apply for.",
-      '#prefix' => '<div id="plans-for-study-wrapper">', // This is our wrapper div.
+      '#prefix' => '<div id="plans-for-study-wrapper"><p>The following degrees will require proof of a certificate, diploma, or Associate degree in addition to proof of professional licensure before admission may be granted.</p>
+	<ul>
+	<li>B.S. Diagnostic Medical Sonography</li>
+	<li>B.S. Nursing</li>
+	<li>B.S. Radiologic Sciences</li>
+	<li>Certificate in Advanced Imaging Modalities (CT/MR)</li>
+	<li>Certificate in Diagnostic Medical Sonography</li>
+	<li>Certificate in Nuclear Medicine Technology</li>
+	<li>M.S. Nurse Anesthesia</li>
+	</ul>
+	<p>If you do not have a prior degree in a related field or the required licensure, please check that you would like to pursue the A.S. degree in your desired field of study.</p>', // This is our wrapper div.
       '#suffix' => '</div>',
-      '#collapsible' => TRUE,
+      '#collapsible' => FALSE,
       '#collapsed' => FALSE,
     );
   $form['Plans for Study']['yearofinterest'] = array(
@@ -113,7 +123,11 @@ function application_form_page3($form_state) {
 function application_form_page3_submit($form, &$form_state) {
   global $user;
 
-  //print_r($form_state);
+  // delete old programs
+  $programs_delete_sql = "DELETE FROM {application_Programs} WHERE Student_StudentID = '%s'";
+  db_query($programs_delete_sql, $user->uid);
+
+
   $picks = $picks .  "You will be considered for: ";
    
   foreach ($form_state['values']['programs1'] as $key => $value) {
@@ -140,9 +154,56 @@ function application_form_page3_submit($form, &$form_state) {
     // }    
     }
   }
-
+ //print_r($form_state);
 drupal_set_message(t('Thank you for selecting some programs. %programs programs', array('%programs' => $picks)));
 drupal_goto('application/generalcollegeapplication4');
 }
 
+function _application_form_page3_load_defaults(&$form_state) {
+  if(sizeof($_POST)) {
+  }
+  else {
+    global $user;
 
+    $programs_sql = "SELECT Program_Applicaiton_ID, Student_StudentID, Year, Term, Department, Program FROM {application_Programs} WHERE Student_StudentID = '%s' ORDER BY Department";
+    $result= db_query($programs_sql, $user->uid);
+    // set a department variable so when it changes we can start populating the second programs array
+    $loop = '1';
+
+    $i = 0;
+    while ($a = db_fetch_array($result)) {
+
+      if($i == 0) {
+        $form_state['values']['yearofinterest']                   = $a ['Year'];
+        $form_state['values']['termofinterest']                   = $a ['Term'];
+        $form_state['values']['department1']                      = $a ['Department'];
+        // set a flag to show if were working with department1 or department2
+        $department = $a['Department'];
+        // get the list of programs for the first department
+        $selectionboxes = _application_query_to_form_array("select program.prg_cod, '0' from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $a['Department'] ."' order by prg_txt asc", FALSE);
+      }
+      if($department != $a['Department'] && $a['Department'] != ''){
+        $form_state['values']['department2']                = $a['Department'];
+        $department = $a['Department'];
+        // get the new list of programs for department2
+        $selectionboxes1 = $selectionboxes;
+        $selectionboxes = _application_query_to_form_array("select program.prg_cod, '0' from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $a['Department'] ."' order by prg_txt asc", FALSE);
+        $loop = '2';
+      }
+      // make 'program' . $loop array
+      if (array_key_exists($a['Program'],$selectionboxes)) {
+        // set key
+        $selectionboxes[$a['Program']] = $a['Program'];
+      }
+      $i++;
+    }
+     //print('<br>');
+    if($loop == '2') {
+      $form_state['values']['programs1'] = $selectionboxes1;    
+      $form_state['values']['programs2'] = $selectionboxes;
+    }
+    if($loop == '1') {
+      $form_state['values']['programs1'] = $selectionboxes;   
+    }
+  }
+}

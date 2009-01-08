@@ -14,6 +14,8 @@
   
 function application_form_page2($form_state) {
   $form = array();
+
+  _application_form_page2_load_defaults($form_state);
   ahah_helper_register($form, $form_state);
   
   $states = get_sonis_drop_box("state");
@@ -30,12 +32,12 @@ $form['High School Experience'] = array(
   '#description' => "",
   '#prefix' => '<div id="High-School-Experience-information-wrapper">', // This is our wrapper div.
   '#suffix' => '</div>',
-    '#collapsible' => TRUE,
+    '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
   $form['High School Experience']['attendhighschool'] = array(
     '#type' => 'select',
-    '#title' => t('Did you attend High School?'),
+    '#title' => t('Did you graduate from High School?'),
     '#default_value' => $form_state['values']['attendhighschool'], 
     '#required' => TRUE,
   '#ahah' => array(
@@ -199,7 +201,7 @@ if($form_state['values']['attendhighschool'] == "0") {
 $form['Postsecondary Educational Experience'] = array(
     '#type' => 'fieldset',
     '#title' => t('Postsecondary Educational Experience Information'),
-    '#collapsible' => TRUE,
+    '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   '#prefix' => '<div id="Postsecondary-Educational-Experience-information-wrapper">', // This is our wrapper div.
     '#suffix' => '</div>',
@@ -247,7 +249,7 @@ if($form_state['values']['attendpostsecondary'] != "None") {
     $form['Postsecondary Educational Experience']['Institution '. $i] = array(
       '#type' => 'fieldset',
       '#title' => t('Institution '. $i),
-      '#collapsible' => TRUE,
+      '#collapsible' => FALSE,
       '#collapsed' => FALSE,
       '#prefix' => '<div id="Institutions-information-wrapper'. $i .'-information-wrapper">', // This is our wrapper div.
       '#suffix' => '</div>',
@@ -438,6 +440,10 @@ function application_form_page2_submit($form, &$form_state) {
   $biographic_sql = "UPDATE {application_Biographic} SET HighSchool_Name = '%s', HighSchool_Country = '%s', HighSchool_State = '%s', HighSchool_City = '%s', HighSchool_Attendance = '%d', HighSchool_Sonis_ID = '%s', GED_Testing_Site = '%s', GED_Date_Of_Issue = '%s' WHERE Student_StudentID = '%s'";
   db_query($biographic_sql, $hsname, $form_state['values']['highschoolcountry'], $form_state['values']['highschoolstate'], ($form_state['values']['highschoolcity'] == "-1"?$form_state['values']['highschoolcity_text']:$form_state['values']['highschoolcity']),   $form_state['values']['attendhighschool'], $form_state['values']['highschoolname'], $form_state['values']['gedtesting'], $GED_date, $user->uid);
   
+  //Assume it's an update.  (Does noting if it's not.)
+  $institutions_sql = "DELETE FROM {application_Institutions} WHERE Student_StudentID = '%s'";
+  db_query($institutions_sql, $user->uid);
+
   if ( $form_state['values']['attendpostsecondary'] != 'None') {
     for ($i = 1; $i <= $form_state['values']['attendpostsecondary']; $i++) {
         // Get IDs and Names for colleges to
@@ -465,4 +471,93 @@ function application_form_page2_submit($form, &$form_state) {
    
 drupal_set_message(t('Thank you for your schooling information.'));
 drupal_goto('application/generalcollegeapplication3');
+}
+
+function _application_form_page2_load_defaults(&$form_state) {
+  global $user;
+
+  $biographic_sql = "SELECT HighSchool_Name, HighSchool_Country, HighSchool_State, HighSchool_City, HighSchool_Attendance, HighSchool_Sonis_ID, GED_Testing_Site, GED_Date_Of_Issue FROM {application_Biographic} WHERE Student_StudentID = '%s'";
+  $a = db_fetch_array(db_query($biographic_sql, $user->uid));
+
+  if ($a) {
+    if (!isset($form_state['values']['highschoolcountry']))
+      $form_state['values']['highschoolcountry'] = $a['HighSchool_Country'];
+    if (!isset($form_state['values']['highschoolstate']))
+      $form_state['values']['highschoolstate'] = $a['HighSchool_State'];
+
+    if (!isset($form_state['values']['highschoolcity']) && !isset($form_state['values']['highschoolcity_text'])) {
+      if (array_key_exists($a['HighSchool_City'], _application_query_to_form_array("select distinct inst_city, inst_city from institut where inst_state = '". $form_state['values']['highschoolstate'] ."' and insttypcod in ('1', '2') order by inst_city asc")))
+        $form_state['values']['highschoolcity'] = $a['HighSchool_City'];
+      else {
+        $form_state['values']['highschoolcity_text'] = $a['HighSchool_City'];
+        $form_state['values']['highschoolcity'] = -1;
+      }
+    }
+
+    if (!isset($form_state['values']['highschoolname']))
+      $form_state['values']['highschoolname'] = $a['HighSchool_Sonis_ID'];
+    if (!isset($form_state['values']['highschoolname_text']) && $form_state['values']['highschoolname'] == "-1")
+      $form_state['values']['highschoolname_text'] = $a['HighSchool_Name'];
+
+    if (!isset($form_state['values']['attendhighschool']))
+      $form_state['values']['attendhighschool'] = $a['HighSchool_Attendance'];
+    if (!isset($form_state['values']['gedtesting']))
+      $form_state['values']['gedtesting'] = $a['GED_Testing_Site'];
+
+    if (!isset($form_state['values']['geddate'])) {
+      $GED_date = $a['GED_Date_Of_Issue'];
+      $GED_date = split("-", $GED_date);
+      $form_state['values']['geddate']['year'] = $GED_date[0];
+      $form_state['values']['geddate']['month'] = $GED_date[1];
+      $GED_date = split(" ", $GED_date[2]);
+      $form_state['values']['geddate']['day'] = $GED_date[0];
+    }
+
+    $institutions_sql = "SELECT Institution_Name, Institution_Country, Institution_City, Institution_State, First_Year_Attended, Last_Year_Attended, Degree_Certificate_Complete, Year_Degree_Completed, Major, Sonis_Institution_ID FROM {application_Institutions} WHERE Student_StudentID = '%s'";
+    $result = db_query($institutions_sql, $user->uid);
+    $i = 0;
+
+    while ($a = db_fetch_array($result)) {
+      $i++;
+      if (!isset($form_state['values']['postSecondaryCountry'. $i]))
+        $form_state['values']['postSecondaryCountry'. $i] = $a['Institution_Country'];
+      if (!isset($form_state['values']['postSecondaryState'. $i]))
+        $form_state['values']['postSecondaryState'. $i] = $a['Institution_State'];
+
+      if (!isset($form_state['values']['postSecondaryCity'. $i]) && !isset($form_state['values']['postSecondaryCity'. $i ."_text"])) {
+        if (array_key_exists($a['Institution_City'], _application_query_to_form_array("select distinct inst_city, inst_city from institut where inst_state = '". $form_state['values']['postSecondaryState'. $i] ."' and insttypcod in ('3', '4', '5', '6', '7', '8', '9') order by inst_city asc", TRUE, array('-1' => 'Not Listed'))))
+          $form_state['values']['postSecondaryCity'. $i] = $a['Institution_City'];
+        else {
+          $form_state['values']['postSecondaryCity'. $i ."_text"] = $a['Institution_City'];
+          $form_state['values']['postSecondaryCity'. $i] = -1;
+        }
+      }
+
+      if (!isset($form_state['values']['postSecondaryName'. $i]) && !isset($form_state['values']['postSecondaryName'. $i ."_text"])) {
+        $form_state['values']['postSecondaryName'. $i] = $a['Sonis_Institution_ID'];
+        if ($form_state['values']['postSecondaryName'. $i] == '-1') {
+          $form_state['values']['postSecondaryName'. $i ."_text"] = $a['Institution_Name'];
+        }
+      }
+
+      if (!isset($form_state['values']['postSecondaryMajor'. $i]))
+        $form_state['values']['postSecondaryMajor'. $i] = $a['Major'];
+      if (!isset($form_state['values']['postSecondaryStartYear'. $i]))
+        $form_state['values']['postSecondaryStartYear'. $i] = $a['First_Year_Attended'];
+      if (!isset($form_state['values']['postSecondaryEndYear'. $i]))
+        $form_state['values']['postSecondaryEndYear'. $i] = $a['Last_Year_Attended'];
+
+      if (!isset($form_state['values']['Degree_Certificate_Complete'. $i])) {
+        $form_state['values']['postSecondaryDegeree'. $i] = $a['Year_Degree_Completed'];
+        if ($form_state['values']['postSecondaryDegeree'. $i] == 0)
+          $form_state['values']['postSecondaryDegeree'. $i] = 'Did Not Complete Degree';
+      }
+    }
+    if (!isset($form_state['values']['attendpostsecondary'])) {
+      if ($i == 0)
+        $form_state['values']['attendpostsecondary'] = 'None';
+      else
+        $form_state['values']['attendpostsecondary'] = $i;
+    }
+  }
 }

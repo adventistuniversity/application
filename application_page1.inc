@@ -14,6 +14,7 @@ function application_form_page1($form_state) {
   global $user;
   $form = array();
 
+  _application_form_page1_load_defaults($form_state);
   ahah_helper_register($form, $form_state);
   $states = get_sonis_drop_box("state");
   $countries = get_sonis_drop_box("country");
@@ -26,7 +27,7 @@ function application_form_page1($form_state) {
   $form['Name'] = array(
     '#type' => 'fieldset',
     '#title' => t('Name'),
-    '#collapsible' => TRUE,
+    '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
   $form['Name']['preferred'] = array(
@@ -68,7 +69,7 @@ function application_form_page1($form_state) {
     '#title' => t('Birthplace Information'),
     '#prefix' => '<div id="birthplace-information-wrapper">', // This is our wrapper div.
     '#suffix' => '</div>',
-    '#collapsible' => TRUE,
+    '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
   $form['Birthplace_Information']['dateofbirth'] = array(
@@ -123,7 +124,9 @@ function application_form_page1($form_state) {
       '#type' => 'textfield',
       '#title' => t('Social Security Number'),
       '#default_value' => $form_state['values']['ssn'],
-       '#required' => TRUE,
+      '#required' => TRUE,
+      '#maxlength' => 9,
+      '#size' => 9,
     );
   }
   else {
@@ -201,6 +204,8 @@ function application_form_page1($form_state) {
           '#title' => t('Social Security Number'),
           '#default_value' => $form_state['values']['ssn'],
           '#required' => TRUE,
+          '#maxlength' => 9,
+          '#size' => 9,
         );
       }
       else{
@@ -229,7 +234,7 @@ function application_form_page1($form_state) {
     '#title' => t('Contact Information'),
   '#prefix' => '<div id="contact-information-wrapper">', // This is our wrapper div.
     '#suffix' => '</div>',
-    '#collapsible' => TRUE,
+    '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
   $form['Contact_Information']['countryofresidence'] = array(
@@ -340,12 +345,103 @@ function application_form_page1_submit($form, &$form_state) {
 //   print_r($form_state);
 //   exit;
 
-  $biographic_sql = "INSERT into {application_Biographic} (Student_StudentID, Student_Nickname, Student_Fname, Student_Mname, Student_Lname, Student_DOB, Student_SSN, Birth_Country, Birth_City, Birth_State, Citizenship_Country, Citizenship_ID_Number, Citizenship_ID_Type, Citizenship_Visa_Status, HighSchool_Name, HighSchool_Country, HighSchool_State, HighSchool_City, HighSchool_Attendance, HighSchool_Sonis_ID, GED_Testing_Site, GED_Date_Of_Issue, Statistics_Gender, Statistics_Hispanic, Statistics_Ethnic_Origin, Statistics_Native_English, Statistics_Native_Language, Statistics_Marital_Status, Statistics_Religious_Affiliation, Statistics_Home_Church, Statistics_Home_Church_City, Statistics_Home_Church_State, Personal_Statement_Agreement)VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d')";
-  db_query($biographic_sql, $user->uid, $form_state['values']['preferred'], $form_state['values']['first'], $form_state['values']['middle'], $form_state['values']['last'], $dob , $ssn, $form_state['values']['countryofbirth'], $form_state['values']['cityofbirth'], $form_state['values']['stateofbirth'], $form_state['values']['countryofcitizenship'], $form_state['values']['number'], $form_state['values']['numberquestion'], $form_state['values']['visa'], '', '', '', '', '', 0, '', $GED_date, '', 0, '', '', '', '', '', '', '', '', 0);
+  $a = "SELECT count(Student_StudentID) as count FROM {application_Biographic} WHERE Student_StudentID = '%s'";
+  $a = db_fetch_array(db_query($a, $user->uid));
 
-  $address_sql = "INSERT into {application_Address} (Student_StudentID, Country, State, City, Postal, Street, Primary_phone, Alternate_phone, Email, Type, Contact_Name)VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')";
-  db_query($address_sql, $user->uid, $form_state['values']['countryofresidence'], $form_state['values']['state'],   $form_state['values']['addresscity'], $form_state['values']['postalcode'], $form_state['values']['streetaddress'], $form_state['values']['primaryphone'], $form_state['values']['alternatephone'], $form_state['values']['email'], 'Pref Add', $form_state['values']['preferred']);
+  if ($a['count'] > 0) {
+    $biographic_sql = "UPDATE {application_Biographic} SET Student_Nickname = '%s', Student_Fname = '%s', Student_Mname = '%s', Student_Lname = '%s', Student_DOB = '%s', Student_SSN = '%s', Birth_Country = '%s', Birth_City = '%s', Birth_State = '%s', Citizenship_Country = '%s', Citizenship_ID_Number = '%s', Citizenship_ID_Type = '%s', Citizenship_Visa_Status = '%s' WHERE  Student_StudentID = '%s'";
+    db_query($biographic_sql, $form_state['values']['preferred'], $form_state['values']['first'], $form_state['values']['middle'], $form_state['values']['last'], $dob , $ssn, $form_state['values']['countryofbirth'], $form_state['values']['cityofbirth'], $form_state['values']['stateofbirth'], $form_state['values']['countryofcitizenship'], $form_state['values']['number'], $form_state['values']['numberquestion'], $form_state['values']['visa'], $user->uid);
+  }
+  else {
+    $biographic_sql = "INSERT into {application_Biographic} (Student_StudentID, Student_Nickname, Student_Fname, Student_Mname, Student_Lname, Student_DOB, Student_SSN, Birth_Country, Birth_City, Birth_State, Citizenship_Country, Citizenship_ID_Number, Citizenship_ID_Type, Citizenship_Visa_Status, HighSchool_Name, HighSchool_Country, HighSchool_State, HighSchool_City, HighSchool_Attendance, HighSchool_Sonis_ID, GED_Testing_Site, GED_Date_Of_Issue, Statistics_Gender, Statistics_Hispanic, Statistics_Ethnic_Origin, Statistics_Native_English, Statistics_Native_Language, Statistics_Marital_Status, Statistics_Religious_Affiliation, Statistics_Home_Church, Statistics_Home_Church_City, Statistics_Home_Church_State, Personal_Statement_Agreement)VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d')";
+    db_query($biographic_sql, $user->uid, $form_state['values']['preferred'], $form_state['values']['first'], $form_state['values']['middle'], $form_state['values']['last'], $dob , $ssn, $form_state['values']['countryofbirth'], $form_state['values']['cityofbirth'], $form_state['values']['stateofbirth'], $form_state['values']['countryofcitizenship'], $form_state['values']['number'], $form_state['values']['numberquestion'], $form_state['values']['visa'], '', '', '', '', '', '', '', $GED_date, '', '', '', '', '', '', '', '', '', '', 0);
+  }
+  
 
+  $a = "SELECT count(Student_StudentID) as count FROM {application_Address} WHERE Student_StudentID = '%s'";
+  $a = db_fetch_array(db_query($a, $user->uid));
+
+  if ($a['count'] > 0) {
+    $address_sql = "UPDATE {application_Address} SET Country = '%s', State = '%s', City = '%s', Postal = '%s', Street = '%s', Primary_phone = '%s', Alternate_phone = '%s', Email = '%s', Contact_Name = '%s' WHERE Student_StudentID = '%s' and Type = '%s'";
+    db_query($address_sql, $form_state['values']['countryofresidence'], $form_state['values']['state'],   $form_state['values']['addresscity'], $form_state['values']['postalcode'], $form_state['values']['streetaddress'], $form_state['values']['primaryphone'], $form_state['values']['alternatephone'], $form_state['values']['email'], $form_state['values']['preferred'], $user->uid, 'Pref Add');
+  }
+  else {
+    $address_sql = "INSERT into {application_Address} (Student_StudentID, Country, State, City, Postal, Street, Primary_phone, Alternate_phone, Email, Type, Contact_Name)VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')";
+    db_query($address_sql, $user->uid, $form_state['values']['countryofresidence'], $form_state['values']['state'],   $form_state['values']['addresscity'], $form_state['values']['postalcode'], $form_state['values']['streetaddress'], $form_state['values']['primaryphone'], $form_state['values']['alternatephone'], $form_state['values']['email'], 'Pref Add', $form_state['values']['preferred']);
+  }
   drupal_set_message(t('Thank you for starting your application. %name', array('%name' => $name)));
   drupal_goto('application/generalcollegeapplication2');
+}
+
+function _application_form_page1_load_defaults(&$form_state) {
+  global $user;
+
+  $biographic_sql = "SELECT Student_Nickname, Student_Fname, Student_Mname, Student_Lname, Student_DOB, Student_SSN, Birth_Country, Birth_City, Birth_State, Citizenship_Country, Citizenship_ID_Number, Citizenship_ID_Type, Citizenship_Visa_Status, GED_Date_Of_Issue FROM {application_Biographic} WHERE Student_StudentID = '%s'";
+  $a = db_fetch_array(db_query($biographic_sql, $user->uid));
+
+  if ($a) {
+    $address_sql = "SELECT Country, State, City, Postal, Street, Primary_phone, Alternate_phone, Email, Type FROM {application_Address} WHERE Student_StudentID = '%s'";
+    $b = db_fetch_array(db_query($address_sql, $user->uid));
+
+    if ($b) {
+      if (!isset($form_state['values']['preferred']))
+        $form_state['values']['preferred']              = $a['Student_Nickname'];
+      if (!isset($form_state['values']['first']))
+        $form_state['values']['first']                  = $a['Student_Fname'];
+      if (!isset($form_state['values']['middle']))
+        $form_state['values']['middle']                 = $a['Student_Mname'];
+      if (!isset($form_state['values']['last']))
+        $form_state['values']['last']                   = $a['Student_Lname'];
+     if (!isset($form_state['values']['dateofbirth'])) {
+        $dob                                            = $a['Student_DOB'];
+        $dob = split("-", $dob);
+        $form_state['values']['dateofbirth']['year'] = $dob[0];
+        $form_state['values']['dateofbirth']['month'] = $dob[1];
+        $dob = split(" ", $dob[2]);
+        $form_state['values']['dateofbirth']['day'] = $dob[0];
+      }
+      if (!isset($form_state['values']['ssn'])) {
+        if ($a['Student_SSN'] == 0)
+          $form_state['values']['ssn']                  = "";
+        else
+          $form_state['values']['ssn']                  = $a['Student_SSN'];
+      }
+      if (!isset($form_state['values']['countryofbirth']))
+        $form_state['values']['countryofbirth']         = $a['Birth_Country'];
+      if (!isset($form_state['values']['cityofbirth']))
+        $form_state['values']['cityofbirth']            = $a['Birth_City'];
+      if (!isset($form_state['values']['stateofbirth']))
+        $form_state['values']['stateofbirth']           = $a['Birth_State'];
+      if (!isset($form_state['values']['countryofcitizenship']))
+        $form_state['values']['countryofcitizenship']   = $a['Citizenship_Country'];
+      if (!isset($form_state['values']['number']))
+        $form_state['values']['number']                 = $a['Citizenship_ID_Number'];
+      if (!isset($form_state['values']['numberquestion']))
+        $form_state['values']['numberquestion']         = $a['Citizenship_ID_Type'];
+      if (!isset($form_state['values']['visa']))
+        $form_state['values']['visa']                   = $a['Citizenship_Visa_Status'];
+      if (!isset($form_state['values']['countryofresidence']))
+        $form_state['values']['countryofresidence']     = $b['Country'];
+      if (!isset($form_state['values']['state']))
+        $form_state['values']['state']                  = $b['State'];
+      if (!isset($form_state['values']['addresscity']))
+        $form_state['values']['addresscity']            = $b['City'];
+      if (!isset($form_state['values']['postalcode']))
+        $form_state['values']['postalcode']             = $b['Postal'];
+      if (!isset($form_state['values']['streetaddress']))
+        $form_state['values']['streetaddress']          = $b['Street'];
+      if (!isset($form_state['values']['primaryphone']))
+        $form_state['values']['primaryphone']           = $b['Primary_phone'];
+      if (!isset($form_state['values']['alternatephone']))
+        $form_state['values']['alternatephone']         = $b['Alternate_phone'];
+      if (!isset($form_state['values']['email']))
+        $form_state['values']['email']                  = $b['Email'];
+      if (!isset($form_state['values']['preferred']))
+        $form_state['values']['preferred']              = $b['Type'];
+    }
+  }
+  else {
+    $address_sql = "INSERT into {application_Biographic} (Student_StudentID) VALUES ('%s')";
+    db_query($address_sql, $user->uid);
+ }
 }
