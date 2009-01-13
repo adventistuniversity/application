@@ -441,7 +441,7 @@ function _application_form_page1_load_defaults(&$form_state) {
     }
   }
   else {
-    $address_sql = "INSERT into {application_Biographic} (Student_StudentID) VALUES ('%s')";
+    $address_sql = "INSERT into {application_Biographic} (Student_StudentID, Student_DOB) VALUES ('%s', '1899-12-31')";
     db_query($address_sql, $user->uid);
  }
 }
