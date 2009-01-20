@@ -32,7 +32,17 @@
     '#title' => t('Gender'),
     '#default_value' => $form_state['values']['gender'],
     '#required' => TRUE,
-    '#options' => _application_query_to_form_array("select gender_cod, gender_txt from gender where disabled = 0 order by gender_txt asc", TRUE, array('I prefer not to share.' => t('I prefer not to share.'))),
+    '#options' => _application_query_to_form_array("select gender_cod, gender_txt from gender where disabled = 0 order by gender_txt asc", TRUE),
+  );
+  $form['Statistical Data']['attend'] = array(
+    '#type' => 'select',
+    '#title' => t('Did either of your parents attend college? (Save Me)'),
+    '#default_value' => $form_state['values']['attend'],
+    '#required' => TRUE,
+    '#options' => array(
+      '' => '',
+      'Yes' => t('Yes'),
+      'No' => t('No')),
   );
 
   // ethinic origin must be two step question
@@ -51,8 +61,7 @@
     '#options' => array(
       '' => '',
       'H' => t('Yes'),
-      '0' => t('No'),
-      'I prefer not to share.' => t('I prefer not to share.')),
+      '0' => t('No')),
   );
 
   $form['Statistical Data']['update_ethnicorigin'] = array(
@@ -67,7 +76,7 @@
       '#title' => t('Ethnic Origin'),
       '#default_value' => $form_state['values']['ethnicorigin2'],
       '#required' => TRUE,
-      '#options' => _application_query_to_form_array("select ethnic_cod, ethnic_txt from ethnic where disabled = 0 and ethnic_cod <> 'H' order by ethnic_txt asc", TRUE, array('I prefer not to share.' => t('I prefer not to share.'))),
+      '#options' => _application_query_to_form_array("select ethnic_cod, ethnic_txt from ethnic where disabled = 0 and ethnic_cod <> 'H' order by ethnic_txt asc", TRUE),
     );
   }
 
@@ -89,8 +98,7 @@
     '#options' => array(
       '' => '',
       '1' => t('Yes'),
-      '0' => t('No'),
-      'I prefer not to share.' => t('I prefer not to share.')
+      '0' => t('No')
       ),
   );
 
@@ -607,7 +615,7 @@
     '#title' => t('Marital Status'),
     '#default_value' => $form_state['values']['maritalstatus'],
     '#required' => TRUE,
-    '#options' => _application_query_to_form_array("select mar_cod, mar_txt from marital where disabled = 0 order by mar_txt asc", TRUE, array('I prefer not to share.' => t('I prefer not to share.'))),
+    '#options' => _application_query_to_form_array("select mar_cod, mar_txt from marital where disabled = 0 order by mar_txt asc", TRUE),
   );
 
 
@@ -623,7 +631,7 @@
       'event' => 'change',
       'effect' => 'fade',
       ),
-    '#options' => _application_query_to_form_array("select tuit_stat, tuit_stat_txt from tuitstat where disabled = 0 order by tuit_stat_txt asc", TRUE, array('I prefer not to share.' => t('I prefer not to share.'))),
+    '#options' => _application_query_to_form_array("select tuit_stat, tuit_stat_txt from tuitstat where disabled = 0 order by tuit_stat_txt asc", TRUE),
   );
   $form['Statistical Data']['update_religion'] = array(
     '#type' => 'submit',

@@ -10,7 +10,7 @@
  */
 function application_menu() {
   $items['application/generalcollegeapplication'] = array(
-    'title' => t('General College Application'),
+    'title' => t('General Undergraduate College Application'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('application_form_page1'),
     'access arguments' => array('applicant'),
@@ -20,7 +20,7 @@ function application_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   $items['application/generalcollegeapplication2'] = array(
-    'title' => t('General College Application - Academic Experience'),
+    'title' => t('General Undergraduate College Application - Academic Experience'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('application_form_page2'),
     'access arguments' => array('applicant'),
@@ -30,7 +30,7 @@ function application_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   $items['application/generalcollegeapplication3'] = array(
-    'title' => t('General College Application - Academic Plans'),
+    'title' => t('General Undergraduate College Application - Academic Plans'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('application_form_page3'),
     'access arguments' => array('applicant'),
@@ -40,7 +40,7 @@ function application_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   $items['application/generalcollegeapplication4'] = array(
-    'title' => t('General College Application - Statistical Data'),
+    'title' => t('General Undergraduate College Application - Statistical Data'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('application_form_page4'),
     'access arguments' => array('applicant'),
@@ -50,7 +50,7 @@ function application_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   $items['application/generalcollegeapplication5'] = array(
-    'title' => t('General College Application'),
+    'title' => t('General Undergraduate College Application'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('application_form_page5'),
     'access arguments' => array('applicant'),
