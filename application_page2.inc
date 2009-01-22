@@ -103,12 +103,13 @@ if ($form_state['values']['attendhighschool'] == "1" || $form_state['values']['a
       '#attributes' => array('class' => 'no-js'),
     );
   }
-  if ($form_state['values']['highschoolstate'] != "" && $form_state['values']['highschoolcountry'] == "UNITED STATES") {
+  $tmp = _application_query_to_form_array("select distinct inst_city, inst_city from institut where inst_state = '". $form_state['values']['highschoolstate'] ."' and insttypcod in ('1', '2') order by inst_city asc", TRUE, array('-1' => 'Not Listed'));
+  if ($form_state['values']['highschoolstate'] != "" && $form_state['values']['highschoolcountry'] == "UNITED STATES" && count($tmp) > 2) {
     $form['High School Experience']['highschoolcity'] = array(
       '#type' => 'select',
       '#title' => t('High School City'),
       '#default_value' => $form_state['values']['highschoolcity'],
-      '#options' => _application_query_to_form_array("select distinct inst_city, inst_city from institut where inst_state = '". $form_state['values']['highschoolstate'] ."' and insttypcod in ('1', '2') order by inst_city asc", TRUE, array('-1' => 'Not Listed')),
+      '#options' => $tmp,
       '#required' => TRUE,
       '#ahah' => array(
         'path' => ahah_helper_path(array('High School Experience')),
@@ -124,8 +125,13 @@ if ($form_state['values']['attendhighschool'] == "1" || $form_state['values']['a
       '#submit' => array('ahah_helper_generic_submit'),
       '#attributes' => array('class' => 'no-js'),
     );
+    $form['High School Experience']['highschoolcity_text'] = array(
+      '#type' => 'hidden',
+      '#value' => $form_state['values']['highschoolcity_text'],
+    );
   }
-  if ($form_state['values']['highschoolstate'] == "" || $form_state['values']['highschoolcountry'] != "UNITED STATES" || $form_state['values']['highschoolcity'] == "-1") {
+  //highschoolcity_text will get overwritten when highschoolcity == "-1".  That's Ok.
+  if ($form_state['values']['highschoolstate'] == "" || $form_state['values']['highschoolcountry'] != "UNITED STATES" || $form_state['values']['highschoolcity'] == "-1" || count ($tmp) <= 2) {
      $form['High School Experience']['highschoolcity_text'] = array(
       '#type' => 'textfield',
       '#title' => t('High School City'),
@@ -134,41 +140,50 @@ if ($form_state['values']['attendhighschool'] == "1" || $form_state['values']['a
       '#maxlength' => 20,
       '#size' => 20,
     );
+    if ($form_state['values']['highschoolcity'] != "-1" || count ($tmp) <= 2) {
+      $form['High School Experience']['highschoolcity'] = array(
+        '#type' => 'hidden',
+        '#value' => "-1",
+      );
+    }
+  }
+
+  if ($form_state['values']['highschoolcity'] == "" || $form_state['values']['highschoolcity'] == "-1" ||
+      $form_state['values']['highschoolstate'] == "" || $form_state['values']['highschoolstate'] == "-1" ||
+      $form_state['values']['highschoolcountry'] != "UNITED STATES") {
+    $tmp = array();
   }
   else {
-     $form['High School Experience']['highschoolcity_text'] = array(
-      '#type' => 'hidden',
-      '#value' => $form_state['values']['highschoolcity_text'],
-    );
+    $tmp = _application_query_to_form_array("select distinct inst_cod, inst_txt from institut where inst_state = '". $form_state['values']['highschoolstate'] ."' and inst_city = '". $form_state['values']['highschoolcity'] ."' and insttypcod in ('1', '2') order by inst_txt asc", TRUE, array('-1' => 'Not Listed'));
   }
-  $form['High School Experience']['highschoolname'] = array(
-    '#type' => 'select',
-    '#title' => t('Name of last High School attended'),
-    '#default_value' => $form_state['values']['highschoolname'],
-    '#options' => _application_query_to_form_array("select distinct inst_cod, inst_txt from institut where inst_city = '". $form_state['values']['highschoolcity'] ."' and insttypcod in ('1', '2') order by inst_txt asc", TRUE, array('-1' => 'Not Listed')),
-    '#required' => TRUE,
-    '#ahah' => array(
-      'path' => ahah_helper_path(array('High School Experience')),
-       'wrapper' => 'High-School-Experience-information-wrapper',
-      'method' => 'replace',
-      'event' => 'change',
-      'effect' => 'fade',
-    ),
-  );
-   $form['High School Experience']['update_highschoolname'] = array(
-    '#type' => 'submit',
-    '#value' => t('High School Name'),
-    '#submit' => array('ahah_helper_generic_submit'),
-    '#attributes' => array('class' => 'no-js'),
-  );
-  if (!isset($form['High School Experience']['highschoolname_text'])) {
+  if (count($tmp) > 2) {
+    $form['High School Experience']['highschoolname'] = array(
+      '#type' => 'select',
+      '#title' => t('Name of last High School attended'),
+      '#default_value' => $form_state['values']['highschoolname'],
+      '#options' => $tmp,
+      '#required' => TRUE,
+      '#ahah' => array(
+        'path' => ahah_helper_path(array('High School Experience')),
+         'wrapper' => 'High-School-Experience-information-wrapper',
+        'method' => 'replace',
+        'event' => 'change',
+        'effect' => 'fade',
+      ),
+    );
+     $form['High School Experience']['update_highschoolname'] = array(
+      '#type' => 'submit',
+      '#value' => t('High School Name'),
+      '#submit' => array('ahah_helper_generic_submit'),
+      '#attributes' => array('class' => 'no-js'),
+    );
     $form['High School Experience']['highschoolname_text'] = array(
       '#type' => 'hidden',
       '#value' => $form_state['values']['highschoolname_text'],
     );
   }
-
-  if ($form_state['values']['highschoolcity'] == "" || $form_state['values']['highschoolcity'] == "-1" || $form_state['values']['highschoolname'] == "-1" || $form_state['values']['highschoolstate'] == "" || $form_state['values']['highschoolcountry'] != "UNITED STATES") {
+  //highschoolname_text will get overwritten when highschoolname == "-1".  That's Ok.
+  if ($form_state['values']['highschoolname'] == "-1" || count ($tmp) <= 2) {
     $form['High School Experience']['highschoolname_text'] = array(
       '#type' => 'textfield',
       '#title' => t('Name of last High School attended'),
@@ -177,6 +192,12 @@ if ($form_state['values']['attendhighschool'] == "1" || $form_state['values']['a
       '#maxlength' => 50,
       '#size' => 50,
     );
+    if (count ($tmp) <= 2) {
+      $form['High School Experience']['highschoolname'] = array(
+        '#type' => 'hidden',
+        '#value' => "-1",
+      );
+    }
   }
 }
 if($form_state['values']['attendhighschool'] == "0") {
@@ -275,6 +296,7 @@ if($form_state['values']['attendpostsecondary'] != "None") {
       '#submit' => array('ahah_helper_generic_submit'),
       '#attributes' => array('class' => 'no-js'),
     );
+
     if ($form_state['values']['postSecondaryCountry'. $i] == "" || $form_state['values']['postSecondaryCountry'. $i] == "UNITED STATES") {
       $form['Postsecondary Educational Experience']['Institution '. $i]['postSecondaryState'. $i] = array(
         '#type' => 'select',
@@ -297,13 +319,14 @@ if($form_state['values']['attendpostsecondary'] != "None") {
         '#attributes' => array('class' => 'no-js'),
       );
     }
-    if ($form_state['values']['postSecondaryState'. $i] != "" && $form_state['values']['postSecondaryCountry'. $i] == "UNITED STATES") {
+    $tmp = _application_query_to_form_array("select distinct inst_city, inst_city from institut where inst_state = '". $form_state['values']['postSecondaryState'. $i] ."' and insttypcod in ('3', '4', '5', '6', '7', '8', '9') order by inst_city asc", TRUE, array('-1' => 'Not Listed'));
+    if ($form_state['values']['postSecondaryState'. $i] != "" && $form_state['values']['postSecondaryCountry'. $i] == "UNITED STATES" && count($tmp) > 2) {
       $form['Postsecondary Educational Experience']['Institution '. $i]['postSecondaryCity'. $i] = array(
         '#type' => 'select',
         '#title' => t('City'),
         '#default_value' => $form_state['values']['postSecondaryCity'. $i],
         '#required' => TRUE,
-        '#options' => _application_query_to_form_array("select distinct inst_city, inst_city from institut where inst_state = '". $form_state['values']['postSecondaryState'. $i] ."' and insttypcod in ('3', '4', '5', '6', '7', '8', '9') order by inst_city asc", TRUE, array('-1' => 'Not Listed')),
+        '#options' => $tmp,
         '#ahah' => array(
           'path' => ahah_helper_path(array('Postsecondary Educational Experience', 'Institution '. $i)),
            'wrapper' => 'Institutions-information-wrapper'. $i .'-information-wrapper',
@@ -318,8 +341,13 @@ if($form_state['values']['attendpostsecondary'] != "None") {
         '#submit' => array('ahah_helper_generic_submit'),
         '#attributes' => array('class' => 'no-js'),
       );
+      $form['Postsecondary Educational Experience']['Institution '. $i]['postSecondaryCity'. $i ."_text"] = array(
+        '#type' => 'hidden',
+        '#value' => $form_state['values']['postSecondaryCity'. $i ."_text"],
+      );
     }
-    if ($form_state['values']['postSecondaryState'. $i] == "" || $form_state['values']['postSecondaryCountry'. $i] != "UNITED STATES" || $form_state['values']['postSecondaryCity'. $i] == "-1") {
+    //postSecondaryCity#_text will get overwritten when postSecondaryCity# == "-1".  That's Ok.
+    if ($form_state['values']['postSecondaryState'. $i] == "" || $form_state['values']['postSecondaryCountry'. $i] != "UNITED STATES" || $form_state['values']['postSecondaryCity'. $i] == "-1" || count ($tmp) <= 2) {
        $form['Postsecondary Educational Experience']['Institution '. $i]['postSecondaryCity'. $i ."_text"] = array(
         '#type' => 'textfield',
         '#title' => t('City'),
@@ -328,41 +356,50 @@ if($form_state['values']['attendpostsecondary'] != "None") {
         '#maxlength' => 20,
         '#size' => 20,
       );
-    }
-    else {
-       $form['Postsecondary Educational Experience']['Institution '. $i]['postSecondaryCity'. $i ."_text"] = array(
-        '#type' => 'hidden',
-        '#value' => $form_state['values']['postSecondaryCity'. $i ."_text"],
-      );
+      if ($form_state['values']['postSecondaryCity'. $i] != "-1" || count ($tmp) <= 2) {
+        $form['Postsecondary Educational Experience']['Institution '. $i]['postSecondaryCity'. $i] = array(
+          '#type' => 'hidden',
+          '#value' => "-1",
+        );
+      }
     }
 
-    $form['Postsecondary Educational Experience']['Institution '. $i]['postSecondaryName'. $i] = array(
-      '#type' => 'select',
-      '#title' => t('Institution Name'),
-      '#default_value' => $form_state['values']['postSecondaryName'. $i],
-      '#options' => _application_query_to_form_array("select distinct inst_cod, inst_txt from institut where inst_city = '". $form_state['values']['postSecondaryCity'. $i] ."' and insttypcod in ('3', '4', '5', '6', '7', '8', '9') order by inst_txt asc", TRUE, array('-1' => 'Not Listed')),
-      '#required' => TRUE,
-      '#ahah' => array(
-        'path' => ahah_helper_path(array('Postsecondary Educational Experience', 'Institution '. $i)),
-         'wrapper' => 'Institutions-information-wrapper'. $i .'-information-wrapper',
-        'method' => 'replace',
-        'event' => 'change',
-        'effect' => 'fade',
-      ),
-    );
-    $form['Postsecondary Educational Experience']['Institution '. $i]['update_postSecondaryName'. $i] = array(
-      '#type' => 'submit',
-      '#value' => t('Institution Name'),
-      '#submit' => array('ahah_helper_generic_submit'),
-      '#attributes' => array('class' => 'no-js'),
-    );
-    if (isset($form['Postsecondary Educational Experience']['Institution '. $i]['postSecondaryName'. $i ."_text"])) {
+    if ($form_state['values']['postSecondaryCity'. $i] == "" || $form_state['values']['postSecondaryCity'. $i] == "-1" ||
+        $form_state['values']['postSecondaryState'. $i] == "" || $form_state['values']['postSecondaryState'. $i] == "-1" ||
+        $form_state['values']['postSecondaryCountry'. $i] != "UNITED STATES") {
+      $tmp = array();
+    }
+    else {
+      $tmp = _application_query_to_form_array("select distinct inst_cod, inst_txt from institut where inst_state = '". $form_state['values']['postSecondaryState'. $i] ."' and inst_city = '". $form_state['values']['postSecondaryCity'. $i] ."' and insttypcod in ('3', '4', '5', '6', '7', '8', '9') order by inst_txt asc", TRUE, array('-1' => 'Not Listed'));
+    }
+    if (count($tmp) > 2) {
+      $form['Postsecondary Educational Experience']['Institution '. $i]['postSecondaryName'. $i] = array(
+        '#type' => 'select',
+        '#title' => t('Institution Name'),
+        '#default_value' => $form_state['values']['postSecondaryName'. $i],
+        '#options' => $tmp,
+        '#required' => TRUE,
+        '#ahah' => array(
+          'path' => ahah_helper_path(array('Postsecondary Educational Experience', 'Institution '. $i)),
+           'wrapper' => 'Institutions-information-wrapper'. $i .'-information-wrapper',
+          'method' => 'replace',
+          'event' => 'change',
+          'effect' => 'fade',
+        ),
+      );
+      $form['Postsecondary Educational Experience']['Institution '. $i]['update_postSecondaryName'. $i] = array(
+        '#type' => 'submit',
+        '#value' => t('Institution Name'),
+        '#submit' => array('ahah_helper_generic_submit'),
+        '#attributes' => array('class' => 'no-js'),
+      );
       $form['Postsecondary Educational Experience']['Institution '. $i]['postSecondaryName'. $i ."_text"] = array(
         '#type' => 'hidden',
         '#value' => $form_state['values']['postSecondaryName'. $i ."_text"],
       );
     }
-    if ($form_state['values']['postSecondaryCity'. $i] == "" || $form_state['values']['postSecondaryCity'. $i] == "-1" || $form_state['values']['postSecondaryName'. $i] == "-1" || $form_state['values']['postSecondaryState'. $i] == "" || $form_state['values']['postSecondaryCountry'. $i] != "UNITED STATES") {
+    //postSecondaryName#_text will get overwritten when postSecondaryName# == "-1".  That's Ok.
+    if ($form_state['values']['postSecondaryName'. $i] == "-1" || count($tmp) <= 2) {
       $form['Postsecondary Educational Experience']['Institution '. $i]['postSecondaryName'. $i ."_text"] = array(
         '#type' => 'textfield',
         '#title' => t('Institution Name'),
@@ -371,6 +408,12 @@ if($form_state['values']['attendpostsecondary'] != "None") {
         '#maxlength' => 50,
         '#size' => 50,
       );
+      if (count ($tmp) <= 2) {
+        $form['Postsecondary Educational Experience']['Institution '. $i]['postSecondaryName'. $i] = array(
+          '#type' => 'hidden',
+          '#value' => "-1",
+        );
+      }
     }
     $form['Postsecondary Educational Experience']['Institution '. $i]['postSecondaryMajor'. $i] = array(
       '#type' => 'textfield',
@@ -404,6 +447,96 @@ if($form_state['values']['attendpostsecondary'] != "None") {
 
   }
 }
+
+
+$form['Certificates'] = array(
+  '#type' => 'fieldset',
+  '#title' => t('Certificates Awards and Licenses'),
+  '#description' => "",
+  '#prefix' => '<div id="Certificates-information-wrapper">', // This is our wrapper div.
+  '#suffix' => '</div>',
+  '#collapsible' => FALSE,
+  '#collapsed' => FALSE,
+);
+
+$form['Certificates']['Certificates_Number'] = array(
+    '#type' => 'select',
+    '#title' => t('How many awards certificates or licenses do you have?'),
+    '#default_value' => $form_state['values']['Certificates_Number'], 
+    '#required' => TRUE,
+  '#ahah' => array(
+    'path' => ahah_helper_path(array('Certificates')),
+    'wrapper' => 'Certificates-information-wrapper',
+    'method' => 'replace',
+    'event' => 'change',
+    'effect' => 'fade',
+    ),
+  '#options' => array(
+    'None' => t('None'),
+    '1' => t('1'),
+    '2' => t('2'),
+    '3' => t('3'),
+    '4' => t('4'),
+    '5' => t('5'),
+    '6' => t('6'),
+    '7' => t('7'),
+    '8' => t('8'),
+    '9' => t('9'),
+    '10' => t('10')
+    )
+  );
+$form['Certificates']['update_Certificates_Number'] = array(
+  '#type' => 'submit',
+  '#value' => t('Certificates_Number'),
+  '#submit' => array('ahah_helper_generic_submit'),
+  '#attributes' => array('class' => 'no-js'),
+);
+
+
+
+if($form_state['values']['Certificates_Number'] != "None") {
+  for ($i = 1; $i <= $form_state['values']['Certificates_Number']; $i++) {
+    $form['Certificates']['Certificate '. $i] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Institution '. $i),
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
+      '#prefix' => '<div id="Certificate-information-wrapper'. $i .'-information-wrapper">', // This is our wrapper div.
+      '#suffix' => '</div>',
+      '#field_suffix' => t('Certificates, awards and licenses may be necessary to submit to enter some programs.')
+    );
+    $form['Certificates']['Certificate '. $i]['Certificate_text'. $i] = array(
+      '#type' => 'textfield',
+      '#title' => t('Certificate Award or License'),
+      '#default_value' => $form_state['values']['Certificate_text'. $i],
+      '#required' => TRUE,
+      '#maxlength' => 32,
+      '#size' => 32,      
+      );
+    $form['Certificates']['Certificate '. $i]['Validity_date'. $i] = array(
+      '#type' => 'select',
+      '#title' => t('Validity Date'),
+      '#default_value' => $form_state['values']['Validity_date'. $i], 
+      '#required' => TRUE,
+      '#options' => $years,
+      );
+    $form['Certificates']['Certificate '. $i]['Expiration_date'. $i] = array(
+      '#type' => 'select',
+      '#title' => t('Expiration Date'),
+      '#default_value' => $form_state['values']['Expiration_date'. $i], 
+      '#required' => TRUE,
+      '#options' => $years,
+      );
+    $form['Certificates']['Certificate '. $i]['Memo'. $i] = array(
+      '#type' => 'select',
+      '#title' => t('Additional information'),
+      '#default_value' => $form_state['values']['Memo'. $i], 
+      '#required' => False,
+      '#options' => $result,
+    );
+  }
+}
+
   $form['Submit'] = array(
   '#type' => 'submit',
   '#value' => t('Save and Continue'),
@@ -411,6 +544,30 @@ if($form_state['values']['attendpostsecondary'] != "None") {
 
 return ($form);
 
+}
+
+function application_form_page2_validate($form, &$form_state) {
+  $ged_error_message = "The GED Date of Issue you selected is invalid.";
+  if (intval($form_state['values']['geddate']['year']) > intval(date("Y"))) {
+    form_set_error('geddate', t($ged_error_message));
+  }
+  else if (intval($form_state['values']['geddate']['year']) == intval(date("Y"))) {
+    if (intval($form_state['values']['geddate']['month']) > intval(date("m"))) {
+      form_set_error('geddate', t($ged_error_message));
+    }
+    else if (intval($form_state['values']['geddate']['month']) == intval(date("m")) &&
+             intval($form_state['values']['geddate']['day']) > intval(date("d"))) {
+      form_set_error('geddate', t($ged_error_message));
+    }
+  }
+  for ($i = 1; $i <= $form_state['values']['attendpostsecondary']; $i++) {
+    if (intval($form_state['values']['postSecondaryStartYear'. $i]) > intval($form_state['values']['postSecondaryEndYear'. $i])) {
+      form_set_error('postSecondaryStartYear'. $i, t("Please ensure that your First Year Attended Occurs Before your Last Year Attended."));
+    }
+    if (is_numeric($form_state['values']['postSecondaryDegeree'. $i]) && intval($form_state['values']['postSecondaryStartYear'. $i]) > intval($form_state['values']['postSecondaryDegeree'. $i])) {
+      form_set_error('postSecondaryDegeree'. $i, t("Please ensure that your Year of Completion Occurs Before your First Year Attended."));
+    }
+  }
 }
 
 function application_form_page2_submit($form, &$form_state) {
@@ -434,11 +591,17 @@ function application_form_page2_submit($form, &$form_state) {
   // Get text version
     $hsname = $form_state['values']['highschoolname_text'];
   }
+  if ($form_state['values']['highschoolcity'] == "" || $form_state['values']['highschoolcity'] == "-1") {
+    $hscity = $form_state['values']['highschoolcity_text'];
+  }
+  else {
+    $hscity = $form_state['values']['highschoolcity'];
+  }
 //   print_r($form_state);
 
   //null values are interperted to 0 by the db_query sql injection fixing this makes it difficult to leave GED date NULL an arbitrary date (12/30/1899) was chosen by the developer to represent lack of GED NULL values
   $biographic_sql = "UPDATE {application_Biographic} SET HighSchool_Name = '%s', HighSchool_Country = '%s', HighSchool_State = '%s', HighSchool_City = '%s', HighSchool_Attendance = '%d', HighSchool_Sonis_ID = '%s', GED_Testing_Site = '%s', GED_Date_Of_Issue = '%s' WHERE Student_StudentID = '%s'";
-  db_query($biographic_sql, $hsname, $form_state['values']['highschoolcountry'], $form_state['values']['highschoolstate'], ($form_state['values']['highschoolcity'] == "-1"?$form_state['values']['highschoolcity_text']:$form_state['values']['highschoolcity']),   $form_state['values']['attendhighschool'], $form_state['values']['highschoolname'], $form_state['values']['gedtesting'], $GED_date, $user->uid);
+  db_query($biographic_sql, $hsname, $form_state['values']['highschoolcountry'], $form_state['values']['highschoolstate'], $hscity, $form_state['values']['attendhighschool'], $form_state['values']['highschoolname'], $form_state['values']['gedtesting'], $GED_date, $user->uid);
   
   //Assume it's an update.  (Does noting if it's not.)
   $institutions_sql = "DELETE FROM {application_Institutions} WHERE Student_StudentID = '%s'";
@@ -464,8 +627,18 @@ function application_form_page2_submit($form, &$form_state) {
        else {
          $degreecomplete = 1;
        }
+       if ($form_state['values']['postSecondaryCity'. $i] == "" ||$form_state['values']['postSecondaryCity'. $i] == "-1") {
+          $pscity = $form_state['values']['postSecondaryCity'. $i ."_text"];
+        }
+        else {
+          $pscity = $form_state['values']['postSecondaryCity'. $i];
+        }
+       
+       
+       
+       
       $institutions_sql = "INSERT into {application_Institutions} (Student_StudentID, Institution_Name, Institution_Country, Institution_City, Institution_State, First_Year_Attended, Last_Year_Attended, Degree_Certificate_Complete, Year_Degree_Completed, Major, Sonis_Institution_ID)VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )";
-      db_query($institutions_sql, $user->uid, $psname, $form_state['values']['postSecondaryCountry'. $i], ($form_state['values']['postSecondaryCity'. $i] == "-1"?$form_state['values']['postSecondaryCity'. $i ."_text"]:$form_state['values']['postSecondaryCity'. $i]), $form_state['values']['postSecondaryState'. $i], $form_state['values']['postSecondaryStartYear'. $i], $form_state['values']['postSecondaryEndYear'. $i], $degreecomplete, $form_state['values']['postSecondaryDegeree'. $i], $form_state['values']['postSecondaryMajor'. $i], $form_state['values']['postSecondaryName'. $i]);
+      db_query($institutions_sql, $user->uid, $psname, $form_state['values']['postSecondaryCountry'. $i], $pscity, $form_state['values']['postSecondaryState'. $i], $form_state['values']['postSecondaryStartYear'. $i], $form_state['values']['postSecondaryEndYear'. $i], $degreecomplete, $form_state['values']['postSecondaryDegeree'. $i], $form_state['values']['postSecondaryMajor'. $i], $form_state['values']['postSecondaryName'. $i]);
     }
   }
    
