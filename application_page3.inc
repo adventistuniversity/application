@@ -27,7 +27,7 @@ function application_form_page3($form_state) {
 	<li>B.S. Diagnostic Medical Sonography</li>
 	<li>B.S. Nursing</li>
 	<li>B.S. Radiologic Sciences</li>
-	<li>Certificate in Advanced Imaging Modalities (CT/MR)</li>
+	<li>Certificate in Advanced Imaging Modalities (CT/MRI)</li>
 	<li>Certificate in Diagnostic Medical Sonography</li>
 	<li>Certificate in Nuclear Medicine Technology</li>
 	<li>M.S. Nurse Anesthesia</li>
@@ -155,7 +155,8 @@ function application_form_page3_submit($form, &$form_state) {
     }
   }
  //print_r($form_state);
-drupal_set_message(t('Thank you for selecting some programs. %programs programs', array('%programs' => $picks)));
+//drupal_set_message(t('Thank you for selecting some programs. %programs programs', array('%programs' => $picks)));
+  drupal_set_message(t('Thank you for indicating your academic plans.'));
 drupal_goto('application/generalcollegeapplication4');
 }
 

@@ -1,0 +1,129 @@
+	$schema['application_Programs'] = array(
+		'description' => t('The programs a student applies for.'),
+		'fields' => array(
+			'Program_Applicaiton_ID' 		=> NOT MAPPED					=> 'varchar','length' => 32,'not null' => TRUE,'default' => ''),
+			'Student_StudentID' 			=> NOT MAPPED approg.soc_sec	=> 'varchar','length' => 9,'not null' => TRUE,'default' => ''),
+			'Year' 							=> 	NOT MAPPED 					=> 'varchar','length' => 32,'not null' => TRUE,'default' => ''),
+			'Term' 							=> 	NOT MAPPED					=> 'varchar','length' => 32,'not null' => TRUE,'default' => ''),
+			'Department' 					=> NOT MAPPED					=> 'varchar','length' => 32,'not null' => TRUE,'default' => ''),
+			'Program' 						=> approg.prg_cod				=> 'varchar','length' => 10,'not null' => TRUE,'default' => ''),
+			),
+
+		'unique keys' => array(
+				'Program_Applicaiton_ID'     => array('Program_Applicaiton_ID')
+			),
+		'primary key' => array('Program_Applicaiton_ID'),	
+		);
+			
+	$schema['application_Address'] = array(
+		'description' => t('Applicant address'),
+		'fields' => array(
+			'Address_ID' 					=> NOT MAPPED					=> 'varchar','length' => 32,'not null' => TRUE,'default' => ''),
+			'Student_StudentID' 			=> NOT MAPPED address.soc_sec	=> 'varchar','length' => 9,'not null' => TRUE,'default' => ''),
+			'Country' 						=> address.country				=> 'varchar','length' => 25,'not null' => TRUE,'default' => ''),
+			'State' 						=> address.state				=> 'varchar','length' => 2,'not null' => FALSE,'default' => ''),
+			'City' 							=> address.city					=> 'varchar','length' => 35,'not null' => TRUE,'default' => ''),
+			'Postal' 						=> address.zip					=> 'varchar','length' => 10,'not null' => TRUE,'default' => ''),
+			'Street' 						=> address.st_addr				=> 'varchar','length' => 35,'not null' => TRUE,'default' => ''),
+			'Primary_phone' 				=> address.phone				=> 'varchar','length' => 15,'not null' => TRUE,'default' => ''),
+			'Alternate_phone' 				=> address.cell_phone			=> 'varchar','length' => 15,'not null' => FALSE,'default' => ''),
+			'Email' 						=> address.e_mail				=> 'varchar','length' => 100,'not null' => TRUE,'default' => ''),
+			'Type' 							=> address.type					=> 'varchar','length' => 10,'not null' => FALSE,'default' => ''),
+			'Contact_Name' 					=> NOT MAPPED address.memo		=> 'varchar','length' => 32,'not null' => FALSE,'default' => ''),
+			),
+
+		'unique keys' => array(
+				'Address_ID'     => array('Address_ID')
+			),
+		'primary key' => array('Address_ID'),	
+		);
+					
+		
+   $schema['application_Certs'] =  array(
+    'description' => t('The cert license award information table.'), 
+    'fields' => array(
+      'Cert_ID'                     => NOT MAPPED                     'type' => 'serial'),
+      'Student_StudentID'           => NOT MAPPED           'type' => 'varchar', 'length' => 9,  'not null' => TRUE,  'default' => ''),
+      'Cert'                        => nmlic.license                     'type' => 'varchar', 'length' => 50, 'not null' => TRUE,  'default' => ''),
+      'Effective_date'              => nmlic.date_rec            'type' => 'datetime',                'not null' => TRUE),
+      'Expiration_date'             => nmlic.date_exp            'type' => 'datetime',                'not null' => FALSE),
+      'Memo'                        => nmlic.lic_mem                       'type' => 'varchar', 'length' => 150, 'not null' => FALSE,  'default' => ''),
+      ), 
+
+    'unique keys' => array(
+        'Cert_ID'     => array('Cert_ID')
+      ), 
+    'primary key' => array('Cert_ID'),   
+    );     
+			
+	$schema['application_Institutions'] =  array(
+		'description' => t('The student information table.'),
+		'fields' => array(
+			'Institution_ID' 				=> NOT MAPPED				=> 'varchar','length' => 32,'not null' => TRUE,'default' => ''),
+			'Student_StudentID' 			=> NOT MAPPED				=> 'varchar','length' => 9,'not null' => TRUE,'default' => ''),
+			'Institution_Name' 				=> institut.inst_txt 		=> 'varchar','length' => 50,'not null' => TRUE,'default' => ''),
+			'Institution_Country' 			=> institut.inst_cntry		=> 'varchar','length' => 25,'not null' => TRUE,'default' => ''),
+			'Institution_City' 	  			=> institut.inst_city		=> 'varchar','length' => 20,'not null' => TRUE,'default' => ''),
+			'Institution_State'   			=> institut.isnt_state 		=> 'varchar','length' => 2,'not null' => FALSE,'default' => ''),
+			'First_Year_Attended' 			=> nmedu.enter_date			=> 'int','not null' => TRUE,'default' => 0),
+			'Last_Year_Attended' 			=> nmedu.leav_date			=> 'int','not null' => TRUE,'default' => 0),
+			'Degree_Certificate_Complete' 	=> nmedu.graduated			=> 'int','size' => 'tiny','not null' => TRUE,'default' => 0),
+			'Year_Degree_Completed' 		=> nmedu.grad_date			=> 'int','not null' => FALSE,'default' => 0),		
+			'Major' 						=> nmedu.educmem			=> 'varchar','length' => 32,'not null' => TRUE,'default' => ''),
+			'Sonis_Institution_ID' 			=> institut.prog_cod 		=> 'varchar','length' => 16,'not null' => FALSE,'default' => ''),	
+			),
+
+		'unique keys' => array(
+				'Institution_ID'     => array('Institution_ID')
+			),
+		'primary key' => array('Institution_ID'),	
+		);
+	$schema['application_Biographic'] = array(
+		'description' => t('The student information table.'),
+		'fields' => array(
+			'Student_StudentID' 				=> NOT MAPPED name.soc_sec 	=> 'varchar','length' => 9,'not null' => TRUE,'default' => ''),
+			'Student_Nickname' 					=> name.nickname			=> 'varchar','length' => 20,'not null' => TRUE,'default' => ''),
+			'Student_Fname' 					=> name.first_name			=> 'varchar','length' => 30,'not null' => TRUE,'default' => ''),
+			'Student_Lname' 					=> name.last_name			=> 'varchar','length' => 30,'not null' => TRUE,'default' => ''),
+			'Student_Mname' 					=> name.mi					=> 'varchar','length' => 15,'not null' => TRUE,'default' => ''),
+			'Student_DOB'						=> name.birthdate			=> 'datetime','not null' => TRUE),			
+			'Student_SSN' 						=> name.ssn					=> 'int','not null' => FALSE,'default' => 0),			
+			'Birth_Country' 					=> nmcitizen.birth_country	=> 'varchar','length' => 25,'not null' => TRUE,'default' => ''),
+			'Birth_City'		 				=> NOT MAPPED				=> 'varchar','length' => 35,'not null' => TRUE,'default' => ''),
+			'Birth_State' 						=> NOT MAPPED				=> 'varchar','length' => 2,'not null' => FALSE,'default' => ''),
+			'Citizenship_Country' 				=> nmcit.citizen_country	=> 'varchar','length' => 25,'not null' => TRUE,'default' => ''),
+			'Citizenship_ID_Number' 			=> NEEDS MAP				=> 'varchar','length' => 50,'not null' => TRUE,'default' => ''),
+			'Citizenship_ID_Type' 				=> NEEDS MAP				=> 'varchar','length' => 50,'not null' => TRUE,'default' => ''),
+			'Citizenship_Visa_Status' 			=> NEEDS MAP				=> 'varchar','length' => 50,'not null' => TRUE,'default' => ''),
+			'HighSchool_Name' 					=> institut.inst_txt 		=> 'varchar','length' => 50,'not null' => TRUE,'default' => ''),
+			'HighSchool_Country'				=> institut.inst_cntry		=> 'varchar','length' => 25,'not null' => TRUE,'default' => ''),
+			'HighSchool_State' 					=> institut.inst_state		=> 'varchar','length' => 2,'not null' => FALSE,'default' => ''),
+			'HighSchool_City' 					=> institut.isnt_city 		=> 'varchar','length' => 20,'not null' => TRUE,'default' => ''),
+			'HighSchool_Attendance' 			=> NOT MAPPED 				=> 'int','size' => 'tiny','not null' => TRUE,'default' => 0),
+			'HighSchool_Soinis_ID'				=> institut.inst_cod 		=> 'varchar','length' => 16,'not null' => FALSE,'default' => ''),
+			'GED_Testing_Site' 					=> nmtest.test.txt			=> 'varchar','length' => 50,'not null' => FALSE,'default' => ''),
+			'GED_Date_Of_Issue' 				=> NOT MAPPED ... nmtest.testmemo => 'datetime','not null' => FALSE),
+			'Statistics_Gender' 				=> name.gender 				=> 'varchar','length' => 1,'not null' => TRUE,'default' => ''),
+			'Statistics_Hispanic' 				=> NOT MAPPED 				=> 'int','size' => 'tiny','not null' => TRUE,'default' => 0),
+			'Statistics_Ethnic_Origin' 			=> name.ethcic_cod 			=> 'varchar','length' => 2,'not null' => TRUE,'default' => ''),
+			'Statistics_Native_English' 		=> NOT MAPPED 				=> 'int','size' => 'tiny','not null' => TRUE,'default' => 0),
+			'Statistics_Native_Language' 		=> nmcit.nmcit_ce3 			=> 'varchar','length' => 20,'not null' => TRUE,'default' => ''),
+			'Statistics_Marital_Status'			=> name.mar_cod 			=> 'varchar','length' => 2,'not null' => TRUE,'default' => ''),
+			'Statistics_Religious_Affiliation' 	=> name.tuit_stat 			=> 'varchar','length' => 2,'not null' => TRUE,'default' => ''),
+			'Statistics_Home_Church' 			=> NOT MAPPED 				=> 'varchar','length' => 50,'not null' => FALSE,'default' => ''),
+			'Statistics_Home_Church_City'		=> NOT MAPPED 				=> 'varchar','length' => 50,'not null' => FALSE,'default' => ''),
+			'Statistics_Home_Church_State' 		=> NOT MAPPED 				=> 'varchar','length' => 2,'not null' => FALSE,'default' => ''),
+			'Personal_Statement_Agreement'		=> NOT MAPPED 				=> 'int','size' => 'tiny','not null' => TRUE,'default' => 0),				
+			),
+
+		'unique keys' => array(
+			'Student_StudentID'     => array('Student_StudentID')
+		),
+		'primary key' => array('Student_StudentID'),
+		);
+
+
+
+
+
+	

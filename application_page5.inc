@@ -34,6 +34,26 @@ function application_form_page5($form_state) {
   return ($form);
 
 }
+
+function application_form_page5_validate($form, &$form_state) {
+  global $user;
+
+  $biographic_sql = "SELECT Student_Fname, HighSchool_Attendance, Statistics_Gender FROM {application_Biographic} WHERE Student_StudentID = '%s'";
+  $a = db_fetch_array(db_query($biographic_sql, $user->uid));
+
+  if ($a) {
+    if (!isset($a['Student_Fname']) || strlen(trim($a['Student_Fname'])) == 0 || strcasecmp(trim($a['Student_Fname']), "null") == 0)
+      form_set_error('', t("Please Complete Personal Information Page before submitting your application."));
+    if (!isset($a['HighSchool_Attendance']) || !is_numeric($a['HighSchool_Attendance']))
+      form_set_error('', t("Please Complete Academic Experience Page before submitting your application."));
+    $biographic_sql = "SELECT * FROM {application_Programs} WHERE Student_StudentID = '%s'";
+    if (!db_fetch_array(db_query($biographic_sql, $user->uid)))
+      form_set_error('', t("Please Complete Academic Plans Page before submitting your application."));
+    if (!isset($a['Statistics_Gender']) || strlen(trim($a['Statistics_Gender'])) == 0 || strcasecmp(trim($a['Statistics_Gender']), "null") == 0)
+      form_set_error('', t("Please Complete Statistical Data Page before submitting your application."));
+  }
+}
+
 // Form should redirect to: /application/generalcollegeapplicaion/submitted
 function application_form_page5_submit($form, &$form_state) {
   global $user;
@@ -41,5 +61,16 @@ function application_form_page5_submit($form, &$form_state) {
   $biographic_sql = "UPDATE {application_Biographic} SET Personal_Statement_Agreement = '%d'WHERE Student_StudentID = '%s'";
   db_query($biographic_sql, '1', $user->uid);
 
-drupal_goto('application/generalcollegeapplication/submitted');
+  if ($user->uid != 1) { //Don't Disable or logout the master account.
+    //Disable
+    db_query('UPDATE {users} set status=0 WHERE uid = %d', $user->uid);
+    module_invoke_all('user', 'disable', NULL, $user);
+
+    //Logout
+    watchdog('user', 'Session closed and Disabled for %name.', array('%name' => $user->name));
+    session_destroy();
+    module_invoke_all('user', 'logout', NULL, $user);
+    $user = drupal_anonymous_user();
+  }
+  drupal_goto('application/generalcollegeapplication/submitted');
 }
