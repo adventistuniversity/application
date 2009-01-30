@@ -140,7 +140,7 @@ if ($form_state['values']['attendhighschool'] == "1" || $form_state['values']['a
   if ($form_state['values']['highschoolstate'] == "" || (strcasecmp($form_state['values']['highschoolcountry'], "UNITED STATES") != 0
       && strcasecmp($form_state['values']['highschoolcountry'], "American Samoa") != 0 && strcasecmp($form_state['values']['highschoolcountry'], "Federated States of Micronesia") != 0
       && strcasecmp($form_state['values']['highschoolcountry'], "Guam") != 0 && strcasecmp($form_state['values']['highschoolcountry'], "U.S. Minor Outlying Is") != 0
-      && strcasecmp($form_state['values']['highschoolcountry'], "Puerto Rico") != 0) || $form_state['values']['highschoolcity'] == "-1" || count ($tmp) <= 2) {
+      && strcasecmp($form_state['values']['highschoolcountry'], "Puerto Rico") != 0) || $form_state['values']['highschoolcity'] == "-1" || count($tmp) <= 2) {
      $form['High School Experience']['highschoolcity_text'] = array(
       '#type' => 'textfield',
       '#title' => t('High School City'),
@@ -370,7 +370,7 @@ if($form_state['values']['attendpostsecondary'] != "None") {
     if ($form_state['values']['postSecondaryState'. $i] == "" || (strcasecmp($form_state['values']['postSecondaryCountry'. $i], "UNITED STATES") != 0
       && strcasecmp($form_state['values']['postSecondaryCountry'. $i], "American Samoa") != 0 && strcasecmp($form_state['values']['postSecondaryCountry'. $i], "Federated States of Micronesia") != 0
       && strcasecmp($form_state['values']['postSecondaryCountry'. $i], "Guam") != 0 && strcasecmp($form_state['values']['postSecondaryCountry'. $i], "U.S. Minor Outlying Is") != 0
-      && strcasecmp($form_state['values']['postSecondaryCountry'. $i], "Puerto Rico") != 0) || $form_state['values']['postSecondaryCity'. $i] == "-1" || count ($tmp) <= 2) {
+      && strcasecmp($form_state['values']['postSecondaryCountry'. $i], "Puerto Rico") != 0) || $form_state['values']['postSecondaryCity'. $i] == "-1" || count($tmp) <= 2) {
        $form['Postsecondary Educational Experience']['Institution '. $i]['postSecondaryCity'. $i ."_text"] = array(
         '#type' => 'textfield',
         '#title' => t('City'),
@@ -804,8 +804,8 @@ function application_form_page2_submit($form, &$form_state) {
   
   
   // lets clean out the database of licenses so we don't have to try updating
-  $Certs_sql = "DELETE FROM {application_Certs} WHERE Student_StudentID = '%s'";
-  db_query($Certs_sql, $user->uid);
+  $certs_sql = "DELETE FROM {application_Certs} WHERE Student_StudentID = '%s'";
+  db_query($certs_sql, $user->uid);
   
   // lets deal with the license information now
   // build a loop to process each license
@@ -824,11 +824,10 @@ function application_form_page2_submit($form, &$form_state) {
       || strcasecmp($form_state['values']['countryissued'. $i], "American Samoa") == 0 || strcasecmp($form_state['values']['countryissued'. $i], "Federated States of Micronesia") == 0
       || strcasecmp($form_state['values']['countryissued'. $i], "Guam") == 0 || strcasecmp($form_state['values']['countryissued'. $i], "U.S. Minor Outlying Is") == 0
       || strcasecmp($form_state['values']['countryissued'. $i], "Puerto Rico") == 0) {
-      $memo = $memo. $form_state['values']['countryissued'. $i]. ', '. $form_state['values']['stateissued'. $i];
+      $memo = $memo . $form_state['values']['countryissued'. $i] .', '. $form_state['values']['stateissued'. $i];
     }
-    else
-    {
-      $memo = $memo. $form_state['values']['countryissued'. $i];
+    else {
+      $memo = $memo . $form_state['values']['countryissued'. $i];
     }   
     // build dates
 //     $expdate = $form_state['values']['Expiration_date'. $i]['year'] .'-'. $form_state['values']['Expiration_date'. $i]['month'] .'-'. $form_state['values']['Expiration_date'. $i]['day'] .' 00:00:00';
@@ -836,8 +835,8 @@ function application_form_page2_submit($form, &$form_state) {
     $expdate = $form_state['values']['Expiration_date'. $i];
     $effdate = $form_state['values']['Effective_date'. $i];
 
-    $Certs_sql = "INSERT into {application_Certs} (Student_StudentID, Cert, Cert_Country, Cert_State, Effective_date, Expiration_date, Memo)VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s' )";
-    db_query($Certs_sql, $user->uid, $licensetype, $form_state['values']['countryissued'. $i], $form_state['values']['stateissued'. $i],  $effdate, $expdate, $memo);
+    $certs_sql = "INSERT into {application_Certs} (Student_StudentID, Cert, Cert_Country, Cert_State, Effective_date, Expiration_date, Memo)VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s' )";
+    db_query($certs_sql, $user->uid, $licensetype, $form_state['values']['countryissued'. $i], $form_state['values']['stateissued'. $i],  $effdate, $expdate, $memo);
   }
   
    

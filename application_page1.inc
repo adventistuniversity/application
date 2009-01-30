@@ -66,7 +66,7 @@ function application_form_page1($form_state) {
   );
   $form['Name']['former_last'] = array(
     '#type' => 'textfield',
-	'#description' => "Please list any previous last names. For example, Smith, Thompson.",
+    '#description' => "Please list any previous last names. For example, Smith, Thompson.",
     '#title' => t('Former Last Name'),
     '#default_value' => $form_state['values']['former_last'],
     '#required' => FALSE,
@@ -865,8 +865,8 @@ function application_form_page1($form_state) {
           '#title' => t('Naturalized Citizen or Permanent Resident Number'),
           '#default_value' => $form_state['values']['number'],
           '#required' => TRUE,
-	      '#maxlength' => 50,
-	      '#size' => 35,
+          '#maxlength' => 50,
+          '#size' => 35,
         );
         $form['Birthplace_Information']['visa'] = array(
         '#type' => 'select',

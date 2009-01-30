@@ -161,7 +161,7 @@ drupal_goto('application/generalcollegeapplication4');
 }
 
 function _application_form_page3_load_defaults(&$form_state) {
-  if(sizeof($_POST)) {
+  if (sizeof($_POST)) {
   }
   else {
     global $user;
@@ -174,7 +174,7 @@ function _application_form_page3_load_defaults(&$form_state) {
     $i = 0;
     while ($a = db_fetch_array($result)) {
 
-      if($i == 0) {
+      if ($i == 0) {
         $form_state['values']['yearofinterest']                   = $a ['Year'];
         $form_state['values']['termofinterest']                   = $a ['Term'];
         $form_state['values']['department1']                      = $a ['Department'];
@@ -183,7 +183,7 @@ function _application_form_page3_load_defaults(&$form_state) {
         // get the list of programs for the first department
         $selectionboxes = _application_query_to_form_array("select program.prg_cod, '0' from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $a['Department'] ."' order by prg_txt asc", FALSE);
       }
-      if($department != $a['Department'] && $a['Department'] != ''){
+      if ($department != $a['Department'] && $a['Department'] != '') {
         $form_state['values']['department2']                = $a['Department'];
         $department = $a['Department'];
         // get the new list of programs for department2
@@ -192,18 +192,18 @@ function _application_form_page3_load_defaults(&$form_state) {
         $loop = '2';
       }
       // make 'program' . $loop array
-      if (array_key_exists($a['Program'],$selectionboxes)) {
+      if (array_key_exists($a['Program'], $selectionboxes)) {
         // set key
         $selectionboxes[$a['Program']] = $a['Program'];
       }
       $i++;
     }
      //print('<br>');
-    if($loop == '2') {
+    if ($loop == '2') {
       $form_state['values']['programs1'] = $selectionboxes1;    
       $form_state['values']['programs2'] = $selectionboxes;
     }
-    if($loop == '1') {
+    if ($loop == '1') {
       $form_state['values']['programs1'] = $selectionboxes;   
     }
   }
