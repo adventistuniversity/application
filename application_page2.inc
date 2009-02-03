@@ -839,9 +839,12 @@ function application_form_page2_submit($form, &$form_state) {
     db_query($certs_sql, $user->uid, $licensetype, $form_state['values']['countryissued'. $i], $form_state['values']['stateissued'. $i],  $effdate, $expdate, $memo);
   }
   
-   
-drupal_set_message(t('Thanks for saving your Academic Information.'));
-drupal_goto('application/generalcollegeapplication3');
+
+  //Fire Application Updated Trigger
+  module_invoke_all('application_changed', 'update', $user);
+
+  drupal_set_message(t('Thanks for saving your Academic Information.'));
+  drupal_goto('application/generalcollegeapplication3');
 }
 
 function _application_form_page2_load_defaults(&$form_state) {

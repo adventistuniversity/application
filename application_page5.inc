@@ -61,6 +61,13 @@ function application_form_page5_submit($form, &$form_state) {
   $biographic_sql = "UPDATE {application_Biographic} SET Personal_Statement_Agreement = '%d'WHERE Student_StudentID = '%s'";
   db_query($biographic_sql, '1', $user->uid);
 
+
+  //Fire Application Updated Trigger
+  module_invoke_all('application_changed', 'update', $user);
+
+  //Fire Application Completed Trigger
+  module_invoke_all('application_changed', 'complete', $user);
+
   if ($user->uid != 1) { //Don't Disable or logout the master account.
     //Disable
     db_query('UPDATE {users} set status=0 WHERE uid = %d', $user->uid);

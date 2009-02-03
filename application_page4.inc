@@ -168,8 +168,11 @@ function application_form_page4_submit($form, &$form_state) {
   $biographic_sql = "UPDATE {application_Biographic} SET Statistics_Gender = '%s', Statistics_Hispanic = '%s',  Statistics_Ethnic_Origin = '%s',  Statistics_Marital_Status = '%s', Statistics_Religious_Affiliation = '%s', Statistics_Home_Church = '%s', Statistics_Home_Church_City = '%s', Statistics_Home_Church_State = '%s', Statistics_First_Generation = '%s' WHERE Student_StudentID = '%s'";
   db_query($biographic_sql, $form_state['values']['gender'], $form_state['values']['ethnicorigin'], $form_state['values']['ethnicorigin2'],  $form_state['values']['maritalstatus'], $form_state['values']['religion'], $form_state['values']['religionhomechurch'], $form_state['values']['religionhomechurchcity'], $form_state['values']['religionhomechurchstate'], $form_state['values']['attend'], $user->uid);
 
+  //Fire Application Updated Trigger
+  module_invoke_all('application_changed', 'update', $user);
+
   drupal_set_message(t('Your Statistical Information has been recorded.'));
-drupal_goto('application/generalcollegeapplication5');
+  drupal_goto('application/generalcollegeapplication5');
 }
 
 function _application_form_page4_load_defaults(&$form_state) {

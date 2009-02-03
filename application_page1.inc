@@ -924,6 +924,10 @@ function application_form_page1_submit($form, &$form_state) {
   else {
     $biographic_sql = "INSERT into {application_Biographic} (Student_StudentID, Statistics_Native_English, Statistics_Native_Language, Student_Nickname, Student_Fname, Student_Mname, Student_Lname, Student_FormerLname, Student_DOB, Student_SSN, Birth_Country, Birth_City, Birth_State, Citizenship_Country, Citizenship_ID_Number, Citizenship_ID_Type, Citizenship_Visa_Status, HighSchool_Name, HighSchool_Country, HighSchool_State, HighSchool_City, HighSchool_Attendance, HighSchool_Sonis_ID, GED_Testing_Site, GED_Date_Of_Issue, Statistics_Gender, Statistics_Hispanic, Statistics_Ethnic_Origin, Statistics_Native_English, Statistics_Native_Language, Statistics_Marital_Status, Statistics_Religious_Affiliation, Statistics_Home_Church, Statistics_Home_Church_City, Statistics_Home_Church_State, Personal_Statement_Agreement)VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d')";
     db_query($biographic_sql, $user->uid, $form_state['values']['language'], $form_state['values']['nativelanguage'], $form_state['values']['preferred'], $form_state['values']['first'], $form_state['values']['middle'], $form_state['values']['last'], $form_state['values']['former_last'], $dob , $ssn, $form_state['values']['countryofbirth'], $form_state['values']['cityofbirth'], $form_state['values']['stateofbirth'], $form_state['values']['countryofcitizenship'], $form_state['values']['number'], $form_state['values']['numberquestion'], $form_state['values']['visa'], '', '', '', '', '', '', '', $GED_date, '', '', '', '', '', '', '', '', '', '', 0);
+
+    //Fire Application Started Trigger
+    //This will never be called due to preempt in load_defaults below.
+    module_invoke_all('application_changed', 'start', $user);
   }
   
 
@@ -938,6 +942,10 @@ function application_form_page1_submit($form, &$form_state) {
     $address_sql = "INSERT into {application_Address} (Student_StudentID, Country, State, City, Postal, Street, Primary_phone, Mobile_phone, Alternate_phone, Email, Type, Contact_Name)VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')";
     db_query($address_sql, $user->uid, $form_state['values']['countryofresidence'], $form_state['values']['state'],   $form_state['values']['addresscity'], $form_state['values']['postalcode'], $form_state['values']['streetaddress'], $form_state['values']['primaryphone'], $form_state['values']['cellphone'], $form_state['values']['alternatephone'], $form_state['values']['email'], 'Pref Add', $form_state['values']['preferred']);
   }
+
+  //Fire Application Updated Trigger
+  module_invoke_all('application_changed', 'update', $user);
+
   drupal_set_message(t('%name, your Personal Information section has been saved.', array('%name' => $name)));
   drupal_goto('application/generalcollegeapplication2');
 }
@@ -1029,5 +1037,8 @@ function _application_form_page1_load_defaults(&$form_state) {
   else {
     $address_sql = "INSERT into {application_Biographic} (Student_StudentID, Student_DOB) VALUES ('%s', '1899-12-31')";
     db_query($address_sql, $user->uid);
+    
+    //Fire Application Started Trigger
+    module_invoke_all('application_changed', 'start', $user);
  }
 }

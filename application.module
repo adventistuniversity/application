@@ -1365,6 +1365,100 @@ function application_views_data() {
       ),
     ),
   );
-return $data;
+  return $data;
 }
 
+/**
+ * Implementation of hook_hook_info().
+ */
+function application_hook_info() {
+  return array(
+    'application' => array(
+//Commented Out line is what Documentation says, uncommented out line is what code says
+//NOTE: Changing this requires changing application_application_changed as well  (at least twice.)
+//      'application_changed' => array(
+      'application' => array(
+        'start' => array(
+          'runs when' => t('After application has been started'),
+        ),
+        'update' => array(
+          'runs when' => t('After application has been updated'),
+        ),
+        'complete' => array(
+          'runs when' => t('After application has been completed'),
+        ),
+        'delete' => array(
+          'runs when' => t('After application has been deleted'),
+        ),
+      ),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_application_started().
+ */
+function application_application_changed($op, $user) {
+  // We support a subset of operations.
+  if (!in_array($op, array('start', 'update', 'complete', 'delete'))) {
+    return;
+  }
+  $aids = _trigger_get_hook_aids('application', $op);
+  $context = array(
+    'hook' => 'application',
+    'op' => $op,
+    'user' => $user,
+  );
+  actions_do(array_keys($aids), $user, $context);
+}
+
+/**
+ * Implementation of hook_info_alter().
+ */
+function application_action_info_alter(&$info) {
+  foreach ($info as $type => $data) {
+    if (stripos($type, "user_") === 0 || stripos($type, "system_") === 0) {
+      if (isset($info[$type]['hooks']['application'])) {
+        array_merge($info[$type]['hooks']['application'], array('start', 'update', 'complete', 'delete'));
+      }
+      else {
+        $info[$type]['hooks']['application'] = array('start', 'update', 'complete', 'delete');
+      }
+    }
+  }
+}
+
+/**
+ * Implementation of hook_action_info().
+ */
+function application_action_info() {
+  return array(
+    'application_logout_user_action' => array(
+      'description' => t('Logout current user'),
+      'type' => 'application',
+      'configurable' => FALSE,
+      'hooks' => array('application' => array('start', 'update', 'complete', 'delete')),
+    ),
+  );
+}
+
+/**
+ * Implementation of a Drupal action.
+ * Logs out the current user.
+ */
+function application_logout_user_action(&$object, $context = array()) {
+  if (isset($object->uid)) {
+    $uid = $object->uid;
+  }
+  elseif (isset($context['uid'])) {
+    $uid = $context['uid'];
+  }
+  else {
+    global $user;
+    $uid = $user->uid;
+  }
+  session_destroy();
+  module_invoke_all('user', 'logout', NULL, $user);
+  $user = drupal_anonymous_user();
+  watchdog('action', 'Session logged out for %name.', array('%name' => $user->name));
+}

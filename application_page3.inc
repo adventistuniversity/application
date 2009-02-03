@@ -155,9 +155,13 @@ function application_form_page3_submit($form, &$form_state) {
     }
   }
  //print_r($form_state);
+
+  //Fire Application Updated Trigger
+  module_invoke_all('application_changed', 'update', $user);
+
 //drupal_set_message(t('Thank you for selecting some programs. %programs programs', array('%programs' => $picks)));
   drupal_set_message(t('Thank you for indicating your academic plans.'));
-drupal_goto('application/generalcollegeapplication4');
+  drupal_goto('application/generalcollegeapplication4');
 }
 
 function _application_form_page3_load_defaults(&$form_state) {
