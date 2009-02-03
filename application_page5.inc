@@ -68,16 +68,5 @@ function application_form_page5_submit($form, &$form_state) {
   //Fire Application Completed Trigger
   module_invoke_all('application_changed', 'complete', $user);
 
-  if ($user->uid != 1) { //Don't Disable or logout the master account.
-    //Disable
-    db_query('UPDATE {users} set status=0 WHERE uid = %d', $user->uid);
-    module_invoke_all('user', 'disable', NULL, $user);
-
-    //Logout
-    watchdog('user', 'Session closed and Disabled for %name.', array('%name' => $user->name));
-    session_destroy();
-    module_invoke_all('user', 'logout', NULL, $user);
-    $user = drupal_anonymous_user();
-  }
   drupal_goto('application/generalcollegeapplication/submitted');
 }
