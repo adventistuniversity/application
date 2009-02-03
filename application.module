@@ -687,11 +687,10 @@ function application_views_data() {
         'title' => t('Primary Phone'),
         'help' => t('Primary phone for this contact'),
         'field' => array(
-          'handler' => 'views_handler_filter_string',
+          'handler' => 'views_handler_field',
         ),
         'filter' => array(
           'handler' => 'views_handler_filter_string',
-          'label' => t('Completion'),
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -701,11 +700,10 @@ function application_views_data() {
         'title' => t('Mobile Phone'),
         'help' => t('Mobile phone for this contact'),
         'field' => array(
-          'handler' => 'views_handler_filter_string',
+          'handler' => 'views_handler_field',
         ),
         'filter' => array(
           'handler' => 'views_handler_filter_string',
-          'label' => t('Completion'),
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -715,11 +713,10 @@ function application_views_data() {
         'title' => t('Work Phone'),
         'help' => t('Alternate phone for this contact'),
         'field' => array(
-          'handler' => 'views_handler_filter_string',
+          'handler' => 'views_handler_field',
         ),
         'filter' => array(
           'handler' => 'views_handler_filter_string',
-          'label' => t('Completion'),
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
