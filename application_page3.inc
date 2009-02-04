@@ -130,6 +130,10 @@ function application_form_page3_submit($form, &$form_state) {
 
   $picks = $picks .  "You will be considered for: ";
    
+  if ($form_state['values']['programs1'] == "" || count($form_state['values']['programs1']) == 0) {
+    $programs_sql = "INSERT into {application_Programs} (Student_StudentID, Year, Term, Department)VALUES('%s', '%s', '%s', '%s')";
+    db_query($programs_sql, $user->uid, $form_state['values']['yearofinterest'], $form_state['values']['termofinterest'], $form_state['values']['department1']);
+  }
   foreach ($form_state['values']['programs1'] as $key => $value) {
       
     if ($value != '0') {
@@ -143,6 +147,10 @@ function application_form_page3_submit($form, &$form_state) {
   }
 
   if ($form_state['values']['department2'] != '') {
+    if ($form_state['values']['programs2'] == "" || count($form_state['values']['programs2']) == 0) {
+      $programs_sql = "INSERT into {application_Programs} (Student_StudentID, Year, Term, Department)VALUES('%s', '%s', '%s', '%s')";
+      db_query($programs_sql, $user->uid, $form_state['values']['yearofinterest'], $form_state['values']['termofinterest'], $form_state['values']['department2']);
+    }
     foreach ($form_state['values']['programs2'] as $key => $value) {
     if ($value != '0') {
       $picks = $picks ."$key, ";

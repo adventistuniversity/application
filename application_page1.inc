@@ -624,7 +624,7 @@ function application_form_page1($form_state) {
      'effect' => 'fade',
     ),
     '#options' => $countries,
-    '#required' => FALSE,
+    '#required' => TRUE,
   );
   $form['Contact_Information']['update_countryofresidence'] = array(
     '#type' => 'submit',
@@ -888,7 +888,9 @@ function application_form_page1($form_state) {
 }
 
 function application_form_page1_validate($form, &$form_state) {
-//  form_set_error('middle', t(print_r($form)));
+  if ($form_state['values']['ssn'] != "" && !is_numeric($form_state['values']['ssn'])) {
+    form_set_error('ssn', t("Please enter a valid Social Securit Number"));
+  }
 }
 function application_form_page1_submit($form, &$form_state) {
   global $user;
