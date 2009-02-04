@@ -878,14 +878,14 @@ function _application_form_page2_load_defaults(&$form_state) {
     if (!isset($form_state['values']['gedtesting']))
       $form_state['values']['gedtesting'] = $a['GED_Testing_Site'];
 
-    if (!isset($form_state['values']['geddate'])) {
+    if (!isset($form_state['values']['geddate']) || substr($form_state['values']['geddate'],0,1) == 0) {
 //       $GED_date = $a['GED_Date_Of_Issue'];
 //       $GED_date = split("-", $GED_date);
 //       $form_state['values']['geddate']['year'] = $GED_date[0];
 //       $form_state['values']['geddate']['month'] = $GED_date[1];
 //       $GED_date = split(" ", $GED_date[2]);
 //       $form_state['values']['geddate']['day'] = $GED_date[0];
-      $form_state['values']['geddate']['day'] = $a['GED_Date_Of_Issue'];
+      $form_state['values']['geddate'] = $a['GED_Date_Of_Issue'];
     }
     if ($a['OtherSchooling_CLEP'] == '1' || $a['OtherSchooling_AP'] == '1' || $a['OtherSchooling_IB'] == '1') {
       if (!isset($form_state['values']['credits']))
@@ -964,7 +964,7 @@ function _application_form_page2_load_defaults(&$form_state) {
           $form_state['values']['Certificate_text'. $i] = -1;
         }
       }
-      if (!isset($form_state['values']['Effective_date'. $i])) {
+      if (!isset($form_state['values']['Effective_date'. $i]) || substr($form_state['values']['Effective_date'],0,1) == 0) {
 //         $dob                                            = $a['Effective_date'];
 //         $dob = split("-", $dob);
 //         $form_state['values']['Effective_date'. $i]['year'] = $dob[0];
@@ -973,7 +973,7 @@ function _application_form_page2_load_defaults(&$form_state) {
 //         $form_state['values']['Effective_date'. $i]['day'] = $dob[0];
         $form_state['values']['Effective_date'. $i] = $a['Effective_date'];
       }
-      if (!isset($form_state['values']['Expiration_date'. $i])) {
+      if (!isset($form_state['values']['Expiration_date'. $i]) || substr($form_state['values']['Expiration_date'],0,1) == 0) {
 //         $dob                                            = $a['Expiration_date'];
 //         $dob = split("-", $dob);
 //         $form_state['values']['Expiration_date'. $i]['year'] = $dob[0];
