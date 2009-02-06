@@ -895,7 +895,7 @@ function application_form_page1_validate($form, &$form_state) {
 function application_form_page1_submit($form, &$form_state) {
   global $user;
   date_default_timezone_set('UTC');
-  $name = $form_state['values']['preferred'];
+  $name = ($form_state['values']['preferred'] == ""?$form_state['values']['first']:$form_state['values']['preferred']);
 //  $dob = $form_state['values']['dateofbirth']['year'] .'-'. $form_state['values']['dateofbirth']['month'] .'-'. $form_state['values']['dateofbirth']['day'] .' 00:00:00';
   $dob = $form_state['values']['dateofbirth'];
   //null values are interperted to 0 by the db_query sql injection fixing this makes it difficult to leave GED date NULL an arbitrary date (1/1/1800) was chosen by the developer to represent lack of GED NULL values
