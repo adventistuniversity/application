@@ -78,7 +78,7 @@ function application_admin() {
   $url = variable_get('application_sonis_api_url', '');
   $form['application_sonis_api_url'] = array(
     '#type' => 'textfield',
-    '#title' => t('Fully Formed URL of SONIS API for '.$_SERVER['SERVER_NAME'].' (e.g. https://...)'),
+    '#title' => t('Fully Formed URL of SONIS API for '. $_SERVER['SERVER_NAME'] .' (e.g. https://...)'),
     '#default_value' => $url[$_SERVER['SERVER_NAME']],
     '#required' => TRUE,
   );

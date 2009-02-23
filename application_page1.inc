@@ -981,7 +981,7 @@ function _application_form_page1_load_defaults(&$form_state) {
 //         $dob = split(" ", $dob[2]);
 //         $form_state['values']['dateofbirth']['day'] = $dob[0];
 //       }
-      if (!isset($form_state['values']['dateofbirth']) || substr($form_state['values']['dateofbirth'],0,1) == 0) {
+      if (!isset($form_state['values']['dateofbirth']) || substr($form_state['values']['dateofbirth'], 0, 1) == 0) {
 //         $dob                                            = $a['Student_DOB'];
 //         $dob = split("-", $dob);
 //         $tmpa = $dob[0];
