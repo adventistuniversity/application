@@ -22,17 +22,7 @@ function application_form_page3($form_state) {
       '#type' => 'fieldset',
       '#title' => t('Plans for Study at FHCHS'),
       '#description' => "Please select the year, term, department and programs you would like to apply for.",
-      '#prefix' => '<div id="plans-for-study-wrapper"><p>The following degrees will require proof of a certificate, diploma, or Associate degree in addition to proof of professional licensure before admission may be granted.</p>
-	<ul>
-	<li>B.S. Diagnostic Medical Sonography</li>
-	<li>B.S. Nursing</li>
-	<li>B.S. Radiologic Sciences</li>
-	<li>Certificate in Advanced Imaging Modalities (CT/MRI)</li>
-	<li>Certificate in Diagnostic Medical Sonography</li>
-	<li>Certificate in Nuclear Medicine Technology</li>
-	<li>M.S. Nurse Anesthesia</li>
-	</ul>
-	<p>If you do not have a prior degree in a related field or the required licensure, please check that you would like to pursue the A.S. degree in your desired field of study.</p>', // This is our wrapper div.
+      '#prefix' => '<div id="plans-for-study-wrapper">', // This is our wrapper div.
       '#suffix' => '</div>',
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
@@ -77,7 +67,7 @@ function application_form_page3($form_state) {
         '#type' => 'checkboxes',
         '#title' => t('Programs'),
         '#default_value' => $form_state['values']['programs1'],
-        '#options' => _application_query_to_form_array("select program.prg_cod, program.prg_txt from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $form_state['values']['department1'] ."' order by prg_txt asc", FALSE),
+        '#options' => _application_query_to_form_array("select program.prg_cod, rtrim(program.prg_txt) + '<br /><span class=\"label-memo\">' + CAST(program.memo as varchar(8000)) + '</span></label>' from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $form_state['values']['department1'] ."' order by prg_txt asc", FALSE),
         '#required' => FALSE,
     );
   }
@@ -107,7 +97,7 @@ function application_form_page3($form_state) {
         '#type' => 'checkboxes',
         '#title' => t('Programs'),
         '#default_value' => $form_state['values']['programs2'],
-        '#options' => _application_query_to_form_array("select program.prg_cod, program.prg_txt from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $form_state['values']['department2'] ."' order by prg_txt asc", FALSE),
+        '#options' => _application_query_to_form_array("select program.prg_cod, rtrim(program.prg_txt) + '<br /><span class=\"label-memo\">' + CAST(program.memo as varchar(8000)) + '</span></label>'  from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $form_state['values']['department2'] ."' order by prg_txt asc", FALSE),
         '#required' => FALSE,
     );
   }
@@ -130,13 +120,10 @@ function application_form_page3_submit($form, &$form_state) {
 
   $picks = $picks .  "You will be considered for: ";
    
-  if ($form_state['values']['programs1'] == "" || count($form_state['values']['programs1']) == 0) {
-    $programs_sql = "INSERT into {application_Programs} (Student_StudentID, Year, Term, Department)VALUES('%s', '%s', '%s', '%s')";
-    db_query($programs_sql, $user->uid, $form_state['values']['yearofinterest'], $form_state['values']['termofinterest'], $form_state['values']['department1']);
-  }
+  $i = 0;
   foreach ($form_state['values']['programs1'] as $key => $value) {
-      
     if ($value != '0') {
+      $i++;
       $picks = $picks ."$key, ";
       $programs_sql = "INSERT into {application_Programs} (Student_StudentID, Year, Term, Department, Program)VALUES('%s', '%s', '%s', '%s', '%s')";
       db_query($programs_sql, $user->uid, $form_state['values']['yearofinterest'], $form_state['values']['termofinterest'], $form_state['values']['department1'], $key);
@@ -145,14 +132,16 @@ function application_form_page3_submit($form, &$form_state) {
      // // $picks = $picks . "$key Not Picked, ";
     // }    
   }
+  if ($i == 0) {
+    $programs_sql = "INSERT into {application_Programs} (Student_StudentID, Year, Term, Department)VALUES('%s', '%s', '%s', '%s')";
+    db_query($programs_sql, $user->uid, $form_state['values']['yearofinterest'], $form_state['values']['termofinterest'], $form_state['values']['department1']);
+  }
 
   if ($form_state['values']['department2'] != '') {
-    if ($form_state['values']['programs2'] == "" || count($form_state['values']['programs2']) == 0) {
-      $programs_sql = "INSERT into {application_Programs} (Student_StudentID, Year, Term, Department)VALUES('%s', '%s', '%s', '%s')";
-      db_query($programs_sql, $user->uid, $form_state['values']['yearofinterest'], $form_state['values']['termofinterest'], $form_state['values']['department2']);
-    }
+    $i = 0;
     foreach ($form_state['values']['programs2'] as $key => $value) {
     if ($value != '0') {
+      $i++;
       $picks = $picks ."$key, ";
       $programs_sql = "INSERT into {application_Programs} (Student_StudentID, Year, Term, Department, Program)VALUES('%s', '%s', '%s', '%s', '%s')";
       db_query($programs_sql, $user->uid, $form_state['values']['yearofinterest'], $form_state['values']['termofinterest'], $form_state['values']['department2'], $key);
@@ -160,6 +149,10 @@ function application_form_page3_submit($form, &$form_state) {
     // else {
      // // $picks = $picks . "$key Not Picked, ";
     // }    
+    }
+    if ($i == 0) {
+      $programs_sql = "INSERT into {application_Programs} (Student_StudentID, Year, Term, Department)VALUES('%s', '%s', '%s', '%s')";
+      db_query($programs_sql, $user->uid, $form_state['values']['yearofinterest'], $form_state['values']['termofinterest'], $form_state['values']['department2']);
     }
   }
  //print_r($form_state);
@@ -178,7 +171,7 @@ function _application_form_page3_load_defaults(&$form_state) {
   else {
     global $user;
 
-    $programs_sql = "SELECT Program_Applicaiton_ID, Student_StudentID, Year, Term, Department, Program FROM {application_Programs} WHERE Student_StudentID = '%s' ORDER BY Department";
+    $programs_sql = "SELECT Program_Applicaiton_ID, Student_StudentID, Year, Term, Department, Program FROM {application_Programs} WHERE Student_StudentID = '%s' ORDER BY Program_Applicaiton_ID";
     $result= db_query($programs_sql, $user->uid);
     // set a department variable so when it changes we can start populating the second programs array
     $loop = '1';
