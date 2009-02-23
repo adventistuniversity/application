@@ -5,8 +5,9 @@
 require_once('nusoap/nusoap.php');
 
 function get_sonis_drop_box($method) {
+  $url = variable_get('application_sonis_api_url', '');
   //Get a handle to the webservice
-  $client = new nusoap_client('https://mars.fhchs.edu/sonisweb200/soap.cfc', false, '', '', '', '');
+  $client = new nusoap_client($url[$_SERVER['SERVER_NAME']], false, '', '', '', '');
 
   //Error Handleing
   $err = $client->getError();
@@ -55,9 +56,10 @@ function get_sonis_drop_box($method) {
 }
 
 function get_sonis_instutition_dropdown_list($name = '', $city = '', $state = '') {
+  $url = variable_get('application_sonis_api_url', '');
 
   $output = array();
-  $client = new nusoap_client('http://fhcdv-mars/sonisweb200/soap.cfc', false, '', '', '', '');
+  $client = new nusoap_client($url[$_SERVER['SERVER_NAME']], false, '', '', '', '');
   if ($client->getError()) { $output = array(t('An error has occured')); }
 
   $result = $client->call("doSomething", array('component' => "CFC.education",

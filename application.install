@@ -151,6 +151,9 @@ function application_install() {
 function application_uninstall() {
   // Drop my tables.
   drupal_uninstall_schema('application');
+
+  // Remove variables.
+  variable_del('application_sonis_api_url');
 }
 
 
