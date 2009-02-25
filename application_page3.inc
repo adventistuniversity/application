@@ -27,20 +27,31 @@ function application_form_page3($form_state) {
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
     );
-  $form['Plans for Study']['yearofinterest'] = array(
+    
+  $years = _application_query_to_form_array("select * from (select top 3 year, year_desc from pretty_years order by year DESC) as a order by year asc", FALSE);
+  $terms = _application_query_to_form_array("select semester, sm_desc from semester where disabled = 0 order by semester asc", FALSE);
+  $removal = _application_query_to_form_array("select '0', cur_schyr + cur_sem from sysvar", FALSE);
+  $yearterms = array('' => '');
+  foreach ($years as $yearcode => $prettyyear) {
+    foreach ($terms as $termcode => $prettyterm) {
+      if ($yearcode . $termcode > $removal[0]) {
+        if ($termcode == "10") {
+          $yearterms[$yearcode . $termcode] = $prettyterm ." ". substr($prettyyear, 0, 4);
+        }
+        else {
+          $yearterms[$yearcode . $termcode] = $prettyterm ." ". substr($prettyyear, 5, 4);
+        }
+      }
+    }
+  }
+  $form['Plans for Study']['yearandtermofinterest'] = array(
       '#type' => 'select',
-      '#title' => t('School Year'),
-      '#default_value' => $form_state['values']['yearofinterest'],
-      '#options' => _application_query_to_form_array("select top 3 * from pretty_years order by year desc", TRUE),
+      '#title' => t('School Year and Term'),
+      '#default_value' => $form_state['values']['yearandtermofinterest'],
+      '#options' => $yearterms,
       '#required' => TRUE,
   );
-  $form['Plans for Study']['termofinterest'] = array(
-      '#type' => 'select',
-      '#title' => t('Start Term'),
-      '#default_value' => $form_state['values']['termofinterest'],
-      '#options' => _application_query_to_form_array("select semester, sm_desc from semester where disabled = 0 order by semester asc", TRUE),
-      '#required' => TRUE,
-  );
+
   $form['Plans for Study']['department1'] = array(
       '#type' => 'select',
       '#title' => t('First Department Choice'),
@@ -67,7 +78,7 @@ function application_form_page3($form_state) {
         '#type' => 'checkboxes',
         '#title' => t('Programs'),
         '#default_value' => $form_state['values']['programs1'],
-        '#options' => _application_query_to_form_array("select program.prg_cod, rtrim(program.prg_txt) + '<br /><span class=\"label-memo\">' + CAST(program.memo as varchar(8000)) + '</span></label>' from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $form_state['values']['department1'] ."' order by prg_txt asc", FALSE),
+        '#options' => _application_query_to_form_array("select program.prg_cod, CASE WHEN program.memo is null or program.memo LIKE '' THEN rtrim(program.prg_txt) ELSE rtrim(program.prg_txt) + '<br /><span class=\"label-memo\">' + CAST(program.memo as varchar(8000)) + '</span></label>' END from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $form_state['values']['department1'] ."' order by prg_txt asc", FALSE),
         '#required' => FALSE,
     );
   }
@@ -97,7 +108,7 @@ function application_form_page3($form_state) {
         '#type' => 'checkboxes',
         '#title' => t('Programs'),
         '#default_value' => $form_state['values']['programs2'],
-        '#options' => _application_query_to_form_array("select program.prg_cod, rtrim(program.prg_txt) + '<br /><span class=\"label-memo\">' + CAST(program.memo as varchar(8000)) + '</span></label>'  from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $form_state['values']['department2'] ."' order by prg_txt asc", FALSE),
+        '#options' => _application_query_to_form_array("select program.prg_cod, CASE WHEN program.memo is null or program.memo LIKE '' THEN rtrim(program.prg_txt) ELSE rtrim(program.prg_txt) + '<br /><span class=\"label-memo\">' + CAST(program.memo as varchar(8000)) + '</span></label>' END from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $form_state['values']['department2'] ."' order by prg_txt asc", FALSE),
         '#required' => FALSE,
     );
   }
@@ -112,6 +123,8 @@ function application_form_page3($form_state) {
 
 function application_form_page3_submit($form, &$form_state) {
   global $user;
+  $form_state['values']['yearofinterest'] = substr($form_state['values']['yearandtermofinterest'], 0, 6);
+  $form_state['values']['termofinterest'] = substr($form_state['values']['yearandtermofinterest'], 6, 2);
 
   // delete old programs
   $programs_delete_sql = "DELETE FROM {application_Programs} WHERE Student_StudentID = '%s'";
@@ -182,6 +195,7 @@ function _application_form_page3_load_defaults(&$form_state) {
       if ($i == 0) {
         $form_state['values']['yearofinterest']                   = $a ['Year'];
         $form_state['values']['termofinterest']                   = $a ['Term'];
+        $form_state['values']['yearandtermofinterest']            = $a ['Year'] . $a ['Term'];
         $form_state['values']['department1']                      = $a ['Department'];
         // set a flag to show if were working with department1 or department2
         $department = $a['Department'];

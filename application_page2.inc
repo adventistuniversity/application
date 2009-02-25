@@ -211,6 +211,13 @@ if ($form_state['values']['attendhighschool'] == "1" || $form_state['values']['a
       );
     }
   }
+   $form['High School Experience']['graduationyear'] = array(
+     '#type' => 'select',
+     '#title' => t('Year of Graduation'),
+     '#default_value' => $form_state['values']['graduationyear'],
+     '#required' => TRUE,
+     '#options' => $years,
+   );
 }
 if($form_state['values']['attendhighschool'] == "0") {
   // GED
@@ -760,8 +767,8 @@ function application_form_page2_submit($form, &$form_state) {
 //   print_r($form_state);
 
   //null values are interperted to 0 by the db_query sql injection fixing this makes it difficult to leave GED date NULL an arbitrary date (12/30/1899) was chosen by the developer to represent lack of GED NULL values
-  $biographic_sql = "UPDATE {application_Biographic} SET HighSchool_Name = '%s', HighSchool_Country = '%s', HighSchool_State = '%s', HighSchool_City = '%s', HighSchool_Attendance = '%d', HighSchool_Sonis_ID = '%s', GED_Testing_Site = '%s', GED_Date_Of_Issue = '%s', OtherSchooling_CLEP = '%d', OtherSchooling_AP = '%d', OtherSchooling_IB = '%d' WHERE Student_StudentID = '%s'";
-  db_query($biographic_sql, $hsname, $form_state['values']['highschoolcountry'], $form_state['values']['highschoolstate'], $hscity, $form_state['values']['attendhighschool'], $form_state['values']['highschoolname'], $form_state['values']['gedtesting'], $GED_date, $clep, $ap, $ib, $user->uid);
+  $biographic_sql = "UPDATE {application_Biographic} SET HighSchool_Name = '%s', HighSchool_Country = '%s', HighSchool_State = '%s', HighSchool_City = '%s', HighSchool_Attendance = '%d', HighSchool_Grad_Year = '%s', HighSchool_Sonis_ID = '%s', GED_Testing_Site = '%s', GED_Date_Of_Issue = '%s', OtherSchooling_CLEP = '%d', OtherSchooling_AP = '%d', OtherSchooling_IB = '%d' WHERE Student_StudentID = '%s'";
+  db_query($biographic_sql, $hsname, $form_state['values']['highschoolcountry'], $form_state['values']['highschoolstate'], $hscity, $form_state['values']['attendhighschool'], $form_state['values']['graduationyear'], $form_state['values']['highschoolname'], $form_state['values']['gedtesting'], $GED_date, $clep, $ap, $ib, $user->uid);
   
   //Assume it's an update.  (Does noting if it's not.)
   $institutions_sql = "DELETE FROM {application_Institutions} WHERE Student_StudentID = '%s'";
@@ -850,7 +857,7 @@ function application_form_page2_submit($form, &$form_state) {
 function _application_form_page2_load_defaults(&$form_state) {
   global $user;
 
-  $biographic_sql = "SELECT HighSchool_Name, HighSchool_Country, HighSchool_State, HighSchool_City, HighSchool_Attendance, HighSchool_Sonis_ID, GED_Testing_Site, GED_Date_Of_Issue, OtherSchooling_CLEP, OtherSchooling_AP, OtherSchooling_IB FROM {application_Biographic} WHERE Student_StudentID = '%s'";
+  $biographic_sql = "SELECT HighSchool_Name, HighSchool_Country, HighSchool_State, HighSchool_City, HighSchool_Attendance, HighSchool_Grad_Year, HighSchool_Sonis_ID, GED_Testing_Site, GED_Date_Of_Issue, OtherSchooling_CLEP, OtherSchooling_AP, OtherSchooling_IB FROM {application_Biographic} WHERE Student_StudentID = '%s'";
   $a = db_fetch_array(db_query($biographic_sql, $user->uid));
 
   if ($a) {
@@ -875,10 +882,12 @@ function _application_form_page2_load_defaults(&$form_state) {
 
     if (!isset($form_state['values']['attendhighschool']))
       $form_state['values']['attendhighschool'] = $a['HighSchool_Attendance'];
+    if (!isset($form_state['values']['graduationyear']))
+      $form_state['values']['graduationyear'] = $a['HighSchool_Grad_Year'];
     if (!isset($form_state['values']['gedtesting']))
       $form_state['values']['gedtesting'] = $a['GED_Testing_Site'];
 
-    if (!isset($form_state['values']['geddate']) || substr($form_state['values']['geddate'],0,1) == 0) {
+    if (!isset($form_state['values']['geddate']) || substr($form_state['values']['geddate'], 0, 1) == 0) {
 //       $GED_date = $a['GED_Date_Of_Issue'];
 //       $GED_date = split("-", $GED_date);
 //       $form_state['values']['geddate']['year'] = $GED_date[0];
@@ -964,7 +973,7 @@ function _application_form_page2_load_defaults(&$form_state) {
           $form_state['values']['Certificate_text'. $i] = -1;
         }
       }
-      if (!isset($form_state['values']['Effective_date'. $i]) || substr($form_state['values']['Effective_date'],0,1) == 0) {
+      if (!isset($form_state['values']['Effective_date'. $i]) || substr($form_state['values']['Effective_date'], 0, 1) == 0) {
 //         $dob                                            = $a['Effective_date'];
 //         $dob = split("-", $dob);
 //         $form_state['values']['Effective_date'. $i]['year'] = $dob[0];
@@ -973,7 +982,7 @@ function _application_form_page2_load_defaults(&$form_state) {
 //         $form_state['values']['Effective_date'. $i]['day'] = $dob[0];
         $form_state['values']['Effective_date'. $i] = $a['Effective_date'];
       }
-      if (!isset($form_state['values']['Expiration_date'. $i]) || substr($form_state['values']['Expiration_date'],0,1) == 0) {
+      if (!isset($form_state['values']['Expiration_date'. $i]) || substr($form_state['values']['Expiration_date'], 0, 1) == 0) {
 //         $dob                                            = $a['Expiration_date'];
 //         $dob = split("-", $dob);
 //         $form_state['values']['Expiration_date'. $i]['year'] = $dob[0];

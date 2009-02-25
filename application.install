@@ -96,16 +96,18 @@ function application_schema() {
     'description' => t('The student information table.'), 
     'fields' => array(
       'Student_StudentID'                => array('description' => t('Student_StudentID'),                'type' => 'varchar', 'length' => 9 , 'not null' => TRUE,  'default' => ''),
+      'Application_Started'              => array('description' => t('Application_Started'),              'type' => 'datetime'               , 'not null' => FALSE),
       'Student_Nickname'                 => array('description' => t('Student_Nickname'),                 'type' => 'varchar', 'length' => 20, 'not null' => TRUE,  'default' => ''),
       'Student_Fname'                    => array('description' => t('Student_Fname'),                    'type' => 'varchar', 'length' => 30, 'not null' => TRUE,  'default' => ''),
       'Student_Lname'                    => array('description' => t('Student_Lname'),                    'type' => 'varchar', 'length' => 30, 'not null' => TRUE,  'default' => ''),
-      'Student_Mname'                    => array('description' => t('Student_Mname'),                    'type' => 'varchar', 'length' => 15, 'not null' => FALSE,  'default' => ''),
-      'Student_FormerLname'              => array('description' => t('Student_FormerLname'),              'type' => 'varchar', 'length' => 22, 'not null' => FALSE,  'default' => ''),
+      'Student_Mname'                    => array('description' => t('Student_Mname'),                    'type' => 'varchar', 'length' => 15, 'not null' => FALSE, 'default' => ''),
+      'Student_FormerLname'              => array('description' => t('Student_FormerLname'),              'type' => 'varchar', 'length' => 22, 'not null' => FALSE, 'default' => ''),
       'Student_DOB'                      => array('description' => t('Student_DOB'),                      'type' => 'datetime'               , 'not null' => TRUE),
       'Student_SSN'                      => array('description' => t('Student_SSN'),                      'type' => 'varchar', 'length' => 9 , 'not null' => TRUE,  'default' => ''),
       'Birth_Country'                    => array('description' => t('Birth_Country'),                    'type' => 'varchar', 'length' => 25, 'not null' => TRUE,  'default' => ''),
       'Birth_City'                       => array('description' => t('Birth_City'),                       'type' => 'varchar', 'length' => 35, 'not null' => TRUE,  'default' => ''),
       'Birth_State'                      => array('description' => t('Birth_State'),                      'type' => 'varchar', 'length' => 2 , 'not null' => FALSE, 'default' => ''),
+      'Felony'                           => array('description' => t('Felony'),                           'type' => 'int', 'size' => 'tiny'  , 'not null' => FALSE, 'default' => 0),
       'Citizenship_Country'              => array('description' => t('Citizenship_Country'),              'type' => 'varchar', 'length' => 25, 'not null' => TRUE,  'default' => ''),
       'Citizenship_ID_Number'            => array('description' => t('Citizenship_ID_Number'),            'type' => 'varchar', 'length' => 50, 'not null' => TRUE,  'default' => ''),
       'Citizenship_ID_Type'              => array('description' => t('Citizenship_ID_Type'),              'type' => 'varchar', 'length' => 50, 'not null' => TRUE,  'default' => ''),
@@ -115,10 +117,11 @@ function application_schema() {
       'HighSchool_State'                 => array('description' => t('HighSchool_State'),                 'type' => 'varchar', 'length' => 2 , 'not null' => FALSE, 'default' => ''),
       'HighSchool_City'                  => array('description' => t('HighSchool_City'),                  'type' => 'varchar', 'length' => 20, 'not null' => TRUE,  'default' => ''),
       'HighSchool_Attendance'            => array('description' => t('HighSchool_Attendance'),            'type' => 'int', 'size' => 'tiny'  , 'not null' => TRUE,  'default' => 0),
+      'HighSchool_Grad_Year'             => array('description' => t('HighSchool_Grad_Year'),             'type' => 'varchar', 'length' => 4 , 'not null' => FALSE, 'default' => ''),
       'HighSchool_Sonis_ID'              => array('description' => t('HighSchool_Soinis_ID'),             'type' => 'varchar', 'length' => 16, 'not null' => FALSE, 'default' => ''),
-      'OtherSchooling_CLEP'              => array('description' => t('OtherSchooling_CLEP'),              'type' => 'int', 'size' => 'tiny'  , 'not null' => FALSE,  'default' => 0),
-      'OtherSchooling_AP'                => array('description' => t('OtherSchooling_AP'),                'type' => 'int', 'size' => 'tiny'  , 'not null' => FALSE,  'default' => 0),
-      'OtherSchooling_IB'                => array('description' => t('OtherSchooling_IB'),                'type' => 'int', 'size' => 'tiny'  , 'not null' => FALSE,  'default' => 0),
+      'OtherSchooling_CLEP'              => array('description' => t('OtherSchooling_CLEP'),              'type' => 'int', 'size' => 'tiny'  , 'not null' => FALSE, 'default' => 0),
+      'OtherSchooling_AP'                => array('description' => t('OtherSchooling_AP'),                'type' => 'int', 'size' => 'tiny'  , 'not null' => FALSE, 'default' => 0),
+      'OtherSchooling_IB'                => array('description' => t('OtherSchooling_IB'),                'type' => 'int', 'size' => 'tiny'  , 'not null' => FALSE, 'default' => 0),
       'GED_Testing_Site'                 => array('description' => t('GED_Testing_Site'),                 'type' => 'varchar', 'length' => 50, 'not null' => FALSE, 'default' => ''),
       'GED_Date_Of_Issue'                => array('description' => t('GED_Date_Of_Issue'),                'type' => 'datetime'               , 'not null' => FALSE),
       'Statistics_Gender'                => array('description' => t('Statistics_Gender'),                'type' => 'varchar', 'length' => 1 , 'not null' => TRUE,  'default' => ''),
@@ -133,7 +136,8 @@ function application_schema() {
       'Statistics_Home_Church_City'      => array('description' => t('Statistics_Home_Church_City'),      'type' => 'varchar', 'length' => 50, 'not null' => FALSE, 'default' => ''),
       'Statistics_Home_Church_State'     => array('description' => t('Statistics_Home_Church_State'),     'type' => 'varchar', 'length' => 2 , 'not null' => FALSE, 'default' => ''),
       'Personal_Statement_Agreement'     => array('description' => t('Personal_Statement_Agreement.'),    'type' => 'int', 'size' => 'tiny'  , 'not null' => TRUE,  'default' => 0),
-      ), 
+      'Application_Finished'             => array('description' => t('Application_Finished'),             'type' => 'datetime'               , 'not null' => FALSE),
+      ),
 
     'unique keys' => array(
       'Student_StudentID'     => array('Student_StudentID')
@@ -156,7 +160,11 @@ function application_uninstall() {
   variable_del('application_sonis_api_url');
 }
 
-
-
-
-  
+function application_update_1() {
+  $ret = array();
+  db_add_field($ret, 'application_Biographic', 'HighSchool_Grad_Year', array('description' => t('HighSchool_Grad_Year'), 'type' => 'varchar', 'length' => 4, 'not null' => FALSE, 'default' => ''));
+  db_add_field($ret, 'application_Biographic', 'Felony', array('description' => t('Felony'), 'type' => 'int', 'size' => 'tiny', 'not null' => FALSE, 'default' => 0));
+  db_add_field($ret, 'application_Biographic', 'Application_Started', array('description' => t('Application_Started'), 'type' => 'datetime', 'not null' => FALSE));
+  db_add_field($ret, 'application_Biographic', 'Application_Finished', array('description' => t('Application_Finished'), 'type' => 'datetime', 'not null' => FALSE));
+  return $ret;
+}

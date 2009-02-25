@@ -58,8 +58,8 @@ function application_form_page5_validate($form, &$form_state) {
 function application_form_page5_submit($form, &$form_state) {
   global $user;
 
-  $biographic_sql = "UPDATE {application_Biographic} SET Personal_Statement_Agreement = '%d'WHERE Student_StudentID = '%s'";
-  db_query($biographic_sql, '1', $user->uid);
+  $biographic_sql = "UPDATE {application_Biographic} SET Personal_Statement_Agreement = '%d', Application_Finished = '%s' WHERE Student_StudentID = '%s'";
+  db_query($biographic_sql, '1', date("Y-m-d H:i:s"), $user->uid);
 
 
   //Fire Application Updated Trigger
