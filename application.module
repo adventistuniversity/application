@@ -1198,47 +1198,47 @@ function application_views_data() {
         'title' => t('CLEP Credit '),
         'help' => t('CLEP credits yes, no'),
         'field' => array(
-          'handler' => 'views_handler_field',
+         'handler' => 'views_handler_field_boolean',
+         'click sortable' => TRUE,
         ),
-        // Information for accepting a OtherSchooling_CLEP as a filter
         'filter' => array(
-          'handler' => 'views_handler_filter_string',
+          'handler' => 'views_handler_filter_boolean_operator',
+          'label' => t('English'),
         ),
-        // Information for sorting on a OtherSchooling_CLEP.
         'sort' => array(
           'handler' => 'views_handler_sort',
         ),
-      ), 
+      ),
       'OtherSchooling_AP' => array(
         'title' => t('AP Credit'),
         'help' => t('AP credits yes, no'),
         'field' => array(
-          'handler' => 'views_handler_field',
+         'handler' => 'views_handler_field_boolean',
+         'click sortable' => TRUE,
         ),
-        // Information for accepting a OtherSchooling_AP as a filter
         'filter' => array(
-          'handler' => 'views_handler_filter_string',
+          'handler' => 'views_handler_filter_boolean_operator',
+          'label' => t('English'),
         ),
-        // Information for sorting on a OtherSchooling_AP.
         'sort' => array(
           'handler' => 'views_handler_sort',
         ),
-      ), 
+      ),
       'OtherSchooling_IB' => array(
         'title' => t('IB Credit'),
         'help' => t('IB credits yes, no'),
         'field' => array(
-          'handler' => 'views_handler_field',
+         'handler' => 'views_handler_field_boolean',
+         'click sortable' => TRUE,
         ),
-        // Information for accepting a OtherSchooling_IB as a filter
         'filter' => array(
-          'handler' => 'views_handler_filter_string',
+          'handler' => 'views_handler_filter_boolean_operator',
+          'label' => t('English'),
         ),
-        // Information for sorting on a OtherSchooling_IB.
         'sort' => array(
           'handler' => 'views_handler_sort',
         ),
-      ), 
+      ),
       'GED_Testing_Site' => array(
         'title' => t('GED Testing Site'),
         'help' => t('The GED testing site number or location information'),
