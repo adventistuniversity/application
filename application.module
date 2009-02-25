@@ -1019,13 +1019,13 @@ function application_views_data() {
         'title' => t('Felony'),
         'help' => t('Yes or No to the question Have you committed a felony.'),
         'field' => array(
-          'handler' => 'views_handler_field',
+         'handler' => 'views_handler_field_boolean',
+         'click sortable' => TRUE,
         ),
-        // Information for accepting a HighSchool_Attendance as a filter
         'filter' => array(
-          'handler' => 'views_handler_filter_string',
+          'handler' => 'views_handler_filter_boolean_operator',
+          'label' => t('English'),
         ),
-        // Information for sorting on a HighSchool_Attendance.
         'sort' => array(
           'handler' => 'views_handler_sort',
         ),
