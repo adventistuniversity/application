@@ -923,6 +923,10 @@ function application_form_page1_validate($form, &$form_state) {
       strlen($form_state['values']['ssn']) != 9)) {
     form_set_error('ssn', t("Please enter a valid Social Security Number"));
   }
+  if (substr($form_state['values']['dateofbirth'], 0, 4) >= (date("Y") - 10) ||
+      substr($form_state['values']['dateofbirth'], 0, 4) <= (date("Y") - 100)) {
+    form_set_error('dateofbirth', t("Please enter a valid Date of Birth"));
+  }
 }
 function application_form_page1_submit($form, &$form_state) {
   global $user;
