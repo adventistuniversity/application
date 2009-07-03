@@ -201,7 +201,7 @@ $form['Licensure Eligibility']['felony'] = array(
 
 // Native Language
 //Language is a two step question
-$form['Native Language'] = array(
+$form['Native_Language'] = array(
    '#type' => 'fieldset',
    '#title' => t('Language'),
  '#prefix' => '<div id="native-language-wrapper">', // This is our wrapper div.
@@ -209,14 +209,14 @@ $form['Native Language'] = array(
    '#collapsible' => FALSE,
    '#collapsed' => FALSE,
  );
-$form['Native Language']['language'] = array(
+$form['Native_Language']['language'] = array(
   '#type' => 'select',
-  '#title' => t('Is English your native language?'),
+  '#title' => t('Is English your Native Language?'),
   '#default_value' => $form_state['values']['language'],
   '#required' => TRUE,
       '#ahah' => array(
-    'path' => ahah_helper_path(array('Name')),
-    'wrapper' => 'name-information-wrapper',
+    'path' => ahah_helper_path(array('Native_Language')),
+    'wrapper' => 'native-language-wrapper',
     'method' => 'replace',
     'event' => 'change',
     'effect' => 'fade',
@@ -228,7 +228,7 @@ $form['Native Language']['language'] = array(
     ),
 );
 
-$form['Native Language']['update_language'] = array(
+$form['Native_Language']['update_language'] = array(
   '#type' => 'submit',
   '#value' => t('language'),
   // Note that we can simply use the generic submit callback provided by the
@@ -239,10 +239,10 @@ $form['Native Language']['update_language'] = array(
   // automatically by Drupal if JS is enabled.
   '#attributes' => array('class' => 'no-js'),
 );
-if ($form_state['Native Language']['language'] == "0") {
-  $form['Native Language']['nativelanguage'] = array(
+if ($form_state['values']['language'] == "0") {
+  $form['Native_Language']['nativelanguage'] = array(
     '#type' => 'select',
-    '#title' => t('Native Language'),
+    '#title' => t('Native_Language'),
     '#default_value' => $form_state['values']['nativelanguage'],
     '#required' => TRUE,
     '#options' => array(
