@@ -37,7 +37,7 @@ $form['High School Experience'] = array(
 );
 $form['High School Experience']['attendhighschool'] = array(
   '#type' => 'select',
-  '#title' => t('Did you graduate from High School?'),
+  '#title' => t('Do you have a four-year standard diploma from High School?'),
   '#default_value' => $form_state['values']['attendhighschool'], 
   '#required' => TRUE,
   '#ahah' => array(
