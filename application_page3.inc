@@ -79,7 +79,7 @@ function application_form_page3($form_state) {
         '#title' => t('Programs'),
         '#default_value' => $form_state['values']['programs1'],
         '#options' => _application_query_to_form_array("select program.prg_cod, CASE WHEN program.memo is null or program.memo LIKE '' THEN rtrim(program.prg_txt) ELSE rtrim(program.prg_txt) + '<br /><span class=\"label-memo\">' + CAST(program.memo as varchar(8000)) + '</span></label>' END from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $form_state['values']['department1'] ."' order by prg_txt asc", FALSE),
-        '#required' => FALSE,
+        '#required' => TRUE,
     );
   }
   $form['Plans for Study']['department2'] = array(
