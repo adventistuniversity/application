@@ -919,8 +919,9 @@ if ($form_state['values']['language'] == "0") {
 }
 
 function application_form_page1_validate($form, &$form_state) {
-  if ($form_state['values']['ssn'] != "" && !is_numeric($form_state['values']['ssn'])) {
-    form_set_error('ssn', t("Please enter a valid Social Securit Number"));
+  if ($form_state['values']['ssn'] != "" && (!is_numeric($form_state['values']['ssn']) ||
+      strlen($form_state['values']['ssn']) != 9)) {
+    form_set_error('ssn', t("Please enter a valid Social Security Number"));
   }
 }
 function application_form_page1_submit($form, &$form_state) {
