@@ -8,14 +8,18 @@
  * Page 4.
  * 
  */
-  require_once('sonis_sql.inc');
-  require_once('CFsoap.php');
 
   function application_form_page4($form_state) {
   $form = array();  
   _application_form_page4_load_defaults($form_state);
   ahah_helper_register($form, $form_state);
-  $states = get_sonis_drop_box("state");
+  $states = sonisweb_integration_dropbox_to_form_api_options_array(
+              sonisweb_integration_api("CFC.drp_box", "state", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                       array('allow_blank', "yes"),
+                                       array('hide', "no"),
+                                       array('multi_select', "no"),
+                                       array('Additional_Properties', ""),
+                                       array('hide_excludes', 'yes'))));
   // page 4
   // Statistical Data
   $form['Statistical Data'] = array(

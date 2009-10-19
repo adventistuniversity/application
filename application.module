@@ -59,55 +59,12 @@ function application_menu() {
     'file path' => drupal_get_path('module', 'application'),
     'type' => MENU_NORMAL_ITEM,
   );
-  $items['admin/settings/application'] = array(
-    'title' => 'Application Settings',
-    'description' => 'Change the settings of the Application',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('application_admin'),
-    'access arguments' => array('administer application'),
-    'type' => MENU_NORMAL_ITEM,
-  );
   return $items;
 }
 
 function application_perm() {
   return array('applicant', 'administer application');
 }
-
-function application_admin() {
-  $url = variable_get('application_sonis_api_url', '');
-  $form['application_sonis_api_url'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Fully Formed URL of SONIS API for '. $_SERVER['SERVER_NAME'] .' (e.g. https://...)'),
-    '#default_value' => $url[$_SERVER['SERVER_NAME']],
-    '#required' => TRUE,
-  );
-  $form['Submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save Changes'),
-  );
-  return ($form);
-}
-
-function application_admin_validate($form, &$form_state) {
-  if (!valid_url($form_state['values']['application_sonis_api_url'], TRUE) ||
-      $form_state['values']['application_sonis_api_url'] != check_url($form_state['values']['application_sonis_api_url'])) {
-    form_set_error('application_sonis_api_url', t("Please enter a valid fully formed URL for the API (e.g. https://...)"));
-  }
-}
-function application_admin_submit($form, &$form_state) {
-  $url = variable_get('application_sonis_api_url', NULL);
-  if (is_null($url)) {
-    $url = array($_SERVER['SERVER_NAME'] => check_url($form_state['values']['application_sonis_api_url']));
-  }
-  else {
-    $url = array_merge($url, array($_SERVER['SERVER_NAME'] => check_url($form_state['values']['application_sonis_api_url'])));
-  }
-  variable_set('application_sonis_api_url', $url);
-  drupal_set_message(t('Settings have been saved.'));
-}
-
-
 
 /**
  * Register application views
@@ -1722,4 +1679,21 @@ function application_mail($key, &$message, $params) {
   $body = strtr($context['message'], $variables);
   $message['subject'] .= str_replace(array("\r", "\n"), '', $subject);
   $message['body'][] = drupal_html_to_text($body);
+}
+
+function _application_query_to_form_array($query, $blank_first_value = FALSE, $extra_values = array()) {
+  if ($blank_first_value)
+    $output = array('' => '');
+  else
+    $output = array();
+
+  $output = sonisweb_integration_sql_to_options(sonisweb_integration_sql($query));
+
+  if ($extra_values != array()) {
+    foreach ($extra_values as $key => $values) {
+      $output[$key] = $values;
+    }
+  }
+
+  return ($output);
 }

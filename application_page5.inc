@@ -8,8 +8,6 @@
  * Page 5.
  * 
  */
-  require_once('CFsoap.php');
-  require_once('sonis_sql.inc');
   
 function application_form_page5($form_state) {
   $form = array();

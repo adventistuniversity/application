@@ -168,3 +168,7 @@ function application_update_1() {
   db_add_field($ret, 'application_Biographic', 'Application_Finished', array('description' => t('Application_Finished'), 'type' => 'datetime', 'not null' => FALSE));
   return $ret;
 }
+
+function application_update_2() {
+  variable_del('application_sonis_api_url');
+}

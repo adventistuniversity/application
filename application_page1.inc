@@ -8,16 +8,26 @@
  * Page 1.
  * 
  */
-  require_once('sonis_sql.inc');
-  require_once('CFsoap.php');
 function application_form_page1($form_state) {
   global $user;
   $form = array();
 
   _application_form_page1_load_defaults($form_state);
   ahah_helper_register($form, $form_state);
-  $states = get_sonis_drop_box("state");
-  $countries = get_sonis_drop_box("country");
+  $states = sonisweb_integration_dropbox_to_form_api_options_array(
+              sonisweb_integration_api("CFC.drp_box", "state", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                       array('allow_blank', "yes"),
+                                       array('hide', "no"),
+                                       array('multi_select', "no"),
+                                       array('Additional_Properties', ""),
+                                       array('hide_excludes', 'yes'))));
+  $countries =sonisweb_integration_dropbox_to_form_api_options_array(
+              sonisweb_integration_api("CFC.drp_box", "country", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                       array('allow_blank', "yes"),
+                                       array('hide', "no"),
+                                       array('multi_select', "no"),
+                                       array('Additional_Properties', ""),
+                                       array('hide_excludes', 'yes'))));
 
 //   print_r($form);
 //   print_r($form_state);

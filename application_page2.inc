@@ -9,18 +9,27 @@
  * 
  */
 
-  require_once('CFsoap.php');
-  require_once('sonis_sql.inc');
-  
 function application_form_page2($form_state) {
   $form = array();
 
   _application_form_page2_load_defaults($form_state);
   ahah_helper_register($form, $form_state);
   
-  $states = get_sonis_drop_box("state");
-  $countries = get_sonis_drop_box("country");
-  $years = get_years();
+  $states = sonisweb_integration_dropbox_to_form_api_options_array(
+              sonisweb_integration_api("CFC.drp_box", "state", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                       array('allow_blank', "yes"),
+                                       array('hide', "no"),
+                                       array('multi_select', "no"),
+                                       array('Additional_Properties', ""),
+                                       array('hide_excludes', 'yes'))));
+  $countries = sonisweb_integration_dropbox_to_form_api_options_array(
+              sonisweb_integration_api("CFC.drp_box", "country", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                       array('allow_blank', "yes"),
+                                       array('hide', "no"),
+                                       array('multi_select', "no"),
+                                       array('Additional_Properties', ""),
+                                       array('hide_excludes', 'yes'))));
+  $years = array_combine(range(date("Y"), (date("Y")-100), -1), range(date("Y"), (date("Y")-100), -1));
   $nograd = array("Did Not Complete Degree" => "Did Not Complete Degree");
   //$result = array_merge($nograd, $years);
   $result = $nograd + $years;
