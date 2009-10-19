@@ -211,7 +211,7 @@ $form['Native_Language'] = array(
  );
 $form['Native_Language']['language'] = array(
   '#type' => 'select',
-  '#title' => t('Is English your Native Language?'),
+  '#title' => t('Is English your primary language?'),
   '#default_value' => $form_state['values']['language'],
   '#required' => TRUE,
       '#ahah' => array(
