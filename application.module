@@ -1683,11 +1683,9 @@ function application_mail($key, &$message, $params) {
 
 function _application_query_to_form_array($query, $blank_first_value = FALSE, $extra_values = array()) {
   if ($blank_first_value)
-    $output = array('' => '');
+    $output = array_merge(array('' => ''), sonisweb_integration_sql_to_options(sonisweb_integration_sql($query)));
   else
-    $output = array();
-
-  $output = sonisweb_integration_sql_to_options(sonisweb_integration_sql($query));
+    $output = sonisweb_integration_sql_to_options(sonisweb_integration_sql($query));
 
   if ($extra_values != array()) {
     foreach ($extra_values as $key => $values) {
