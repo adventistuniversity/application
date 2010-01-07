@@ -29,7 +29,7 @@ function application_form_page2($form_state) {
                                        array('multi_select', "no"),
                                        array('Additional_Properties', ""),
                                        array('hide_excludes', 'yes'))));
-  $years = array_combine(range(date("Y"), (date("Y")-100), -1), range(date("Y"), (date("Y")-100), -1));
+  $years = array_combine(range((date("Y") + 4), (date("Y")-100), -1), range((date("Y") + 4), (date("Y")-100), -1));
   $nograd = array("Did Not Complete Degree" => "Did Not Complete Degree");
   //$result = array_merge($nograd, $years);
   $result = $nograd + $years;
