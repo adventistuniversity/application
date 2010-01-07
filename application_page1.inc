@@ -914,7 +914,7 @@ if ($form_state['values']['language'] == "0") {
         '#title' => t('Current Visa Status'),
         '#default_value' => $form_state['values']['visa'],
         '#description' => "FHCHS is not currently accepting applicants requiring an F visa.",
-        '#options' => _application_query_to_form_array("select visa_cod, visa_desc from visa order by visa_desc asc", TRUE, array('AppliedFor' => t('Visa Applied For'))),
+        '#options' => _application_query_to_form_array("select visa_cod, visa_desc from visa where disabled = 0 order by visa_desc asc", TRUE, array('AppliedFor' => t('Visa Applied For'))),
         '#required' => FALSE,
         );
       }
