@@ -1454,7 +1454,7 @@ function application_hook_info() {
 }
 
 /**
- * Implementation of hook_application_started().
+ * Implementation of hook_application_changed().
  */
 function application_application_changed($op, $user) {
   // We support a subset of operations.

@@ -115,7 +115,23 @@ if ($form_state['values']['attendhighschool'] == "1" || $form_state['values']['a
       '#attributes' => array('class' => 'no-js'),
     );
   }
-  $tmp = _application_query_to_form_array("select distinct inst_city, inst_city from institut where inst_state = '". $form_state['values']['highschoolstate'] ."' and insttypcod in ('1', '2') order by inst_city asc", TRUE, array('-1' => 'Not Listed'));
+  $tmp = array_merge(sonisweb_integration_sql_to_options(
+                     sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                              array('inst_txt', ""),
+                                              array('insttypcod', "1"),
+                                              array('inst_city', ""),
+                                              array('inst_state', ($form_state['values']['highschoolstate']?$form_state['values']['highschoolstate']:"YZ")))), 'inst_city', 'inst_city'),
+                     sonisweb_integration_sql_to_options(
+                     sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                              array('inst_txt', ""),
+                                              array('insttypcod', "2"),
+                                              array('inst_city', ""),
+                                              array('inst_state', ($form_state['values']['highschoolstate']?$form_state['values']['highschoolstate']:"YZ")))), 'inst_city', 'inst_city')
+            );
+  unset ($tmp['']);
+  ksort($tmp);
+  $tmp['-1'] = 'Not Listed';
+  $tmp = array_merge(array('' => ''), $tmp);
   if ($form_state['values']['highschoolstate'] != "" && (strcasecmp($form_state['values']['highschoolcountry'], "UNITED STATES") == 0
       || strcasecmp($form_state['values']['highschoolcountry'], "American Samoa") == 0 || strcasecmp($form_state['values']['highschoolcountry'], "Federated States of Micronesia") == 0
       || strcasecmp($form_state['values']['highschoolcountry'], "Guam") == 0 || strcasecmp($form_state['values']['highschoolcountry'], "U.S. Minor Outlying Is") == 0
@@ -175,7 +191,23 @@ if ($form_state['values']['attendhighschool'] == "1" || $form_state['values']['a
     $tmp = array();
   }
   else {
-    $tmp = _application_query_to_form_array("select distinct inst_cod, inst_txt from institut where inst_state = '". $form_state['values']['highschoolstate'] ."' and inst_city = '". $form_state['values']['highschoolcity'] ."' and insttypcod in ('1', '2') order by inst_txt asc", TRUE, array('-1' => 'Not Listed'));
+    $tmp = array_merge(sonisweb_integration_sql_to_options(
+                       sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                array('inst_txt', ""),
+                                                array('insttypcod', "1"),
+                                                array('inst_city', ($form_state['values']['highschoolcity']?$form_state['values']['highschoolcity']:""),
+                                                array('inst_state', ($form_state['values']['highschoolstate']?$form_state['values']['highschoolstate']:"YZ"))))), 'INST_COD', 'INST_TXT'),
+                       sonisweb_integration_sql_to_options(
+                       sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                array('inst_txt', ""),
+                                                array('insttypcod', "2"),
+                                                array('inst_city', ($form_state['values']['highschoolcity']?$form_state['values']['highschoolcity']:""),
+                                                array('inst_state', ($form_state['values']['highschoolstate']?$form_state['values']['highschoolstate']:"YZ"))))), 'INST_COD', 'INST_TXT')
+              );
+    unset ($tmp['']);
+    asort($tmp);
+    $tmp['-1'] = 'Not Listed';
+    $tmp = array_merge(array('' => ''), $tmp);
   }
   if (count($tmp) > 2) {
     $form['High School Experience']['highschoolname'] = array(
@@ -352,7 +384,53 @@ if($form_state['values']['attendpostsecondary'] != "None") {
         '#attributes' => array('class' => 'no-js'),
       );
     }
-    $tmp = _application_query_to_form_array("select distinct inst_city, inst_city from institut where inst_state = '". $form_state['values']['postSecondaryState'. $i] ."' and insttypcod in ('3', '4', '5', '6', '7', '8', '9') order by inst_city asc", TRUE, array('-1' => 'Not Listed'));
+    $tmp = array_merge(sonisweb_integration_sql_to_options(
+                       sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                array('inst_txt', ""),
+                                                array('insttypcod', "3"),
+                                                array('inst_city', ""),
+                                                array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_city', 'inst_city'),
+                       sonisweb_integration_sql_to_options(
+                       sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                array('inst_txt', ""),
+                                                array('insttypcod', "4"),
+                                                array('inst_city', ""),
+                                                array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_city', 'inst_city'),
+                       sonisweb_integration_sql_to_options(
+                       sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                array('inst_txt', ""),
+                                                array('insttypcod', "5"),
+                                                array('inst_city', ""),
+                                                array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_city', 'inst_city'),
+                       sonisweb_integration_sql_to_options(
+                       sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                array('inst_txt', ""),
+                                                array('insttypcod', "6"),
+                                                array('inst_city', ""),
+                                                array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_city', 'inst_city'),
+                       sonisweb_integration_sql_to_options(
+                       sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                array('inst_txt', ""),
+                                                array('insttypcod', "7"),
+                                                array('inst_city', ""),
+                                                array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_city', 'inst_city'),
+                       sonisweb_integration_sql_to_options(
+                       sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                array('inst_txt', ""),
+                                                array('insttypcod', "8"),
+                                                array('inst_city', ""),
+                                                array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_city', 'inst_city'),
+                       sonisweb_integration_sql_to_options(
+                       sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                array('inst_txt', ""),
+                                                array('insttypcod', "9"),
+                                                array('inst_city', ""),
+                                                array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_city', 'inst_city')
+              );
+    unset ($tmp['']);
+    ksort($tmp);
+    $tmp['-1'] = 'Not Listed';
+    $tmp = array_merge(array('' => ''), $tmp);
     if ($form_state['values']['postSecondaryState'. $i] != "" && (strcasecmp($form_state['values']['postSecondaryCountry'. $i], "UNITED STATES") == 0
       || strcasecmp($form_state['values']['postSecondaryCountry'. $i], "American Samoa") == 0 || strcasecmp($form_state['values']['postSecondaryCountry'. $i], "Federated States of Micronesia") == 0
       || strcasecmp($form_state['values']['postSecondaryCountry'. $i], "Guam") == 0 || strcasecmp($form_state['values']['postSecondaryCountry'. $i], "U.S. Minor Outlying Is") == 0
@@ -412,7 +490,53 @@ if($form_state['values']['attendpostsecondary'] != "None") {
       $tmp = array();
     }
     else {
-      $tmp = _application_query_to_form_array("select distinct inst_cod, inst_txt from institut where inst_state = '". $form_state['values']['postSecondaryState'. $i] ."' and inst_city = '". $form_state['values']['postSecondaryCity'. $i] ."' and insttypcod in ('3', '4', '5', '6', '7', '8', '9') order by inst_txt asc", TRUE, array('-1' => 'Not Listed'));
+      $tmp = array_merge(sonisweb_integration_sql_to_options(
+                         sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                  array('inst_txt', ""),
+                                                  array('insttypcod', "3"),
+                                                  array('inst_city', $form_state['values']['postSecondaryCity'. $i]),
+                                                  array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_cod', 'inst_txt'),
+                         sonisweb_integration_sql_to_options(
+                         sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                  array('inst_txt', ""),
+                                                  array('insttypcod', "4"),
+                                                  array('inst_city', $form_state['values']['postSecondaryCity'. $i]),
+                                                  array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_cod', 'inst_txt'),
+                         sonisweb_integration_sql_to_options(
+                         sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                  array('inst_txt', ""),
+                                                  array('insttypcod', "5"),
+                                                  array('inst_city', $form_state['values']['postSecondaryCity'. $i]),
+                                                  array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_cod', 'inst_txt'),
+                         sonisweb_integration_sql_to_options(
+                         sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                  array('inst_txt', ""),
+                                                  array('insttypcod', "6"),
+                                                  array('inst_city', $form_state['values']['postSecondaryCity'. $i]),
+                                                  array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_cod', 'inst_txt'),
+                         sonisweb_integration_sql_to_options(
+                         sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                  array('inst_txt', ""),
+                                                  array('insttypcod', "7"),
+                                                  array('inst_city', $form_state['values']['postSecondaryCity'. $i]),
+                                                  array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_cod', 'inst_txt'),
+                         sonisweb_integration_sql_to_options(
+                         sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                  array('inst_txt', ""),
+                                                  array('insttypcod', "8"),
+                                                  array('inst_city', $form_state['values']['postSecondaryCity'. $i]),
+                                                  array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_cod', 'inst_txt'),
+                         sonisweb_integration_sql_to_options(
+                         sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                  array('inst_txt', ""),
+                                                  array('insttypcod', "9"),
+                                                  array('inst_city', $form_state['values']['postSecondaryCity'. $i]),
+                                                  array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_cod', 'inst_txt')
+                );
+      unset ($tmp['']);
+      asort($tmp);
+      $tmp['-1'] = 'Not Listed';
+      $tmp = array_merge(array('' => ''), $tmp);
     }
     if (count($tmp) > 2) {
       $form['Postsecondary Educational Experience']['Institution '. $i]['postSecondaryName'. $i] = array(
@@ -600,7 +724,15 @@ $form['Certificates']['update_Certificates_Number'] = array(
 
 
 if($form_state['values']['Certificates_Number'] != "None") {
-  $tmp = _application_query_to_form_array("select distinct rtrim(license) as license, rtrim(desc_) as desc_ from licenses", TRUE, array('-1' => 'Not Listed'));
+    $tmp = sonisweb_integration_dropbox_to_form_api_options_array(
+           sonisweb_integration_api("CFC.licenses", "licenses_drop", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                    array('allow_blank', "No"),
+                                    array('multi_select', "No"),
+                                    array('hide', "No"))));
+    unset ($tmp['']);
+    asort($tmp);
+    $tmp['-1'] = 'Not Listed';
+    $tmp = array_merge(array('' => ''), $tmp);
   for ($i = 1; $i <= $form_state['values']['Certificates_Number']; $i++) {
     $form['Certificates']['Certificate '. $i] = array(
       '#type' => 'fieldset',
@@ -876,7 +1008,24 @@ function _application_form_page2_load_defaults(&$form_state) {
       $form_state['values']['highschoolstate'] = $a['HighSchool_State'];
 
     if (!isset($form_state['values']['highschoolcity']) && !isset($form_state['values']['highschoolcity_text'])) {
-      if (array_key_exists($a['HighSchool_City'], _application_query_to_form_array("select distinct inst_city, inst_city from institut where inst_state = '". $form_state['values']['highschoolstate'] ."' and insttypcod in ('1', '2') order by inst_city asc")))
+      $tmp = array_merge(sonisweb_integration_sql_to_options(
+                         sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                  array('inst_txt', ""),
+                                                  array('insttypcod', "1"),
+                                                  array('inst_city', ""),
+                                                  array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['highschoolstate']:"YZ")))), 'inst_city', 'inst_city'),
+                         sonisweb_integration_sql_to_options(
+                         sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                  array('inst_txt', ""),
+                                                  array('insttypcod', "2"),
+                                                  array('inst_city', ""),
+                                                  array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['highschoolstate']:"YZ")))), 'inst_city', 'inst_city')
+                );
+      unset ($tmp['']);
+      ksort($tmp);
+      $tmp['-1'] = 'Not Listed';
+      $tmp = array_merge(array('' => ''), $tmp);
+      if (array_key_exists($a['HighSchool_City'], $tmp))
         $form_state['values']['highschoolcity'] = $a['HighSchool_City'];
       else {
         $form_state['values']['highschoolcity_text'] = $a['HighSchool_City'];
@@ -933,7 +1082,54 @@ function _application_form_page2_load_defaults(&$form_state) {
         $form_state['values']['postSecondaryState'. $i] = $a['Institution_State'];
 
       if (!isset($form_state['values']['postSecondaryCity'. $i]) && !isset($form_state['values']['postSecondaryCity'. $i ."_text"])) {
-        if (array_key_exists($a['Institution_City'], _application_query_to_form_array("select distinct inst_city, inst_city from institut where inst_state = '". $form_state['values']['postSecondaryState'. $i] ."' and insttypcod in ('3', '4', '5', '6', '7', '8', '9') order by inst_city asc", TRUE, array('-1' => 'Not Listed'))))
+        $tmp = array_merge(sonisweb_integration_sql_to_options(
+                           sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                    array('inst_txt', ""),
+                                                    array('insttypcod', "3"),
+                                                    array('inst_city', ""),
+                                                    array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_city', 'inst_city'),
+                           sonisweb_integration_sql_to_options(
+                           sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                    array('inst_txt', ""),
+                                                    array('insttypcod', "4"),
+                                                    array('inst_city', ""),
+                                                    array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_city', 'inst_city'),
+                           sonisweb_integration_sql_to_options(
+                           sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                    array('inst_txt', ""),
+                                                    array('insttypcod', "5"),
+                                                    array('inst_city', ""),
+                                                    array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_city', 'inst_city'),
+                           sonisweb_integration_sql_to_options(
+                           sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                    array('inst_txt', ""),
+                                                    array('insttypcod', "6"),
+                                                    array('inst_city', ""),
+                                                    array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_city', 'inst_city'),
+                           sonisweb_integration_sql_to_options(
+                           sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                    array('inst_txt', ""),
+                                                    array('insttypcod', "7"),
+                                                    array('inst_city', ""),
+                                                    array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_city', 'inst_city'),
+                           sonisweb_integration_sql_to_options(
+                           sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                    array('inst_txt', ""),
+                                                    array('insttypcod', "8"),
+                                                    array('inst_city', ""),
+                                                    array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_city', 'inst_city'),
+                           sonisweb_integration_sql_to_options(
+                           sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
+                                                    array('inst_txt', ""),
+                                                    array('insttypcod', "9"),
+                                                    array('inst_city', ""),
+                                                    array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_city', 'inst_city')
+                  );
+        unset ($tmp['']);
+        ksort($tmp);
+        $tmp['-1'] = 'Not Listed';
+        $tmp = array_merge(array('' => ''), $tmp);
+        if (array_key_exists($a['Institution_City'], $tmp))
           $form_state['values']['postSecondaryCity'. $i] = $a['Institution_City'];
         else {
           $form_state['values']['postSecondaryCity'. $i ."_text"] = $a['Institution_City'];
@@ -971,7 +1167,15 @@ function _application_form_page2_load_defaults(&$form_state) {
     $certs_sql = "SELECT Student_StudentID, Cert, Cert_Country, Cert_State, Effective_date, Expiration_date, Memo FROM {application_Certs} WHERE Student_StudentID = '%s'";
     $result = db_query($certs_sql, $user->uid);
     $i = 0;
-    $licenses = _application_query_to_form_array("select distinct rtrim(license) as license, rtrim(desc_) as desc_ from licenses", TRUE, array('-1' => 'Not Listed'));
+    $licenses = sonisweb_integration_dropbox_to_form_api_options_array(
+                sonisweb_integration_api("CFC.licenses", "licenses_drop", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                         array('allow_blank', "No"),
+                                         array('multi_select', "No"),
+                                         array('hide', "No"))));
+    unset ($licenses['']);
+    asort($licenses);
+    $licenses['-1'] = 'Not Listed';
+    $licenses = array_merge(array('' => ''), $licenses);
     while ($a = db_fetch_array($result)) {
       $i++;
       if (!isset( $form_state['values']['Certificate_text'. $i]) && !isset($form_state['values']['Licensetype'. $i])) {

@@ -26,8 +26,21 @@ function application_form_page3($form_state) {
       '#collapsed' => FALSE,
     );
     
-  $years = _application_query_to_form_array("select * from (select top 3 year, year_desc from pretty_years order by year DESC) as a order by year asc", FALSE);
-  $terms = _application_query_to_form_array("select semester, sm_desc from semester where disabled = 0 order by semester asc", FALSE);
+  $years = sonisweb_integration_dropbox_to_form_api_options_array(
+           sonisweb_integration_api("CFC.sch_yr", "sch_yr_drop", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                    array('allow_blank', "yes"),
+                                    array('multi_select', "no"),
+                                    array('hide', "no"),
+                                    array('value', ""),
+                                    array('size', "3"),
+                                    array('use_cur_schyr', 'yes'))));
+  asort($years);
+  $terms = sonisweb_integration_dropbox_to_form_api_options_array(
+           sonisweb_integration_api("CFC.semester", "semester_drop", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                    array('allow_blank', "yes"),
+                                    array('multi_select', "no"),
+                                    array('hide', "no"))));
+  asort($terms);
   $removal = _application_query_to_form_array("select '0', cur_schyr + cur_sem from sysvar", FALSE);
   $yearterms = array('' => '');
   foreach ($years as $yearcode => $prettyyear) {
@@ -37,7 +50,7 @@ function application_form_page3($form_state) {
           $yearterms[$yearcode . $termcode] = $prettyterm ." ". substr($prettyyear, 0, 4);
         }
         else {
-          $yearterms[$yearcode . $termcode] = $prettyterm ." ". substr($prettyyear, 5, 4);
+          $yearterms[$yearcode . $termcode] = $prettyterm ." ". (substr($prettyyear, 0, 4) + 1);
         }
       }
     }
@@ -49,12 +62,19 @@ function application_form_page3($form_state) {
       '#options' => $yearterms,
       '#required' => TRUE,
   );
-
+  $depts = sonisweb_integration_dropbox_to_form_api_options_array(
+           sonisweb_integration_api("CFC.dept", "dept_drop", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                    array('allow_blank', "yes"),
+                                    array('use_cur_sem', "yes"),
+                                    array('multi_select', "no"))));
+  unset($depts[$form_state['values']['department2']]);
+  asort($depts);
+  $depts = array_merge(array('' => ''), $depts);
   $form['Plans for Study']['department1'] = array(
       '#type' => 'select',
       '#title' => t('First Department Choice'),
       '#default_value' => $form_state['values']['department1'],
-      '#options' => _application_query_to_form_array("select dept_cod, dept_txt from dept where disabled = 0 and dept_cod <> '". $form_state['values']['department2'] ."' order by dept_txt asc", TRUE),
+      '#options' => $depts,
       '#required' => TRUE,
       '#ahah' => array(
        'path' => ahah_helper_path(array('Plans for Study')),
@@ -80,12 +100,20 @@ function application_form_page3($form_state) {
         '#required' => TRUE,
     );
   }
+  $depts = sonisweb_integration_dropbox_to_form_api_options_array(
+           sonisweb_integration_api("CFC.dept", "dept_drop", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                    array('allow_blank', "yes"),
+                                    array('use_cur_sem', "yes"),
+                                    array('multi_select', "no"))));
+  unset($depts[$form_state['values']['department1']]);
+  asort($depts);
+  $depts = array_merge(array('' => ''), $depts);
   $form['Plans for Study']['department2'] = array(
       '#type' => 'select',
       '#title' => t('Second Department Choice'),
-    '#description' => t('The second department choice is optional.'),
+      '#description' => t('The second department choice is optional.'),
       '#default_value' => $form_state['values']['department2'],
-      '#options' => _application_query_to_form_array("select dept_cod, dept_txt from dept where disabled = 0 and dept_cod <> '". $form_state['values']['department1'] ."' order by dept_txt asc", TRUE),
+      '#options' => $depts,
       '#ahah' => array(
        'path' => ahah_helper_path(array('Plans for Study')),
        'wrapper' => 'plans-for-study-wrapper',

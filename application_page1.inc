@@ -21,14 +21,13 @@ function application_form_page1($form_state) {
                                        array('multi_select', "no"),
                                        array('Additional_Properties', ""),
                                        array('hide_excludes', 'yes'))));
-  $countries =sonisweb_integration_dropbox_to_form_api_options_array(
-              sonisweb_integration_api("CFC.drp_box", "country", "no", array(array('sonis_ds', '#sonis.ds#'),
-                                       array('allow_blank', "yes"),
-                                       array('hide', "no"),
-                                       array('multi_select', "no"),
-                                       array('Additional_Properties', ""),
-                                       array('hide_excludes', 'yes'))));
-
+  $countries = sonisweb_integration_dropbox_to_form_api_options_array(
+                  sonisweb_integration_api("CFC.drp_box", "country", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                           array('allow_blank', "yes"),
+                                           array('hide', "no"),
+                                           array('multi_select', "no"),
+                                           array('Additional_Properties', ""),
+                                           array('hide_excludes', 'yes'))));
 //   print_r($form);
 //   print_r($form_state);
 
@@ -901,6 +900,13 @@ if ($form_state['values']['language'] == "0") {
         );
       }
       else{
+        $visa = sonisweb_integration_dropbox_to_form_api_options_array(
+                sonisweb_integration_api("CFC.visa", "visa_drop", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                         array('allow_blank', "yes"),
+                                         array('multi_select', "no"),
+                                         array('hide', "no"))));
+        $visa['AppliedFor'] = 'Visa Applied For';
+
         $form['Birthplace_Information']['number'] = array(
           '#type' => 'textfield',
           '#title' => t('I-94 or Permanent Resident Number'),
@@ -914,7 +920,7 @@ if ($form_state['values']['language'] == "0") {
         '#title' => t('Current Visa Status'),
         '#default_value' => $form_state['values']['visa'],
         '#description' => "FHCHS is not currently accepting applicants requiring an F visa.",
-        '#options' => _application_query_to_form_array("select visa_cod, visa_desc from visa where disabled = 0 order by visa_desc asc", TRUE, array('AppliedFor' => t('Visa Applied For'))),
+        '#options' => $visa,
         '#required' => FALSE,
         );
       }

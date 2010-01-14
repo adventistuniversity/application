@@ -31,12 +31,19 @@
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
     );
+  $gender = sonisweb_integration_dropbox_to_form_api_options_array(
+           sonisweb_integration_api("CFC.gender", "gender_drop", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                    array('allow_blank', "yes"),
+                                    array('multi_select', "no"),
+                                    array('hide', "no"))));
+  asort($gender);
+  $gender = array_merge(array('' => ''), $gender);
   $form['Statistical Data']['gender'] = array(
     '#type' => 'select',
     '#title' => t('Gender'),
     '#default_value' => $form_state['values']['gender'],
     '#required' => TRUE,
-    '#options' => _application_query_to_form_array("select gender_cod, gender_txt from gender where disabled = 0 order by gender_txt asc", TRUE),
+    '#options' => $gender,
   );
   $form['Statistical Data']['attend'] = array(
     '#type' => 'select',
@@ -75,26 +82,47 @@
     '#attributes' => array('class' => 'no-js'),
   );
   if ($form_state['values']['ethnicorigin'] == "0" || $form_state['values']['ethnicorigin'] == "I prefer not to share." ) {
+    $ethnic = sonisweb_integration_dropbox_to_form_api_options_array(
+              sonisweb_integration_api("CFC.ethnic", "ethnic_drop", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                       array('allow_blank', "yes"),
+                                       array('multi_select', "no"))));
+    unset($ethnic['H']);
+    asort($ethnic);
+    $ethnic = array_merge(array('' => ''), $ethnic);
     $form['Statistical Data']['ethnicorigin2'] = array(
       '#type' => 'select',
       '#title' => t('Ethnic Origin'),
       '#default_value' => $form_state['values']['ethnicorigin2'],
       '#required' => TRUE,
-      '#options' => _application_query_to_form_array("select ethnic_cod, ethnic_txt from ethnic where disabled = 0 and ethnic_cod <> 'H' order by ethnic_txt asc", TRUE),
+      '#options' => $ethnic,
     );
   }
 
   // Language was moved to page1 from here
   
+  $marital = sonisweb_integration_dropbox_to_form_api_options_array(
+             sonisweb_integration_api("CFC.marital", "marital_drop", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                      array('allow_blank', "yes"),
+                                      array('multi_select', "no"),
+                                      array('hide', "no"))));
+  asort($marital);
+  $marital = array_merge(array('' => ''), $marital);
   $form['Statistical Data']['maritalstatus'] = array(
     '#type' => 'select',
     '#title' => t('Marital Status'),
     '#default_value' => $form_state['values']['maritalstatus'],
     '#required' => TRUE,
-    '#options' => _application_query_to_form_array("select mar_cod, mar_txt from marital where disabled = 0 order by mar_txt asc", TRUE),
+    '#options' => $marital,
   );
 
 
+  $tuit_stat = sonisweb_integration_dropbox_to_form_api_options_array(
+               sonisweb_integration_api("CFC.tuitstat", "tuitstat_drop", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                        array('allow_blank', "yes"),
+                                        array('multi_select', "no"),
+                                        array('hide', "no"))));
+  asort($tuit_stat);
+  $tuit_stat = array_merge(array('' => ''), $tuit_stat);
   $form['Statistical Data']['religion'] = array(
     '#type' => 'select',
     '#title' => t('Religion'),
@@ -107,7 +135,7 @@
       'event' => 'change',
       'effect' => 'fade',
       ),
-    '#options' => _application_query_to_form_array("select tuit_stat, tuit_stat_txt from tuitstat where disabled = 0 order by tuit_stat_txt asc", TRUE),
+    '#options' => $tuit_stat,
   );
   $form['Statistical Data']['update_religion'] = array(
     '#type' => 'submit',
