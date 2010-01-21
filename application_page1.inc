@@ -923,7 +923,25 @@ if ($form_state['values']['language'] == "0") {
         '#options' => $visa,
         '#required' => FALSE,
         );
+        $form['Birthplace_Information']['ssn'] = array(
+          '#type' => 'textfield',
+          '#title' => t('Social Security Number or Naturalized US Citizen Number'),
+          '#default_value' => $form_state['values']['ssn'],
+          '#required' => FALSE,
+          '#maxlength' => 9,
+          '#size' => 9,
+        );
       }
+    }
+    else {
+      $form['Birthplace_Information']['ssn'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Social Security Number or Naturalized US Citizen Number'),
+        '#default_value' => $form_state['values']['ssn'],
+        '#required' => FALSE,
+        '#maxlength' => 9,
+        '#size' => 9,
+      );
     }
 
   }
