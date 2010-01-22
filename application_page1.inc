@@ -858,6 +858,7 @@ if ($form_state['values']['language'] == "0") {
       '#default_value' => $form_state['values']['numberquestion'],
       '#options' => array(
         'Please Select' => t(''),
+        'Does Not Apply' => t('Does Not Apply'),
         // US Social Security Number makes SS Field appear and Number field go away
         //'US Social Security Number' => t('US Social Security Number'),
         'Permanent Resident Number' => t('Permanent Resident Number'),
@@ -909,7 +910,7 @@ if ($form_state['values']['language'] == "0") {
 
         $form['Birthplace_Information']['number'] = array(
           '#type' => 'textfield',
-          '#title' => t('I-94 or Permanent Resident Number'),
+          '#title' => t('Naturalized Citizen or Permanent Resident Number'),
           '#default_value' => $form_state['values']['number'],
           '#required' => TRUE,
           '#maxlength' => 50,
@@ -956,6 +957,9 @@ function application_form_page1_validate($form, &$form_state) {
   if ($form_state['values']['ssn'] != "" && (!is_numeric($form_state['values']['ssn']) ||
       strlen($form_state['values']['ssn']) != 9)) {
     form_set_error('ssn', t("Please enter a valid Social Security Number"));
+  }
+  if ($form_state['values']['number'] != "" && strlen($form_state['values']['number']) < 10) {
+    form_set_error('number', t("Please enter a valid Naturalized Citizen or Permanent Resident Number"));
   }
   if (substr($form_state['values']['dateofbirth'], 0, 4) >= (date("Y") - 10) ||
       substr($form_state['values']['dateofbirth'], 0, 4) <= (date("Y") - 100)) {
