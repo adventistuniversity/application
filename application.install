@@ -116,7 +116,7 @@ function application_schema() {
       'HighSchool_Country'               => array('description' => t('HighSchool_Country'),               'type' => 'varchar', 'length' => 25, 'not null' => TRUE,  'default' => ''),
       'HighSchool_State'                 => array('description' => t('HighSchool_State'),                 'type' => 'varchar', 'length' => 2 , 'not null' => FALSE, 'default' => ''),
       'HighSchool_City'                  => array('description' => t('HighSchool_City'),                  'type' => 'varchar', 'length' => 20, 'not null' => TRUE,  'default' => ''),
-      'HighSchool_Attendance'            => array('description' => t('HighSchool_Attendance'),            'type' => 'int', 'size' => 'tiny'  , 'not null' => TRUE,  'default' => 0),
+      'HighSchool_Attendance'            => array('description' => t('HighSchool_Attendance'),            'type' => 'int', 'size' => 'tiny'  , 'not null' => TRUE,  'default' => 1),
       'HighSchool_Grad_Year'             => array('description' => t('HighSchool_Grad_Year'),             'type' => 'varchar', 'length' => 4 , 'not null' => FALSE, 'default' => ''),
       'HighSchool_Sonis_ID'              => array('description' => t('HighSchool_Soinis_ID'),             'type' => 'varchar', 'length' => 16, 'not null' => FALSE, 'default' => ''),
       'OtherSchooling_CLEP'              => array('description' => t('OtherSchooling_CLEP'),              'type' => 'int', 'size' => 'tiny'  , 'not null' => FALSE, 'default' => 0),
@@ -171,4 +171,10 @@ function application_update_1() {
 
 function application_update_2() {
   variable_del('application_sonis_api_url');
+}
+
+function application_update_3() {
+  $ret = array();
+  db_field_set_default($ret, 'application_Biographic', 'HighSchool_Attendance', 1);
+  return $ret;
 }

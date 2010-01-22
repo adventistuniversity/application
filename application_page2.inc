@@ -33,6 +33,10 @@ function application_form_page2($form_state) {
   $nograd = array("Did Not Complete Degree" => "Did Not Complete Degree");
   //$result = array_merge($nograd, $years);
   $result = $nograd + $years;
+  if ($form_state['values']['attendhighschool'] != "0") {
+    $form_state['values']['attendhighschool'] = "1";
+  }
+  
 // Academic Plans and Experience - Page 2
 //
 $form['High School Experience'] = array(
@@ -57,7 +61,7 @@ $form['High School Experience']['attendhighschool'] = array(
     'effect' => 'fade',
     ),
   '#options' => array('1' => t('Yes'),
-  '0' => t('No')),
+                      '0' => t('No')),
 );
 $form['High School Experience']['update_attendhighschool'] = array(
   '#type' => 'submit',
