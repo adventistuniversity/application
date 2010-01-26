@@ -286,6 +286,21 @@ function application_views_data() {
           'handler' => 'views_handler_sort',
         ),
       ),
+      'Degree' => array(
+        'title' => t('Degree'),
+        'help' => t('The Degree the student was taking when at the institution.'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Degree as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Degree.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
       'Major' => array(
         'title' => t('Major'),
         'help' => t('The major the student was taking when at the institution.'),
@@ -300,7 +315,7 @@ function application_views_data() {
         'sort' => array(
           'handler' => 'views_handler_sort',
         ),
-      ),    
+      ),
       'Sonis_Institution_ID' => array(
         'title' => t('Sonis Institution ID'),
         'help' => t('Hopefully contains the institution ID from the student information system.'),
@@ -1391,6 +1406,36 @@ function application_views_data() {
           'handler' => 'views_handler_sort',
         ),
       ),     
+      'Statistics_US_Military_Veteran' => array(
+        'title' => t('US Military Veteran'),
+        'help' => t('Boolean represents if person is a US Military Veteran'),
+        'field' => array(
+         'handler' => 'views_handler_field_boolean',
+         'click sortable' => TRUE,
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_boolean_operator',
+          'label' => t('US Military Veteran'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+      'Statistics_Receiving_Veteran_Benefits' => array(
+        'title' => t('Receiving Veteran Benefits'),
+        'help' => t('Boolean represents if person is receiving veteran benefits'),
+        'field' => array(
+         'handler' => 'views_handler_field_boolean',
+         'click sortable' => TRUE,
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_boolean_operator',
+          'label' => t('Receiving Veteran Benefits'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
       'Personal_Statement_Agreement' => array(
         'title' => t('Personal Statement'),
         'help' => t('Boolean represents agreement to student personal statement'),
