@@ -31,6 +31,45 @@
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
     );
+
+  // Veteran
+  $form['Statistical Data']['veteran'] = array(
+    '#type' => 'select',
+    '#title' => t('Are you a US Military Veteran?'),
+    '#default_value' => $form_state['values']['veteran'],
+    '#required' => TRUE,
+        '#ahah' => array(
+      'path' => ahah_helper_path(array('Statistical Data')),
+      'wrapper' => 'Statistical-Data-information-wrapper',
+      'method' => 'replace',
+      'event' => 'change',
+      'effect' => 'fade',
+      ),
+    '#options' => array(
+      '' => '',
+      '1' => t('Yes'),
+      '0' => t('No')),
+  );
+
+  $form['Statistical Data']['update_veteran'] = array(
+    '#type' => 'submit',
+    '#value' => t('veteran'),
+    '#submit' => array('ahah_helper_generic_submit'),
+    '#attributes' => array('class' => 'no-js'),
+  );
+  if ($form_state['values']['veteran'] == "1") {
+    $form['Statistical Data']['veteranbenefits'] = array(
+      '#type' => 'select',
+      '#title' => t('Will you be receiving VA benefits?'),
+      '#default_value' => $form_state['values']['veteranbenefits'],
+      '#required' => TRUE,
+      '#options' => array(
+        '' => '',
+        '1' => t('Yes'),
+        '0' => t('No')),
+    );
+  }
+
   $gender = sonisweb_integration_dropbox_to_form_api_options_array(
            sonisweb_integration_api("CFC.gender", "gender_drop", "no", array(array('sonis_ds', '#sonis.ds#'),
                                     array('allow_blank', "yes"),
@@ -197,9 +236,8 @@ function application_form_page4_submit($form, &$form_state) {
     $form_state['values']['religion'] = 'O';
   }  
   
-  $biographic_sql = "UPDATE {application_Biographic} SET Statistics_Gender = '%s', Statistics_Hispanic = '%s',  Statistics_Ethnic_Origin = '%s',  Statistics_Marital_Status = '%s', Statistics_Religious_Affiliation = '%s', Statistics_Home_Church = '%s', Statistics_Home_Church_City = '%s', Statistics_Home_Church_State = '%s', Statistics_First_Generation = '%s' WHERE Student_StudentID = '%s'";
-  db_query($biographic_sql, $form_state['values']['gender'], $form_state['values']['ethnicorigin'], $form_state['values']['ethnicorigin2'],  $form_state['values']['maritalstatus'], $form_state['values']['religion'], $form_state['values']['religionhomechurch'], $form_state['values']['religionhomechurchcity'], $form_state['values']['religionhomechurchstate'], $form_state['values']['attend'], $user->uid);
-
+  $biographic_sql = "UPDATE {application_Biographic} SET Statistics_Gender = '%s', Statistics_Hispanic = '%s',  Statistics_Ethnic_Origin = '%s',  Statistics_Marital_Status = '%s', Statistics_Religious_Affiliation = '%s', Statistics_Home_Church = '%s', Statistics_Home_Church_City = '%s', Statistics_Home_Church_State = '%s', Statistics_First_Generation = '%s', Statistics_US_Military_Veteran = '%s', Statistics_Receiving_Veteran_Benefits = '%s' WHERE Student_StudentID = '%s'";
+  db_query($biographic_sql, $form_state['values']['gender'], $form_state['values']['ethnicorigin'], $form_state['values']['ethnicorigin2'],  $form_state['values']['maritalstatus'], $form_state['values']['religion'], $form_state['values']['religionhomechurch'], $form_state['values']['religionhomechurchcity'], $form_state['values']['religionhomechurchstate'], $form_state['values']['attend'], $form_state['values']['veteran'], $form_state['values']['veteranbenefits'], $user->uid);
   //Fire Application Updated Trigger
   module_invoke_all('application_changed', 'update', $user);
 
@@ -210,27 +248,31 @@ function application_form_page4_submit($form, &$form_state) {
 function _application_form_page4_load_defaults(&$form_state) {
   global $user;
 
-  $biographic_sql = "SELECT Statistics_Gender, Statistics_Hispanic, Statistics_Ethnic_Origin, Statistics_Native_English, Statistics_Native_Language, Statistics_Marital_Status, Statistics_Religious_Affiliation, Statistics_Home_Church, Statistics_Home_Church_City, Statistics_Home_Church_State, Statistics_First_Generation FROM {application_Biographic} WHERE Student_StudentID = '%s'";
+  $biographic_sql = "SELECT Statistics_Gender, Statistics_Hispanic, Statistics_Ethnic_Origin, Statistics_Native_English, Statistics_Native_Language, Statistics_Marital_Status, Statistics_Religious_Affiliation, Statistics_Home_Church, Statistics_Home_Church_City, Statistics_Home_Church_State, Statistics_First_Generation, Statistics_US_Military_Veteran, Statistics_Receiving_Veteran_Benefits FROM {application_Biographic} WHERE Student_StudentID = '%s'";
   $a = db_fetch_array(db_query($biographic_sql, $user->uid));
  
   if (!isset($form_state['values']['gender']))
-    $form_state['values']['gender']              = $a['Statistics_Gender'];
+    $form_state['values']['gender']                   = $a['Statistics_Gender'];
   if (!isset($form_state['values']['ethnicorigin']))
-    $form_state['values']['ethnicorigin']                  = $a['Statistics_Hispanic'];
+    $form_state['values']['ethnicorigin']             = $a['Statistics_Hispanic'];
   if (!isset($form_state['values']['ethnicorigin2']))
-    $form_state['values']['ethnicorigin2']                 = $a['Statistics_Ethnic_Origin'];
+    $form_state['values']['ethnicorigin2']            = $a['Statistics_Ethnic_Origin'];
   if (!isset($form_state['values']['maritalstatus']))
     $form_state['values']['maritalstatus']            = $a['Statistics_Marital_Status'];
   if (!isset($form_state['values']['religion']))
-    $form_state['values']['religion']           = $a['Statistics_Religious_Affiliation'];
+    $form_state['values']['religion']                 = $a['Statistics_Religious_Affiliation'];
   if (!isset($form_state['values']['religionhomechurch']))
-    $form_state['values']['religionhomechurch']   = $a['Statistics_Home_Church'];
+    $form_state['values']['religionhomechurch']       = $a['Statistics_Home_Church'];
   if (!isset($form_state['values']['religionhomechurchcity']))
-    $form_state['values']['religionhomechurchcity']                 = $a['Statistics_Home_Church_City'];
+    $form_state['values']['religionhomechurchcity']   = $a['Statistics_Home_Church_City'];
   if (!isset($form_state['values']['religionhomechurchstate']))
-    $form_state['values']['religionhomechurchstate']         = $a['Statistics_Home_Church_State'];
+    $form_state['values']['religionhomechurchstate']  = $a['Statistics_Home_Church_State'];
   if (!isset($form_state['values']['attend']))
-    $form_state['values']['attend']         = $a['Statistics_First_Generation'];
+    $form_state['values']['attend']                   = $a['Statistics_First_Generation'];
+  if (!isset($form_state['values']['veteran']))
+    $form_state['values']['veteran']                  = $a['Statistics_US_Military_Veteran'];
+  if (!isset($form_state['values']['veteranbenefits']))
+    $form_state['values']['veteranbenefits']          = $a['Statistics_Receiving_Veteran_Benefits'];
 
  //print_r($form_state);
   
