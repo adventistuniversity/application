@@ -98,7 +98,7 @@
   // ethinic origin must be two step question
   $form['Statistical Data']['ethnicorigin'] = array(
     '#type' => 'select',
-    '#title' => t('Are you hispanic?'),
+    '#title' => t('Are you Hispanic?'),
     '#default_value' => $form_state['values']['ethnicorigin'],
     '#required' => TRUE,
         '#ahah' => array(

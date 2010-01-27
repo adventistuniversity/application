@@ -874,7 +874,7 @@ if($form_state['values']['Certificates_Number'] != "None") {
       || strcasecmp($form_state['values']['countryissued'. $i], "Puerto Rico") == 0) {
       $form['Certificates']['Certificate '. $i]['stateissued'. $i] = array(
         '#type' => 'select',
-        '#title' => t('State issued'),
+        '#title' => t('State Issued'),
         '#default_value' => $form_state['values']['stateissued'. $i],
         '#required' => TRUE,
         '#options' => $states,

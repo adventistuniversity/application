@@ -71,7 +71,7 @@ function application_form_page3($form_state) {
   $depts = array_merge(array('' => ''), $depts);
   $form['Plans for Study']['department1'] = array(
       '#type' => 'select',
-      '#title' => t('First Department Choice'),
+      '#title' => t('Department Choice'),
       '#default_value' => $form_state['values']['department1'],
       '#options' => $depts,
       '#required' => TRUE,
