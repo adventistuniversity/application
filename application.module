@@ -428,6 +428,21 @@ function application_views_data() {
           'handler' => 'views_handler_sort',
         ),        
       ),      
+      'Campus' => array(
+        'title' => t('Campus Applied For'),
+        'help' => t('The campus the student is applying for'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Campus as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Major.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
       'Program' => array(
         'title' => t('Program Applied For'),
         'help' => t('The program the student is applying for'),

@@ -17,6 +17,7 @@ function application_schema() {
       'Student_StudentID'      => array('description' => t('Student_StudentID'),      'type' => 'varchar', 'length' => 9,  'not null' => TRUE, 'default' => ''),
       'Year'                   => array('description' => t('Year'),                   'type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => ''),
       'Term'                   => array('description' => t('Term'),                   'type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => ''),
+      'Campus'                 => array('description' => t('Campus'),                 'type' => 'varchar', 'length' => 2,  'not null' => TRUE, 'default' => ''),
       'Department'             => array('description' => t('Department'),             'type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => ''),
       'Program'                => array('description' => t('Program'),                'type' => 'varchar', 'length' => 10, 'not null' => FALSE, 'default' => ''),
       ), 
@@ -182,5 +183,6 @@ function application_update_3() {
   db_add_field($ret, 'application_Biographic', 'Statistics_US_Military_Veteran', array('description' => t('Statistics_US_Military_Veteran'), 'type' => 'int', 'size' => 'tiny', 'not null' => FALSE, 'default' => 0));
   db_add_field($ret, 'application_Biographic', 'Statistics_Receiving_Veteran_Benefits', array('description' => t('Statistics_Receiving_Veteran_Benefits'), 'type' => 'int', 'size' => 'tiny', 'not null' => FALSE, 'default' => 0));
   db_add_field($ret, 'application_Institutions', 'Degree', array('description' => t('Degree'), 'type' => 'varchar', 'length' => 35, 'not null' => TRUE,  'default' => ''));
+  db_add_field($ret, 'application_Programs', 'Campus', array('description' => t('Campus'), 'type' => 'varchar', 'length' => 2, 'not null' => TRUE,  'default' => ''));
   return $ret;
 }

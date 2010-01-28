@@ -11,7 +11,7 @@
 
 function application_form_page3($form_state) {
   $form = array();
-  _application_form_page3_load_defaults($form_state);
+  $limited_programs = _application_form_page3_load_defaults($form_state);
   ahah_helper_register($form, $form_state);
 
   // Page 3
@@ -62,6 +62,14 @@ function application_form_page3($form_state) {
       '#options' => $yearterms,
       '#required' => TRUE,
   );
+  $campus = _application_query_to_form_array("select camp_cod, camp_txt from campus where camp_mem like '%#onlineapp%' order by camp_txt", TRUE);
+  $form['Plans for Study']['campus'] = array(
+      '#type' => 'select',
+      '#title' => t('Campus'),
+      '#default_value' => $form_state['values']['campus'],
+      '#options' => $campus,
+      '#required' => TRUE,
+  );
   $depts = sonisweb_integration_dropbox_to_form_api_options_array(
            sonisweb_integration_api("CFC.dept", "dept_drop", "no", array(array('sonis_ds', '#sonis.ds#'),
                                     array('allow_blank', "yes"),
@@ -90,13 +98,40 @@ function application_form_page3($form_state) {
     '#submit' => array('ahah_helper_generic_submit'),
     '#attributes' => array('class' => 'no-js'),
   );
+  
+  $programs = _application_query_to_form_array("select program.prg_cod, CASE WHEN program.memo is null or program.memo LIKE '' THEN rtrim(program.prg_txt) ELSE rtrim(program.prg_txt) + '<br /><span class=\"label-memo\">' + CAST(program.memo as varchar(8000)) + '</span></label>' END from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $form_state['values']['department1'] ."' order by prg_txt asc", FALSE);
+  for ($i = 0; $i < count($limited_programs); $i++) {
+    if (isset($programs[$limited_programs[$i]])) {
+      $banned_programs[$limited_programs[$i]] = $programs[$limited_programs[$i]];
+      unset($programs[$limited_programs[$i]]);
+    }
+  }
   if ($form_state['values']['department1'] != "") {
     $form['Plans for Study']['programs1'] = array(
         '#type' => 'checkboxes',
         '#title' => t('Programs'),
         '#default_value' => $form_state['values']['programs1'],
-        '#options' => _application_query_to_form_array("select program.prg_cod, CASE WHEN program.memo is null or program.memo LIKE '' THEN rtrim(program.prg_txt) ELSE rtrim(program.prg_txt) + '<br /><span class=\"label-memo\">' + CAST(program.memo as varchar(8000)) + '</span></label>' END from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $form_state['values']['department1'] ."' order by prg_txt asc", FALSE),
+        '#options' => $programs,
         '#required' => TRUE,
+    );
+  }
+  else {
+    $form['Plans for Study']['programs1'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Programs'),
+        '#options' => array('' => 'Please Select a Department'),
+        '#required' => TRUE,
+        '#disabled' => TRUE,
+    );
+  }
+  if (count($banned_programs) > 0) {
+    $form['Plans for Study']['programsignored'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Additional Degree Programs Offered'),
+        '#prefix' => t('Based on your <a href="generalcollegeapplication2">academic experience</a> or licensure it appears you are not eligible for the following programs.'),
+        '#options' => $banned_programs,
+        '#disabled' => TRUE,
+        '#required' => FALSE,
     );
   }
   $form['Submit'] = array(
@@ -125,16 +160,16 @@ function application_form_page3_submit($form, &$form_state) {
     if ($value != '0') {
       $i++;
       $picks = $picks ."$key, ";
-      $programs_sql = "INSERT into {application_Programs} (Student_StudentID, Year, Term, Department, Program)VALUES('%s', '%s', '%s', '%s', '%s')";
-      db_query($programs_sql, $user->uid, $form_state['values']['yearofinterest'], $form_state['values']['termofinterest'], $form_state['values']['department1'], $key);
+      $programs_sql = "INSERT into {application_Programs} (Student_StudentID, Year, Term, Campus, Department, Program)VALUES('%s', '%s', '%s', '%s', '%s', '%s')";
+      db_query($programs_sql, $user->uid, $form_state['values']['yearofinterest'], $form_state['values']['termofinterest'], $form_state['values']['campus'], $form_state['values']['department1'], $key);
     }
     // else {
      // // $picks = $picks . "$key Not Picked, ";
     // }    
   }
   if ($i == 0) {
-    $programs_sql = "INSERT into {application_Programs} (Student_StudentID, Year, Term, Department)VALUES('%s', '%s', '%s', '%s')";
-    db_query($programs_sql, $user->uid, $form_state['values']['yearofinterest'], $form_state['values']['termofinterest'], $form_state['values']['department1']);
+    $programs_sql = "INSERT into {application_Programs} (Student_StudentID, Year, Term, Campus, Department)VALUES('%s', '%s', '%s', '%s', '%s')";
+    db_query($programs_sql, $user->uid, $form_state['values']['yearofinterest'], $form_state['values']['termofinterest'], $form_state['values']['campus'], $form_state['values']['department1']);
   }
 
 
@@ -147,12 +182,12 @@ function application_form_page3_submit($form, &$form_state) {
 }
 
 function _application_form_page3_load_defaults(&$form_state) {
+  global $user;
   if (sizeof($_POST)) {
   }
   else {
-    global $user;
 
-    $programs_sql = "SELECT Program_Applicaiton_ID, Student_StudentID, Year, Term, Department, Program FROM {application_Programs} WHERE Student_StudentID = '%s' ORDER BY Program_Applicaiton_ID";
+    $programs_sql = "SELECT Program_Applicaiton_ID, Student_StudentID, Year, Term, Campus, Department, Program FROM {application_Programs} WHERE Student_StudentID = '%s' ORDER BY Program_Applicaiton_ID";
     $result= db_query($programs_sql, $user->uid);
 
     $i = 0;
@@ -163,6 +198,7 @@ function _application_form_page3_load_defaults(&$form_state) {
         $form_state['values']['termofinterest']                   = $a ['Term'];
         $form_state['values']['yearandtermofinterest']            = $a ['Year'] . $a ['Term'];
         $form_state['values']['department1']                      = $a ['Department'];
+        $form_state['values']['campus']                           = $a ['campus'];
         // set a flag to show if were working with department1 or department2
         $department = $a['Department'];
         // get the list of programs for the first department
@@ -178,4 +214,20 @@ function _application_form_page3_load_defaults(&$form_state) {
      //print('<br>');
     $form_state['values']['programs1'] = $selectionboxes;
   }
+  //Look up banned programs
+  $limited_programs = sonisweb_integration_sql_to_options(sonisweb_integration_sql("select distinct prg_cod, appchk_txt from appchk inner join appchklist on appchk.appchk_cod = appchklist.appchk_cod where appchk_txt like '%license%' and disabled = 0"));
+  //Look up cleared programs
+  $cert_sql = "SELECT Cert FROM {application_Certs} WHERE Student_StudentID = '%s'";
+  $result= db_query($cert_sql, $user->uid);
+
+  $i = 0;
+  $certs = array();
+  while ($a = db_fetch_array($result)) {
+    foreach ($limited_programs as $tmpk => $tmp) {
+      if (stristr($tmp, $a['Cert'])) {
+        unset($limited_programs[$tmpk]);
+      }
+    }
+  }
+  return (array_keys($limited_programs));
 }
