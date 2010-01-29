@@ -132,7 +132,7 @@ if ($form_state['values']['attendhighschool'] == "1" || $form_state['values']['a
                                               array('inst_city', ""),
                                               array('inst_state', ($form_state['values']['highschoolstate']?$form_state['values']['highschoolstate']:"YZ")))), 'inst_city', 'inst_city')
             );
-  unset ($tmp['']);
+  unset($tmp['']);
   ksort($tmp);
   $tmp['0'] = 'Not Listed';
   $tmp = array_merge(array('' => ''), $tmp);
@@ -208,7 +208,7 @@ if ($form_state['values']['attendhighschool'] == "1" || $form_state['values']['a
                                                 array('inst_city', ($form_state['values']['highschoolcity']?$form_state['values']['highschoolcity']:""),
                                                 array('inst_state', ($form_state['values']['highschoolstate']?$form_state['values']['highschoolstate']:"YZ"))))), 'INST_COD', 'INST_TXT')
               );
-    unset ($tmp['']);
+    unset($tmp['']);
     asort($tmp);
     $tmp['0'] = 'Not Listed';
     $tmp = array_merge(array('' => ''), $tmp);
@@ -431,7 +431,7 @@ if($form_state['values']['attendpostsecondary'] != "None") {
                                                 array('inst_city', ""),
                                                 array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_city', 'inst_city')
               );
-    unset ($tmp['']);
+    unset($tmp['']);
     ksort($tmp);
     $tmp['0'] = 'Not Listed';
     $tmp = array_merge(array('' => ''), $tmp);
@@ -537,7 +537,7 @@ if($form_state['values']['attendpostsecondary'] != "None") {
                                                   array('inst_city', $form_state['values']['postSecondaryCity'. $i]),
                                                   array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_cod', 'inst_txt')
                 );
-      unset ($tmp['']);
+      unset($tmp['']);
       asort($tmp);
       $tmp['0'] = 'Not Listed';
       $tmp = array_merge(array('' => ''), $tmp);
@@ -592,7 +592,7 @@ if($form_state['values']['attendpostsecondary'] != "None") {
                                                 array('multi_select', "No"),
                                                 array('hide', "No"),
                                                 array('Additional_Properties', ""))));
-    unset ($tmp['']);
+    unset($tmp['']);
     ksort($tmp);
     $tmp['0'] = 'Not Listed';
     $tmp = array_merge(array('' => ''), $tmp);
@@ -787,7 +787,7 @@ if($form_state['values']['Certificates_Number'] != "None") {
                                     array('allow_blank', "No"),
                                     array('multi_select', "No"),
                                     array('hide', "No"))));
-    unset ($tmp['']);
+    unset($tmp['']);
     asort($tmp);
     $tmp['0'] = 'Not Listed';
     $tmp = array_merge(array('' => ''), $tmp);
@@ -908,11 +908,11 @@ function application_form_page2_validate($form, &$form_state) {
   if (intval($geddate[0]) > intval(date("Y"))) {
     form_set_error('geddate', t($ged_error_message));
   }
-  else if (intval($geddate[0]) == intval(date("Y"))) {
+  elseif (intval($geddate[0]) == intval(date("Y"))) {
     if (intval($geddate[1]) > intval(date("m"))) {
       form_set_error('geddate', t($ged_error_message));
     }
-    else if (intval($geddate[1]) == intval(date("m")) &&
+    elseif (intval($geddate[1]) == intval(date("m")) &&
              intval($geddate2[0]) > intval(date("d"))) {
       form_set_error('geddate', t($ged_error_message));
     }
@@ -1096,7 +1096,7 @@ function _application_form_page2_load_defaults(&$form_state) {
                                                   array('inst_city', ""),
                                                   array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['highschoolstate']:"YZ")))), 'inst_city', 'inst_city')
                 );
-      unset ($tmp['']);
+      unset($tmp['']);
       ksort($tmp);
       $tmp['0'] = 'Not Listed';
       $tmp = array_merge(array('' => ''), $tmp);
@@ -1200,7 +1200,7 @@ function _application_form_page2_load_defaults(&$form_state) {
                                                     array('inst_city', ""),
                                                     array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['postSecondaryState'. $i]:"YZ")))), 'inst_city', 'inst_city')
                   );
-        unset ($tmp['']);
+        unset($tmp['']);
         ksort($tmp);
         $tmp['0'] = 'Not Listed';
         $tmp = array_merge(array('' => ''), $tmp);
@@ -1249,7 +1249,7 @@ function _application_form_page2_load_defaults(&$form_state) {
                                          array('allow_blank', "No"),
                                          array('multi_select', "No"),
                                          array('hide', "No"))));
-    unset ($licenses['']);
+    unset($licenses['']);
     asort($licenses);
     $licenses['0'] = 'Not Listed';
     $licenses = array_merge(array('' => ''), $licenses);
