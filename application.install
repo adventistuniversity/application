@@ -128,8 +128,8 @@ function application_schema() {
       'GED_Date_Of_Issue'                => array('description' => t('GED_Date_Of_Issue'),                'type' => 'datetime'               , 'not null' => FALSE),
       'Statistics_Gender'                => array('description' => t('Statistics_Gender'),                'type' => 'varchar', 'length' => 1 , 'not null' => TRUE,  'default' => ''),
       'Statistics_First_Generation'      => array('description' => t('Statistics_First_Generation'),      'type' => 'varchar', 'length' => 1 , 'not null' => TRUE,  'default' => ''),
-      'Statistics_US_Military_Veteran'   => array('description' => t('Statistics_US_Military_Veteran'),   'type' => 'int', 'size' => 'tiny'  , 'not null' => FALSE, 'default' => 0),
-      'Statistics_Receiving_Veteran_Benefits', array('description' => t('Statistics_Receiving_Veteran_Benefits'), 'type' => 'int', 'size' => 'tiny', 'not null' => FALSE, 'default' => 0),
+      'Statistics_US_Military_Veteran'   => array('description' => t('Statistics_US_Military_Veteran'),   'type' => 'int', 'size' => 'tiny'  , 'not null' => FALSE),
+      'Statistics_Receiving_Veteran_Benefits', array('description' => t('Statistics_Receiving_Veteran_Benefits'), 'type' => 'int', 'size' => 'tiny', 'not null' => FALSE),
       'Statistics_Hispanic'              => array('description' => t('Statistics_Hispanic'),              'type' => 'varchar', 'length' => 2 , 'not null' => TRUE,  'default' => ''),
       'Statistics_Ethnic_Origin'         => array('description' => t('Statistics_Ethnic_Origin'),         'type' => 'varchar', 'length' => 2 , 'not null' => TRUE,  'default' => ''),
       'Statistics_Native_English'        => array('description' => t('Statistics_Native_English'),        'type' => 'varchar', 'length' => 2 , 'not null' => TRUE,  'default' => ''),
@@ -180,8 +180,8 @@ function application_update_2() {
 function application_update_3() {
   $ret = array();
   db_field_set_default($ret, 'application_Biographic', 'HighSchool_Attendance', 1);
-  db_add_field($ret, 'application_Biographic', 'Statistics_US_Military_Veteran', array('description' => t('Statistics_US_Military_Veteran'), 'type' => 'int', 'size' => 'tiny', 'not null' => FALSE, 'default' => 0));
-  db_add_field($ret, 'application_Biographic', 'Statistics_Receiving_Veteran_Benefits', array('description' => t('Statistics_Receiving_Veteran_Benefits'), 'type' => 'int', 'size' => 'tiny', 'not null' => FALSE, 'default' => 0));
+  db_add_field($ret, 'application_Biographic', 'Statistics_US_Military_Veteran', array('description' => t('Statistics_US_Military_Veteran'), 'type' => 'int', 'size' => 'tiny', 'not null' => FALSE));
+  db_add_field($ret, 'application_Biographic', 'Statistics_Receiving_Veteran_Benefits', array('description' => t('Statistics_Receiving_Veteran_Benefits'), 'type' => 'int', 'size' => 'tiny', 'not null' => FALSE));
   db_add_field($ret, 'application_Institutions', 'Degree', array('description' => t('Degree'), 'type' => 'varchar', 'length' => 35, 'not null' => TRUE,  'default' => ''));
   db_add_field($ret, 'application_Programs', 'Campus', array('description' => t('Campus'), 'type' => 'varchar', 'length' => 2, 'not null' => TRUE,  'default' => ''));
   return $ret;

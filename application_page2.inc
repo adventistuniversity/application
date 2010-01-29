@@ -29,7 +29,7 @@ function application_form_page2($form_state) {
                                        array('multi_select', "no"),
                                        array('Additional_Properties', ""),
                                        array('hide_excludes', 'yes'))));
-  $years = array_combine(range((date("Y") + 4), (date("Y")-100), -1), range((date("Y") + 4), (date("Y")-100), -1));
+  $years = array_combine(range(date("Y"), (date("Y")-100), -1), range(date("Y"), (date("Y")-100), -1));
   $nograd = array("Did Not Complete Degree" => "Did Not Complete Degree");
   //$result = array_merge($nograd, $years);
   $result = $nograd + $years;
@@ -261,7 +261,7 @@ if ($form_state['values']['attendhighschool'] == "1" || $form_state['values']['a
      '#title' => t('Year of Graduation'),
      '#default_value' => $form_state['values']['graduationyear'],
      '#required' => TRUE,
-     '#options' => $years,
+     '#options' => array_combine(range((date("Y") + 4), (date("Y")-100), -1), range((date("Y") + 4), (date("Y")-100), -1)),
    );
 }
 if($form_state['values']['attendhighschool'] == "0") {
@@ -1088,13 +1088,13 @@ function _application_form_page2_load_defaults(&$form_state) {
                                                   array('inst_txt', ""),
                                                   array('insttypcod', "1"),
                                                   array('inst_city', ""),
-                                                  array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['highschoolstate']:"YZ")))), 'inst_city', 'inst_city'),
+                                                  array('inst_state', ($form_state['values']['highschoolstate']?$form_state['values']['highschoolstate']:"YZ")))), 'inst_city', 'inst_city'),
                          sonisweb_integration_sql_to_options(
                          sonisweb_integration_api("CFC.education", "institutsearch", "yes", array(array('sonis_ds', '#sonis.ds#'),
                                                   array('inst_txt', ""),
                                                   array('insttypcod', "2"),
                                                   array('inst_city', ""),
-                                                  array('inst_state', ($form_state['values']['postSecondaryState'. $i]?$form_state['values']['highschoolstate']:"YZ")))), 'inst_city', 'inst_city')
+                                                  array('inst_state', ($form_state['values']['highschoolstate']?$form_state['values']['highschoolstate']:"YZ")))), 'inst_city', 'inst_city')
                 );
       unset($tmp['']);
       ksort($tmp);
@@ -1221,8 +1221,24 @@ function _application_form_page2_load_defaults(&$form_state) {
 
       if (!isset($form_state['values']['postSecondaryMajor'. $i]))
         $form_state['values']['postSecondaryMajor'. $i] = $a['Major'];
-      if (!isset($form_state['values']['postSecondaryDegree'. $i]))
-        $form_state['values']['postSecondaryDegree'. $i] = $a['Degree'];
+
+      $tmp = sonisweb_integration_dropbox_to_form_api_options_array(
+                         sonisweb_integration_api("CFC.drp_box", "degree", "no", array(array('sonis_ds', '#sonis.ds#'),
+                                                  array('allow_blank', "No"),
+                                                  array('multi_select', "No"),
+                                                  array('hide', "No"),
+                                                  array('Additional_Properties', ""))));
+      unset($tmp['']);
+      if (!isset($form_state['values']['postSecondaryDegree'. $i])) {
+        if (array_key_exists($a['Degree'], $tmp))
+          $form_state['values']['postSecondaryDegree'. $i] = $a['Degree'];
+        else {
+          $form_state['values']['postSecondaryDegree'. $i] = 0;
+          $form_state['values']['postSecondaryDegree'. $i ."_text"] = $a['Degree'];
+        }
+      }
+
+
       if (!isset($form_state['values']['postSecondaryStartYear'. $i]))
         $form_state['values']['postSecondaryStartYear'. $i] = $a['First_Year_Attended'];
       if (!isset($form_state['values']['postSecondaryEndYear'. $i]))

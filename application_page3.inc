@@ -209,7 +209,7 @@ function _application_form_page3_load_defaults(&$form_state) {
         $form_state['values']['termofinterest']                   = $a ['Term'];
         $form_state['values']['yearandtermofinterest']            = $a ['Year'] . $a ['Term'];
         $form_state['values']['department1']                      = $a ['Department'];
-        $form_state['values']['campus']                           = $a ['campus'];
+        $form_state['values']['campus']                           = $a ['Campus'];
         // set a flag to show if were working with department1 or department2
         $department = $a['Department'];
         // get the list of programs for the first department

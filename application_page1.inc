@@ -213,7 +213,7 @@ $form['Licensure Eligibility']['felony'] = array(
 $form['Native_Language'] = array(
    '#type' => 'fieldset',
    '#title' => t('Language'),
- '#prefix' => '<div id="native-language-wrapper">', // This is our wrapper div.
+   '#prefix' => '<div id="native-language-wrapper">', // This is our wrapper div.
    '#suffix' => '</div>',
    '#collapsible' => FALSE,
    '#collapsed' => FALSE,
