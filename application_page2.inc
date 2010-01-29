@@ -890,6 +890,12 @@ if($form_state['values']['Certificates_Number'] != "None") {
   '#type' => 'submit',
   '#value' => t('Save and Continue'),
   );
+  $form['Logout'] = array(
+  '#type' => 'submit',
+  '#value' => t('Save and Return Later'),
+  '#prefix' => '<div class="button_secondary">',
+  '#suffix' => '</div>',
+  );
 
 return ($form);
 
@@ -1056,7 +1062,12 @@ function application_form_page2_submit($form, &$form_state) {
   module_invoke_all('application_changed', 'update', $user);
 
   drupal_set_message(t('Thanks for saving your Academic Information.'));
-  drupal_goto('application/generalcollegeapplication3');
+  if ($form_state['values']['op'] == "Save and Return Later") {
+    drupal_goto('logout');
+  }
+  else {
+    drupal_goto('application/generalcollegeapplication3');
+  }
 }
 
 function _application_form_page2_load_defaults(&$form_state) {

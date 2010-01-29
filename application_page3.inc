@@ -138,6 +138,12 @@ function application_form_page3($form_state) {
   '#type' => 'submit',
   '#value' => t('Save and Continue'),
   );
+  $form['Logout'] = array(
+  '#type' => 'submit',
+  '#value' => t('Save and Return Later'),
+  '#prefix' => '<div class="button_secondary">',
+  '#suffix' => '</div>',
+  );
 
   return ($form);
 
@@ -178,7 +184,12 @@ function application_form_page3_submit($form, &$form_state) {
 
 //drupal_set_message(t('Thank you for selecting some programs. %programs programs', array('%programs' => $picks)));
   drupal_set_message(t('Thank you for indicating your academic plans.'));
-  drupal_goto('application/generalcollegeapplication4');
+  if ($form_state['values']['op'] == "Save and Return Later") {
+    drupal_goto('logout');
+  }
+  else {
+    drupal_goto('application/generalcollegeapplication4');
+  }
 }
 
 function _application_form_page3_load_defaults(&$form_state) {
