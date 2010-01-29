@@ -1755,3 +1755,22 @@ function _application_query_to_form_array($query, $blank_first_value = FALSE, $e
 
   return ($output);
 }
+
+/**
+ * Implementation of hook_user().
+ * Delete all of the application data for the user who is being deleted.
+ */
+function application_user($op, &$edit, &$account, $category = NULL) {
+  if ($op == 'delete') {
+    $a = "DELETE FROM {application_Programs} WHERE Student_StudentID = '%s'";
+    db_query($a, $account->uid);
+    $a = "DELETE FROM {application_Address} WHERE Student_StudentID = '%s'";
+    db_query($a, $account->uid);
+    $a = "DELETE FROM {application_Certs} WHERE Student_StudentID = '%s'";
+    db_query($a, $account->uid);
+    $a = "DELETE FROM {application_Institutions} WHERE Student_StudentID = '%s'";
+    db_query($a, $account->uid);
+    $a = "DELETE FROM {application_Biographic} WHERE Student_StudentID = '%s'";
+    db_query($a, $account->uid);
+  }
+}
