@@ -241,9 +241,9 @@ function application_form_page4_submit($form, &$form_state) {
   if ($form_state['values']['religion'] == 'I prefer not to share.') {
     $form_state['values']['religion'] = 'O';
   }  
-  
+
   $biographic_sql = "UPDATE {application_Biographic} SET Statistics_Gender = '%s', Statistics_Hispanic = '%s',  Statistics_Ethnic_Origin = '%s',  Statistics_Marital_Status = '%s', Statistics_Religious_Affiliation = '%s', Statistics_Home_Church = '%s', Statistics_Home_Church_City = '%s', Statistics_Home_Church_State = '%s', Statistics_First_Generation = '%s', Statistics_US_Military_Veteran = '%s', Statistics_Receiving_Veteran_Benefits = '%s' WHERE Student_StudentID = '%s'";
-  db_query($biographic_sql, $form_state['values']['gender'], $form_state['values']['ethnicorigin'], $form_state['values']['ethnicorigin2'],  $form_state['values']['maritalstatus'], $form_state['values']['religion'], $form_state['values']['religionhomechurch'], $form_state['values']['religionhomechurchcity'], $form_state['values']['religionhomechurchstate'], $form_state['values']['attend'], $form_state['values']['veteran'], $form_state['values']['veteranbenefits'], $user->uid);
+  db_query($biographic_sql, $form_state['values']['gender'], $form_state['values']['ethnicorigin'], $form_state['values']['ethnicorigin2'],  $form_state['values']['maritalstatus'], $form_state['values']['religion'], $form_state['values']['religionhomechurch'], $form_state['values']['religionhomechurchcity'], $form_state['values']['religionhomechurchstate'], $form_state['values']['attend'], $form_state['values']['veteran'], ($form_state['values']['veteranbenefits']==''?0:$form_state['values']['veteranbenefits']), $user->uid);
   //Fire Application Updated Trigger
   module_invoke_all('application_changed', 'update', $user);
 

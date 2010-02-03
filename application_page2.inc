@@ -927,6 +927,17 @@ function application_form_page2_validate($form, &$form_state) {
     if (is_numeric($form_state['values']['postSecondaryDegeree'. $i]) && intval($form_state['values']['postSecondaryStartYear'. $i]) > intval($form_state['values']['postSecondaryDegeree'. $i])) {
       form_set_error('postSecondaryDegeree'. $i, t("Please ensure that your Year of Completion Occurs Before your First Year Attended."));
     }
+    if (is_numeric($form_state['values']['postSecondaryDegeree'. $i]) && intval($form_state['values']['postSecondaryEndYear'. $i]) < intval($form_state['values']['postSecondaryDegeree'. $i])) {
+      form_set_error('postSecondaryDegeree'. $i, t("Please ensure that your Year of Completion Does Not Occur After your Last Year Attended."));
+    }
+  }
+  for ($i = 1; $i <= $form_state['values']['Certificates_Number']; $i++) {
+    if (is_string($form_state['values']['Expiration_date'. $i])) {
+      $tmp = split("-", $form_state['values']['Expiration_date'. $i]);
+      $tmp2 = split("-", $form_state['values']['Effective_date'. $i]);
+      if ($tmp[0] < $tmp2[0] || ($tmp[0] == $tmp2[0] && $tmp[1] < $tmp2[1]) || ($tmp[0] == $tmp2[0] && $tmp[1] == $tmp2[1] && $tmp[2] < $tmp2[2]))
+        form_set_error('Expiration_date'. $i, t("Please ensure that your Certificate does not Expire before it is Effective."));
+    }
   }
 }
 

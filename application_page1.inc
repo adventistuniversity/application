@@ -224,7 +224,7 @@ $form['Native_Language']['language'] = array(
   '#default_value' => $form_state['values']['language'],
   '#required' => TRUE,
       '#ahah' => array(
-    'path' => ahah_helper_path(array('Native_Language')),
+    'path' => ahah_helper_path(array('Native Language')),
     'wrapper' => 'native-language-wrapper',
     'method' => 'replace',
     'event' => 'change',
@@ -760,7 +760,7 @@ if ($form_state['values']['language'] == "0") {
     '#title' => t('Date of Birth'),
     '#default_value' => $form_state['values']['dateofbirth'],
     '#date_format' => 'm/d/Y',
-    '#date_year_range' => '-109:-12',
+    '#date_year_range' => '-100:-12',
     '#required' => TRUE,
   );
   $form['Birthplace_Information']['countryofbirth'] = array(
