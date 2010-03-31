@@ -197,8 +197,8 @@ $form['Licensure Eligibility'] = array(
  );
 $form['Licensure Eligibility']['felony'] = array(
   '#type' => 'select',
-  '#title' => t('Have you ever been convicted of a felony and/or misdemeanor?'),
-  '#description' => t('If yes, please provide details to your enrollment specialist. A conviction will not automatically disqualify an individual from admission to FHCHS; however, it may prevent a graduate from taking certification/licensing exams.'),
+  '#title' => t('Have you ever been convicted of, plea bargained, entered a plea of nolo contendere or no contest to, had adjudication withheld for or participated in a pre-trial diversion program for a crime, excluding any misdeameanor traffic offenses?'),
+  '#description' => t('(Answering yes will not automatically disqualify an individual from admission to FHCHS; however, it may prevent a graduate from taking certification/licensing exams.)'),
   '#default_value' => $form_state['values']['felony'],
   '#required' => TRUE,
   '#options' => array(
