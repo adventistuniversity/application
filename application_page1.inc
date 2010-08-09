@@ -920,7 +920,7 @@ if ($form_state['values']['language'] == "0") {
         '#type' => 'select',
         '#title' => t('Current Visa Status'),
         '#default_value' => $form_state['values']['visa'],
-        '#description' => "FHCHS is not currently accepting applicants requiring an F visa.",
+        '#description' => "FHCHS is currently accepting limited applicants requiring an F visa.",
         '#options' => $visa,
         '#required' => FALSE,
         );
@@ -989,7 +989,7 @@ function application_form_page1_submit($form, &$form_state) {
     $ssn = $form_state['values']['ssn'];
   }
   else {
-    $ssn = '0';
+    $ssn = '';
   }
 //
 //   print_r($form);
