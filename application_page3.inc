@@ -69,17 +69,40 @@ function application_form_page3($form_state) {
       '#default_value' => $form_state['values']['campus'],
       '#options' => $campus,
       '#required' => TRUE,
+      '#ahah' => array(
+       'path' => ahah_helper_path(array('Plans for Study')),
+       'wrapper' => 'plans-for-study-wrapper',
+       'method' => 'replace',
+       'event' => 'change',
+       'effect' => 'fade',
+      ),
+    '#required' => TRUE,
   );
-  $depts = sonisweb_integration_dropbox_to_form_api_options_array(
-           sonisweb_integration_api("CFC.dept", "dept_drop", "no", array(array('sonis_ds', '#sonis.ds#'),
-                                    array('allow_blank', "yes"),
-                                    array('use_cur_sem', "yes"),
-                                    array('multi_select', "no"))));
-  asort($depts);
-  $depts = array_merge(array('' => ''), $depts);
+  $form['Plans for Study']['update_campus'] = array(
+    '#type' => 'submit',
+    '#value' => t('Campus Choice'),
+    '#submit' => array('ahah_helper_generic_submit'),
+    '#attributes' => array('class' => 'no-js'),
+  );
+  if (isset($form_state['values']['campus']) && strlen($form_state['values']['campus']) == 2) {
+    $depts = _application_query_to_form_array("select dept.dept_cod, dept.dept_txt ".
+                                              "from dept where dept_cod in ( ".
+                                              "	select distinct programfilter.dept_cod ".
+                                              "	from (select distinct div_cod, dept_cod, camp_cod ".
+                                              "			 from name ".
+                                              "			 where soc_sec in (select soc_sec from nmmodst where mod_stat = 'ST')) as name ".
+                                              "		inner join programfilter on ".
+                                              "			name.div_cod = programfilter.div_cod and name.dept_cod = programfilter.dept_cod ".
+                                              "	where name.camp_cod = '".$form_state['values']['campus']."') ".
+                                              "order by dept.dept_txt", TRUE);
+  }
+  else {
+    $depts = array('' => '');
+  }
   $form['Plans for Study']['department1'] = array(
       '#type' => 'select',
       '#title' => t('Department Choice'),
+      '#description' => t('All undergraduate Main Campus program will be automatically reviewed for General College.  Please select the program from which you hope to graduate.'),
       '#default_value' => $form_state['values']['department1'],
       '#options' => $depts,
       '#required' => TRUE,
@@ -94,17 +117,33 @@ function application_form_page3($form_state) {
   );
   $form['Plans for Study']['update_department1'] = array(
     '#type' => 'submit',
-    '#value' => t('First Department Choice'),
+    '#value' => t('Department Choice'),
     '#submit' => array('ahah_helper_generic_submit'),
     '#attributes' => array('class' => 'no-js'),
   );
   
-  $programs = _application_query_to_form_array("select program.prg_cod, CASE WHEN program.memo is null or program.memo LIKE '' THEN rtrim(program.prg_txt) ELSE rtrim(program.prg_txt) + '<br /><span class=\"label-memo\">' + CAST(program.memo as varchar(8000)) + '</span></label>' END from program inner join programfilter on program.prg_cod = programfilter.prg_cod where programfilter.dept_cod = '". $form_state['values']['department1'] ."' order by prg_txt asc", FALSE);
-  for ($i = 0; $i < count($limited_programs); $i++) {
-    if (isset($programs[$limited_programs[$i]])) {
-      $banned_programs[$limited_programs[$i]] = $programs[$limited_programs[$i]];
-      unset($programs[$limited_programs[$i]]);
+  if (isset($form_state['values']['campus']) && strlen($form_state['values']['campus']) == 2 &&
+      isset($form_state['values']['department1']) && $form_state['values']['department1'] != "") {
+    $programs = _application_query_to_form_array("select program.prg_cod, CASE WHEN program.memo is null or program.memo LIKE '' THEN rtrim(program.prg_txt) ELSE rtrim(program.prg_txt) + '<br /><span class=\"label-memo\">' + CAST(program.memo as varchar(8000)) + '</span></label>' END ".
+                                                 "from program where prg_cod in ( ".
+                                                 " 	select distinct programfilter.prg_cod ".
+                                                 " 	from (select distinct div_cod, dept_cod, camp_cod ".
+                                                 " 			 from name ".
+                                                 " 			 where soc_sec in (select soc_sec from nmmodst where mod_stat = 'ST') and ".
+                                                 " 				   soc_sec in (select soc_sec from nmcrs where transfer = 0)) as name ".
+                                                 " 		inner join programfilter on ".
+                                                 " 			name.div_cod = programfilter.div_cod and name.dept_cod = programfilter.dept_cod ".
+                                                 " 	where name.camp_cod = '".$form_state['values']['campus']."' and name.dept_cod = '". $form_state['values']['department1'] ."') ".
+                                                 "order by prg_txt asc", FALSE);
+    for ($i = 0; $i < count($limited_programs); $i++) {
+      if (isset($programs[$limited_programs[$i]])) {
+        $banned_programs[$limited_programs[$i]] = $programs[$limited_programs[$i]];
+        unset($programs[$limited_programs[$i]]);
+      }
     }
+  }
+  else {
+    $programs = array('' => '');
   }
   if ($form_state['values']['department1'] != "") {
     $form['Plans for Study']['programs1'] = array(
