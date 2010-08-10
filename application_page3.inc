@@ -86,54 +86,64 @@ function application_form_page3($form_state) {
   );
   if (isset($form_state['values']['campus']) && strlen($form_state['values']['campus']) == 2) {
     $depts = _application_query_to_form_array("select dept.dept_cod, dept.dept_txt ".
-                                              "from dept where dept_cod in ( ".
+                                              "from dept inner join ( ".
                                               "	select distinct programfilter.dept_cod ".
                                               "	from (select distinct div_cod, dept_cod, camp_cod ".
-                                              "			 from name ".
-                                              "			 where soc_sec in (select soc_sec from nmmodst where mod_stat = 'ST')) as name ".
+                                              "			 from name inner join nmmodst on name.soc_sec = nmmodst.soc_sec and mod_stat = 'ST' ) as name ".
                                               "		inner join programfilter on ".
                                               "			name.div_cod = programfilter.div_cod and name.dept_cod = programfilter.dept_cod ".
-                                              "	where name.camp_cod = '".$form_state['values']['campus']."') ".
+                                              "	where name.camp_cod = '".$form_state['values']['campus']."') as a on dept.dept_cod = a.dept_cod ".
                                               "order by dept.dept_txt", TRUE);
   }
   else {
     $depts = array('' => '');
   }
-  $form['Plans for Study']['department1'] = array(
-      '#type' => 'select',
-      '#title' => t('Department Choice'),
-      '#description' => t('All undergraduate Main Campus program will be automatically reviewed for General College.  Please select the program from which you hope to graduate.'),
-      '#default_value' => $form_state['values']['department1'],
-      '#options' => $depts,
+  if ($depts != array('' => '')) {
+    $form['Plans for Study']['department1'] = array(
+        '#type' => 'select',
+        '#title' => t('Department Choice'),
+        '#description' => t('All undergraduate Main Campus program will be automatically reviewed for General College.  Please select the program from which you hope to graduate.'),
+        '#default_value' => $form_state['values']['department1'],
+        '#options' => $depts,
+        '#required' => TRUE,
+        '#ahah' => array(
+         'path' => ahah_helper_path(array('Plans for Study')),
+         'wrapper' => 'plans-for-study-wrapper',
+         'method' => 'replace',
+         'event' => 'change',
+         'effect' => 'fade',
+        ),
       '#required' => TRUE,
-      '#ahah' => array(
-       'path' => ahah_helper_path(array('Plans for Study')),
-       'wrapper' => 'plans-for-study-wrapper',
-       'method' => 'replace',
-       'event' => 'change',
-       'effect' => 'fade',
-      ),
-    '#required' => TRUE,
-  );
-  $form['Plans for Study']['update_department1'] = array(
-    '#type' => 'submit',
-    '#value' => t('Department Choice'),
-    '#submit' => array('ahah_helper_generic_submit'),
-    '#attributes' => array('class' => 'no-js'),
-  );
+    );
+    $form['Plans for Study']['update_department1'] = array(
+      '#type' => 'submit',
+      '#value' => t('Department Choice'),
+      '#submit' => array('ahah_helper_generic_submit'),
+      '#attributes' => array('class' => 'no-js'),
+    );
+  }
+  else {
+    $form['Plans for Study']['department1'] = array(
+        '#type' => 'select',
+        '#title' => t('Department Choice'),
+        '#description' => t('All undergraduate Main Campus program will be automatically reviewed for General College.  Please select the program from which you hope to graduate.'),
+        '#options' => array('' => 'Please Select a Campus'),
+        '#required' => TRUE,
+        '#disabled' => TRUE,
+    );
+  }
   
   if (isset($form_state['values']['campus']) && strlen($form_state['values']['campus']) == 2 &&
       isset($form_state['values']['department1']) && $form_state['values']['department1'] != "") {
     $programs = _application_query_to_form_array("select program.prg_cod, CASE WHEN program.memo is null or program.memo LIKE '' THEN rtrim(program.prg_txt) ELSE rtrim(program.prg_txt) + '<br /><span class=\"label-memo\">' + CAST(program.memo as varchar(8000)) + '</span></label>' END ".
-                                                 "from program where prg_cod in ( ".
+                                                 "from program inner join ( ".
                                                  " 	select distinct programfilter.prg_cod ".
                                                  " 	from (select distinct div_cod, dept_cod, camp_cod ".
-                                                 " 			 from name ".
-                                                 " 			 where soc_sec in (select soc_sec from nmmodst where mod_stat = 'ST') and ".
-                                                 " 				   soc_sec in (select soc_sec from nmcrs where transfer = 0)) as name ".
-                                                 " 		inner join programfilter on ".
+                                                 " 			 from name inner join nmmodst on name.soc_sec = nmmodst.soc_sec and nmmodst.mod_stat = 'ST' ".
+                                                 " 		) as name inner join programfilter on ".
                                                  " 			name.div_cod = programfilter.div_cod and name.dept_cod = programfilter.dept_cod ".
-                                                 " 	where name.camp_cod = '".$form_state['values']['campus']."' and name.dept_cod = '". $form_state['values']['department1'] ."') ".
+                                                 " 	where name.camp_cod = '".$form_state['values']['campus']."' and name.dept_cod = '". $form_state['values']['department1'] ."') as a on".
+                                                 "  program.prg_cod = a.prg_cod ".
                                                  "order by prg_txt asc", FALSE);
     for ($i = 0; $i < count($limited_programs); $i++) {
       if (isset($programs[$limited_programs[$i]])) {
@@ -145,7 +155,7 @@ function application_form_page3($form_state) {
   else {
     $programs = array('' => '');
   }
-  if ($form_state['values']['department1'] != "") {
+  if ($form_state['values']['department1'] != "" && $programs != array() && $programs != array('' => '')) {
     $form['Plans for Study']['programs1'] = array(
         '#type' => 'checkboxes',
         '#title' => t('Programs'),

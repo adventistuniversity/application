@@ -1226,9 +1226,24 @@ function application_views_data() {
           'handler' => 'views_handler_sort',
         ),
       ),
+      'HighSchool_Equivalent_Type' => array(
+        'title' => t('HighSchool Equivalent Type'),
+        'help' => t('The education that is roughly equivalent to highschool'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a HighSchool_Equivalent_Type as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a GED_Testing_Site.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
       'GED_Testing_Site' => array(
-        'title' => t('GED Testing Site'),
-        'help' => t('The GED testing site number or location information'),
+        'title' => t('GED Testing Site/Homeschool State'),
+        'help' => t('The GED testing site number or location information, or the Homeschool State'),
         'field' => array(
           'handler' => 'views_handler_field',
         ),
@@ -1240,10 +1255,10 @@ function application_views_data() {
         'sort' => array(
           'handler' => 'views_handler_sort',
         ),
-      ),           
+      ),
       'GED_Date_Of_Issue' => array(
-        'title' => t('GED Date Issued'),
-        'help' => t('Date of issuance of the GED for the student'),
+        'title' => t('GED Date Issued, or Homeschool Graduation Year'),
+        'help' => t('Date of issuance of the GED for the student, or the year the student graduated from homeschool'),
         'field' => array(
           'handler' => 'views_handler_field_date',
         ),

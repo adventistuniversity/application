@@ -124,6 +124,7 @@ function application_schema() {
       'OtherSchooling_CLEP'              => array('description' => t('OtherSchooling_CLEP'),              'type' => 'int', 'size' => 'tiny'  , 'not null' => FALSE, 'default' => 0),
       'OtherSchooling_AP'                => array('description' => t('OtherSchooling_AP'),                'type' => 'int', 'size' => 'tiny'  , 'not null' => FALSE, 'default' => 0),
       'OtherSchooling_IB'                => array('description' => t('OtherSchooling_IB'),                'type' => 'int', 'size' => 'tiny'  , 'not null' => FALSE, 'default' => 0),
+      'HighSchool_Equivalent_Type'       => array('description' => t('HighSchool_Equivalent_Type'),       'type' => 'varchar', 'length' => 50, 'not null' => FALSE, 'default' => ''),
       'GED_Testing_Site'                 => array('description' => t('GED_Testing_Site'),                 'type' => 'varchar', 'length' => 50, 'not null' => FALSE, 'default' => ''),
       'GED_Date_Of_Issue'                => array('description' => t('GED_Date_Of_Issue'),                'type' => 'datetime'               , 'not null' => FALSE),
       'Statistics_Gender'                => array('description' => t('Statistics_Gender'),                'type' => 'varchar', 'length' => 1 , 'not null' => TRUE,  'default' => ''),
@@ -184,5 +185,11 @@ function application_update_3() {
   db_add_field($ret, 'application_Biographic', 'Statistics_Receiving_Veteran_Benefits', array('description' => t('Statistics_Receiving_Veteran_Benefits'), 'type' => 'int', 'size' => 'tiny', 'not null' => FALSE));
   db_add_field($ret, 'application_Institutions', 'Degree', array('description' => t('Degree'), 'type' => 'varchar', 'length' => 35, 'not null' => TRUE,  'default' => ''));
   db_add_field($ret, 'application_Programs', 'Campus', array('description' => t('Campus'), 'type' => 'varchar', 'length' => 2, 'not null' => TRUE,  'default' => ''));
+  return $ret;
+}
+
+function application_update_4() {
+  $ret = array();
+  db_add_field($ret, 'application_Biographic', 'HighSchool_Equivalent_Type', array('description' => t('HighSchool_Equivalent_Type'), 'type' => 'varchar', 'length' => 50, 'not null' => FALSE, 'default' => ''));
   return $ret;
 }
