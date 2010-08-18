@@ -912,7 +912,7 @@ if ($form_state['values']['language'] == "0") {
           '#type' => 'textfield',
           '#title' => t('Naturalized Citizen or Permanent Resident Number'),
           '#default_value' => $form_state['values']['number'],
-          '#required' => TRUE,
+          '#required' => FALSE,
           '#maxlength' => 50,
           '#size' => 35,
         );
