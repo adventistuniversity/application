@@ -89,7 +89,7 @@ function application_form_page3($form_state) {
                                               "from dept inner join ( ".
                                               "	select distinct programfilter.dept_cod ".
                                               "	from (select distinct div_cod, dept_cod, camp_cod ".
-                                              "			 from name inner join nmmodst on name.soc_sec = nmmodst.soc_sec and mod_stat = 'ST' ) as name ".
+                                              "			 from name inner join nmmodst on name.soc_sec = nmmodst.soc_sec and mod_stat = 'ST' and name.soc_sec <> 'LI8793682') as name ".
                                               "		inner join programfilter on ".
                                               "			name.div_cod = programfilter.div_cod and name.dept_cod = programfilter.dept_cod ".
                                               "	where name.camp_cod = '".$form_state['values']['campus']."') as a on dept.dept_cod = a.dept_cod ".
@@ -140,6 +140,7 @@ function application_form_page3($form_state) {
                                                  " 	select distinct programfilter.prg_cod ".
                                                  " 	from (select distinct div_cod, dept_cod, camp_cod ".
                                                  " 			 from name inner join nmmodst on name.soc_sec = nmmodst.soc_sec and nmmodst.mod_stat = 'ST' ".
+                                                 "       where rtrim(name.camp_cod)+rtrim(name.dept_cod)+rtrim(name.div_cod) not in ('DINURE', 'CONUDL', 'CORSDL')".
                                                  " 		) as name inner join programfilter on ".
                                                  " 			name.div_cod = programfilter.div_cod and name.dept_cod = programfilter.dept_cod ".
                                                  " 	where name.camp_cod = '".$form_state['values']['campus']."' and name.dept_cod = '". $form_state['values']['department1'] ."') as a on".
