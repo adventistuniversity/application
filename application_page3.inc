@@ -89,7 +89,8 @@ function application_form_page3($form_state) {
                                               "from dept inner join ( ".
                                               "	select distinct programfilter.dept_cod ".
                                               "	from (select distinct div_cod, dept_cod, camp_cod ".
-                                              "			 from name inner join nmmodst on name.soc_sec = nmmodst.soc_sec and mod_stat = 'ST' and name.soc_sec <> 'LI8793682') as name ".
+                                              "			 from name inner join nmmodst on name.soc_sec = nmmodst.soc_sec and mod_stat = 'ST' ".
+                                              "           and name.soc_sec <> 'LI8793682' UNION select 'RE', 'RS', 'DV') as name ".
                                               "		inner join programfilter on ".
                                               "			name.div_cod = programfilter.div_cod and name.dept_cod = programfilter.dept_cod ".
                                               "	where name.camp_cod = '".$form_state['values']['campus']."') as a on dept.dept_cod = a.dept_cod ".
@@ -141,9 +142,10 @@ function application_form_page3($form_state) {
                                                  " 	from (select distinct div_cod, dept_cod, camp_cod ".
                                                  " 			 from name inner join nmmodst on name.soc_sec = nmmodst.soc_sec and nmmodst.mod_stat = 'ST' ".
                                                  "       where rtrim(name.camp_cod)+rtrim(name.dept_cod)+rtrim(name.div_cod) not in ('DINURE', 'CONUDL', 'CORSDL')".
-                                                 " 		) as name inner join programfilter on ".
+                                                 " 	  	 UNION select 'RE', 'RS', 'DV') as name inner join programfilter on ".
                                                  " 			name.div_cod = programfilter.div_cod and name.dept_cod = programfilter.dept_cod ".
-                                                 " 	where name.camp_cod = '".$form_state['values']['campus']."' and name.dept_cod = '". $form_state['values']['department1'] ."') as a on".
+                                                 " 	where name.camp_cod = '".$form_state['values']['campus']."' and name.dept_cod = '". $form_state['values']['department1'] ."'".
+                                                 "         and rtrim(name.camp_cod)+rtrim(programfilter.prg_cod) not in ('DVASNM', 'DVCNMT')) as a on".
                                                  "  program.prg_cod = a.prg_cod ".
                                                  "order by prg_txt asc", FALSE);
     for ($i = 0; $i < count($limited_programs); $i++) {
@@ -169,7 +171,7 @@ function application_form_page3($form_state) {
     $form['Plans for Study']['programs1'] = array(
         '#type' => 'checkboxes',
         '#title' => t('Programs'),
-        '#options' => array('' => 'Please Select a Department'),
+        '#options' => (count($banned_programs) > 0?array('' => 'None based on qualifications'):array('' => 'Please Select a Department')),
         '#required' => TRUE,
         '#disabled' => TRUE,
     );
