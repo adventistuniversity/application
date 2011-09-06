@@ -1,4 +1,5 @@
-	$schema['application_Programs'] = array(
+// php	
+  $schema['application_Programs'] = array(
 		'description' => t('The programs a student applies for.'),
 		'fields' => array(
 			'Program_Applicaiton_ID' 		=> NOT MAPPED					=> 'varchar','length' => 32,'not null' => TRUE,'default' => ''),
