@@ -859,7 +859,7 @@ if ($form_state['values']['language'] == "0") {
         'Please Select' => t(''),
         'Does Not Apply' => t('Does Not Apply'),
         // US Social Security Number makes SS Field appear and Number field go away
-        //'US Social Security Number' => t('US Social Security Number'),
+        'US Social Security Number' => t('Have US Social Security Number'),
         'Permanent Resident Number' => t('Permanent Resident Number'),
         // Applied for and Online Only makes number field go away
         'Permanent Resident Number Applied For' => t('Permanent Resident Number Applied For'),
@@ -886,10 +886,11 @@ if ($form_state['values']['language'] == "0") {
       '#attributes' => array('class' => 'no-js'),
     );
     if ($form_state['values']['numberquestion'] != "Taking Online Courses Only") {
-      if ((strcasecmp($form_state['values']['countryofcitizenship'], "UNITED STATES") == 0
+      if (
+			(strcasecmp($form_state['values']['countryofcitizenship'], "UNITED STATES") == 0
       || strcasecmp($form_state['values']['countryofcitizenship'], "American Samoa") == 0 || strcasecmp($form_state['values']['countryofcitizenship'], "Federated States of Micronesia") == 0
       || strcasecmp($form_state['values']['countryofcitizenship'], "Guam") == 0 || strcasecmp($form_state['values']['countryofcitizenship'], "U.S. Minor Outlying Is") == 0
-      || strcasecmp($form_state['values']['countryofcitizenship'], "Puerto Rico") == 0) && $form_state['values']['numberquestion'] == "US Social Security Number") {
+      || strcasecmp($form_state['values']['countryofcitizenship'], "Puerto Rico") == 0) || $form_state['values']['numberquestion'] == "US Social Security Number") {
         $form['Birthplace_Information']['ssn'] = array(
           '#type' => 'textfield',
           '#title' => t('Social Security Number'),
@@ -923,14 +924,14 @@ if ($form_state['values']['language'] == "0") {
         '#options' => $visa,
         '#required' => FALSE,
         );
-        $form['Birthplace_Information']['ssn'] = array(
+        /*$form['Birthplace_Information']['ssn'] = array(
           '#type' => 'textfield',
           '#title' => t('Social Security Number'),
           '#default_value' => $form_state['values']['ssn'],
           '#required' => FALSE,
           '#maxlength' => 9,
           '#size' => 9,
-        );
+        );*/
       }
     }
     else {
