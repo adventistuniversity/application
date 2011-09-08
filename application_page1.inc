@@ -11,7 +11,7 @@
 function application_form_page1($form_state) {
   global $user;
   $form = array();
-
+  dsm($form_state);
   _application_form_page1_load_defaults($form_state);
   ahah_helper_register($form, $form_state);
   $states = sonisweb_integration_dropbox_to_form_api_options_array(
@@ -758,7 +758,7 @@ if ($form_state['values']['language'] == "0") {
   $form['Birthplace_Information']['dateofbirth'] = array(
     '#type' => 'date_popup',
     '#title' => t('Date of Birth'),
-    '#default_value' => $form_state['values']['dateofbirth'],
+    '#default_value' => isset($form_state['values']) ? date('Y-m-d', strtotime($form_state['values']['dateofbirth']['date'])):'',
     '#date_format' => 'm/d/Y',
     '#date_year_range' => '-100:-12',
     '#required' => TRUE,
@@ -1048,7 +1048,6 @@ function _application_form_page1_load_defaults(&$form_state) {
   if ($a) {
     $address_sql = "SELECT Country, State, City, Postal, Street, Primary_phone, Mobile_phone, Alternate_phone, Email, Type FROM {application_Address} WHERE Student_StudentID = '%s'";
     $b = db_fetch_array(db_query($address_sql, $user->uid));
-
     if ($b) {
       if (!isset($form_state['values']['preferred']))
         $form_state['values']['preferred']              = $a['Student_Nickname'];
