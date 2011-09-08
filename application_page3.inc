@@ -93,7 +93,9 @@ function application_form_page3($form_state) {
                                               "           and name.soc_sec <> 'LI8793682' UNION select 'RE', 'RS', 'DV') as name ".
                                               "		inner join programfilter on ".
                                               "			name.div_cod = programfilter.div_cod and name.dept_cod = programfilter.dept_cod ".
-                                              "	where name.camp_cod = '".$form_state['values']['campus']."') as a on dept.dept_cod = a.dept_cod ".
+                                              "	where name.camp_cod = '".$form_state['values']['campus']."' ".
+																							( $form_state['values']['campus']=='DV' ? "UNION SELECT 'SO'":"")
+																							.") as a on dept.dept_cod = a.dept_cod ".
                                               "order by dept.dept_txt", TRUE);
   }
   else {
@@ -145,7 +147,10 @@ function application_form_page3($form_state) {
                                                  " 	  	 UNION select 'RE', 'RS', 'DV') as name inner join programfilter on ".
                                                  " 			name.div_cod = programfilter.div_cod and name.dept_cod = programfilter.dept_cod ".
                                                  " 	where name.camp_cod = '".$form_state['values']['campus']."' and name.dept_cod = '". $form_state['values']['department1'] ."'".
-                                                 "         and rtrim(name.camp_cod)+rtrim(programfilter.prg_cod) not in ('DVASNM', 'DVCNMT')) as a on".
+                                                 "         and rtrim(name.camp_cod)+rtrim(programfilter.prg_cod) not in ('DVASNM', 'DVCNMT') ".
+																								 ( $form_state['values']['department1']=='NU' && $form_state['values']['campus']=='DV' ? " UNION SELECT 'BSN4YR'":"").
+																								 ( $form_state['values']['department1']=='SO' && $form_state['values']['campus']=='DV' ? " UNION SELECT 'ASSO'":"")
+																								 .") as a on".
                                                  "  program.prg_cod = a.prg_cod ".
                                                  "order by prg_txt asc", FALSE);
     for ($i = 0; $i < count($limited_programs); $i++) {
