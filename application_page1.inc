@@ -11,7 +11,6 @@
 function application_form_page1($form_state) {
   global $user;
   $form = array();
-  dsm($form_state);
   _application_form_page1_load_defaults($form_state);
   ahah_helper_register($form, $form_state);
   $states = sonisweb_integration_dropbox_to_form_api_options_array(
