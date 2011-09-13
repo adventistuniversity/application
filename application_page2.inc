@@ -322,6 +322,33 @@ $form['Postsecondary Educational Experience'] = array(
   '#field_suffix' => t('You must submit official transcripts from all of your previous educational institutions. Transcripts must be received by FHCHS directly from the issuing institution. Faxes are not considered official. Transcript request forms are provided after completing this application.')
   ); // why doesn't this work?
   
+$form['Postsecondary Educational Experience']['attendedfhchs'] = array(
+	'#type' => 'select',
+	'#title' => t('Have you attended or been accepted to FHCHS?'),
+	'#default_value' => isset($form_state['values']['attendedfhchs']) ? $form_state['values']['attendedfhchs']:'never_attended', 
+	'#required' => TRUE,
+	'#ahah' => array(
+		'path' => ahah_helper_path(array('Postsecondary Educational Experience')),
+		'wrapper' => 'Postsecondary-Educational-Experience-information-wrapper',
+		'method' => 'replace',
+		'event' => 'change',
+		'effect' => 'fade',
+	),
+	'#options' => array(
+		'attended' => 'Attended',
+		'accepted_not_attended' => 'Accepted, not attended',
+		'never_attended' => 'No Previous FHCHS Experience'
+	)
+);
+// "attendedfhchs" selection
+if( $form_state['values']['attendedfhchs'] == "attended") {
+    $form['Postsecondary Educational Experience']['lastattended'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Last trimester of attendance?'),
+      '#default_value' => $form_state['values']['lastattended'], 
+      '#required' => TRUE,
+     );
+}
 
 $form['Postsecondary Educational Experience']['attendpostsecondary'] = array(
     '#type' => 'select',
@@ -349,13 +376,13 @@ $form['Postsecondary Educational Experience']['attendpostsecondary'] = array(
     '10' => t('10')
     )
   );
+	
 $form['Postsecondary Educational Experience']['update_attendpostsecondary'] = array(
   '#type' => 'submit',
   '#value' => t('attendpostsecondary'),
   '#submit' => array('ahah_helper_generic_submit'),
   '#attributes' => array('class' => 'no-js'),
 );
-
 
 
 if($form_state['values']['attendpostsecondary'] != "None") {
@@ -699,6 +726,22 @@ if($form_state['values']['attendpostsecondary'] != "None") {
   }
 }
 
+// Acknowledgement of Colleges Attended
+$form['Acknowledgement of Colleges Attended'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Acknowledgement of Colleges Attended'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  '#prefix' => '<div id="Acknowledgement-of-Colleges-Attended-information-wrapper">', // This is our wrapper div.
+    '#suffix' => '</div>',
+  '#field_suffix' => t('You must acknowledge disclosure of previous postsecondary education before continuing.')
+);
+
+$form['Acknowledgement of Colleges Attended']['acknowledgement'] = array(
+  '#type' => 'checkbox',
+  '#title' => t('I understand that failure to disclose all colleges previously attended could result in denial or dismissal.'), 
+  '#required' => TRUE
+);
 
 
 
