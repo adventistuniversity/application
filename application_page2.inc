@@ -348,6 +348,21 @@ if( $form_state['values']['attendedfhchs'] == "attended") {
       '#default_value' => $form_state['values']['lastattended'], 
       '#required' => TRUE,
      );
+		$form['Postsecondary Educational Experience']['lastattended_grant_permission'] = array(
+			'#type' => 'checkbox',
+			'#title' => t('Grant programs permission to access my FHCHS transcript'), 
+			'#required' => TRUE,
+			'#default_value' => TRUE
+		);
+}
+// "accepted_not_attended" selection
+if( $form_state['values']['attendedfhchs'] == "accepted_not_attended") {
+    $form['Postsecondary Educational Experience']['lastattended'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Acceptance Date'),
+      '#default_value' => $form_state['values']['lastattended'], 
+      '#required' => TRUE,
+     );
 }
 
 $form['Postsecondary Educational Experience']['attendpostsecondary'] = array(
@@ -740,7 +755,8 @@ $form['Acknowledgement of Colleges Attended'] = array(
 $form['Acknowledgement of Colleges Attended']['acknowledgement'] = array(
   '#type' => 'checkbox',
   '#title' => t('I understand that failure to disclose all colleges previously attended could result in denial or dismissal.'), 
-  '#required' => TRUE
+  '#required' => TRUE,
+	'#default_value' => TRUE
 );
 
 
@@ -1021,8 +1037,8 @@ function application_form_page2_submit($form, &$form_state) {
 
   }
   else {
-    //$GED_date = date("Y-m-d H:i:s", mktime(0, 0, 0, $form_state['values']['geddate']['month'], $form_state['values']['geddate']['day'], $form_state['values']['geddate']['year']));
-//     $GED_date = $form_state['values']['geddate']['year'] .'-'. $form_state['values']['geddate']['month'] .'-'. $form_state['values']['geddate']['day'] .' 00:00:00';
+    // $GED_date = date("Y-m-d H:i:s", mktime(0, 0, 0, $form_state['values']['geddate']['month'], $form_state['values']['geddate']['day'], $form_state['values']['geddate']['year']));
+		// $GED_date = $form_state['values']['geddate']['year'] .'-'. $form_state['values']['geddate']['month'] .'-'. $form_state['values']['geddate']['day'] .' 00:00:00';
     $GED_date = $form_state['values']['geddate'];
   }
 
@@ -1050,8 +1066,12 @@ function application_form_page2_submit($form, &$form_state) {
     $ib = $form_state['values']['IB'];
   }
   
-//   print_r($form_state);
-
+	// Replace FHCHS Previous attendance
+	$attendedfhchs_sql = "DELETE FROM {application_fhchs_attendance} WHERE sid = '%s'";
+	db_query($attendedfhchs_sql, $user->uid);
+	$attendedfhchs_sql = "INSERT INTO {application_fhchs_attendance} (`sid`,`attendance_type`,`attendance_date`) VALUES ('%s','%s','%s')";
+  db_query($attendedfhchs_sql, $user->uid, $form_state['values']['attendedfhchs'], $form_state['values']['lastattended'] );
+	
   //null values are interperted to 0 by the db_query sql injection fixing this makes it difficult to leave GED date NULL an arbitrary date (12/30/1899) was chosen by the developer to represent lack of GED NULL values
   $biographic_sql = "UPDATE {application_Biographic} SET HighSchool_Name = '%s', HighSchool_Country = '%s', HighSchool_State = '%s', HighSchool_City = '%s', HighSchool_Attendance = '%d', HighSchool_Grad_Year = '%s', HighSchool_Sonis_ID = '%s', HighSchool_Equivalent_Type = '%s', GED_Testing_Site = '%s', GED_Date_Of_Issue = '%s', OtherSchooling_CLEP = '%d', OtherSchooling_AP = '%d', OtherSchooling_IB = '%d' WHERE Student_StudentID = '%s'";
   db_query($biographic_sql, $hsname, $form_state['values']['highschoolcountry'], $form_state['values']['highschoolstate'], $hscity, $form_state['values']['attendhighschool'], $form_state['values']['graduationyear'], $form_state['values']['highschoolname'], $form_state['values']['highschooltype'], $form_state['values']['gedtesting'], $GED_date, $clep, $ap, $ib, $user->uid);
@@ -1092,9 +1112,6 @@ function application_form_page2_submit($form, &$form_state) {
         else {
           $psdegree = $form_state['values']['postSecondaryDegree'. $i];
         }
-
-       
-       
        
       $institutions_sql = "INSERT into {application_Institutions} (Student_StudentID, Institution_Name, Institution_Country, Institution_City, Institution_State, First_Year_Attended, Last_Year_Attended, Degree_Certificate_Complete, Year_Degree_Completed, Degree, Major, Sonis_Institution_ID)VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' )";
       db_query($institutions_sql, $user->uid, $psname, $form_state['values']['postSecondaryCountry'. $i], $pscity, $form_state['values']['postSecondaryState'. $i], $form_state['values']['postSecondaryStartYear'. $i], $form_state['values']['postSecondaryEndYear'. $i], $degreecomplete, $form_state['values']['postSecondaryDegeree'. $i], $psdegree, $form_state['values']['postSecondaryMajor'. $i], $form_state['values']['postSecondaryName'. $i]);
@@ -1226,7 +1243,16 @@ function _application_form_page2_load_defaults(&$form_state) {
       $form_state['values']['AP'] = $a['OtherSchooling_AP'];
     if (!isset($form_state['values']['IB']))
       $form_state['values']['IB'] = $a['OtherSchooling_IB'];
-
+		
+		// Take care of fhchs attendance
+		$fhchs_attendance_sql = "SELECT * FROM {application_fhchs_attendance} WHERE sid='%s'";
+		$result = db_query($fhchs_attendance_sql, $user->uid);
+		// iterate through results
+		while($a = db_fetch_array($result)){
+			$form_state['values']['attendedfhchs'] = $a['attendance_type'];
+			$form_state['values']['lastattended'] = $a['attendance_date'];
+		}
+		
     // take care of the post secondary institutions
     $institutions_sql = "SELECT Institution_Name, Institution_Country, Institution_City, Institution_State, First_Year_Attended, Last_Year_Attended, Degree_Certificate_Complete, Year_Degree_Completed, Degree, Major, Sonis_Institution_ID FROM {application_Institutions} WHERE Student_StudentID = '%s'";
     $result = db_query($institutions_sql, $user->uid);
