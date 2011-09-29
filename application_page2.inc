@@ -1244,14 +1244,15 @@ function _application_form_page2_load_defaults(&$form_state) {
     if (!isset($form_state['values']['IB']))
       $form_state['values']['IB'] = $a['OtherSchooling_IB'];
 		
-		// Take care of fhchs attendance
-		$fhchs_attendance_sql = "SELECT * FROM {application_fhchs_attendance} WHERE sid='%s'";
-		$result = db_query($fhchs_attendance_sql, $user->uid);
-		// iterate through results
-		while($a = db_fetch_array($result)){
+    if (!isset($form_state['values']['attendedfhchs'])) {
+  		// Take care of fhchs attendance
+  		$fhchs_attendance_sql = "SELECT * FROM {application_fhchs_attendance} WHERE sid='%s'";
+  		$result = db_query($fhchs_attendance_sql, $user->uid);
+  		// iterate through results
+  		$a = db_fetch_array($result);
 			$form_state['values']['attendedfhchs'] = $a['attendance_type'];
 			$form_state['values']['lastattended'] = $a['attendance_date'];
-		}
+    }
 		
     // take care of the post secondary institutions
     $institutions_sql = "SELECT Institution_Name, Institution_Country, Institution_City, Institution_State, First_Year_Attended, Last_Year_Attended, Degree_Certificate_Complete, Year_Degree_Completed, Degree, Major, Sonis_Institution_ID FROM {application_Institutions} WHERE Student_StudentID = '%s'";
