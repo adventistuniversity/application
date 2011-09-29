@@ -333,8 +333,67 @@ function application_views_data() {
       ),
     ),     
     
+
+		'application_fhchs_attendance' => array(
+      'table' => array(
+        // Define the base group of this table. Fields that don't
+        // have a group defined will go into this field by default.
+        'group' => t('FHCHS_Attendance'),
+        // Link this table into the biographic table
+        // This also allows it to show in the same base as a separate group otherwise unlinked it will never show
+        'join' => array(
+          'application_Biographic' => array(
+            'left_field' => 'Student_StudentID',
+            'field' => 'sid',
+          ),
+        ),
+      ),
+			'sid' => array(
+				'title' => t('Student ID'),
+        'help' => t('Student ID for applicant'),
+        'field' => array(
+          'handler' => 'views_handler_field_numeric',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+          'label' => t('Student ID'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+			),
+			'attendance_type' => array(
+				'title' => t('Previous FHCHS Experience'),
+        'help' => t('Whether or not the student has ever been accepted or attended FHCHS.'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+          'label' => t('FHCHS Experience'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+			),
+			'attendance_date' => array(
+				'title' => t('Last Attended/Accepted Date'),
+        'help' => t('When the student has last been accepted or attended FHCHS.'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+          'label' => t('FHCHS Experience'),
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+			),
+		),
     
-    'application_Programs' => array(
+		
+		'application_Programs' => array(
    
       'table' => array(
         // Define the base group of this table. Fields that don't
@@ -1498,9 +1557,9 @@ function application_views_data() {
       ),
     ),
   );
+	
   return $data;
 }
-
 /**
  * Implementation of hook_hook_info().
  */
