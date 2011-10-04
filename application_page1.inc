@@ -755,11 +755,11 @@ if ($form_state['values']['language'] == "0") {
     '#collapsed' => FALSE,
   );
   $form['Birthplace_Information']['dateofbirth'] = array(
-    '#type' => 'date_popup',
+    '#type' => 'date',
     '#title' => t('Date of Birth'),
-    '#default_value' => isset($form_state['values']) ? date('Y-m-d', strtotime($form_state['values']['dateofbirth']['date'])):'',
-    '#date_format' => 'm/d/Y',
-    '#date_year_range' => '-100:-12',
+    '#default_value' => $form_state['values']['dateofbirth'],//isset($form_state['values']['dateofbirth']) ? date('Y-m-d', strtotime($form_state['values']['dateofbirth'])):'',
+    //'#date_format' => 'm/d/Y',
+    //'#date_year_range' => '-100:-12',
     '#required' => TRUE,
   );
   $form['Birthplace_Information']['countryofbirth'] = array(
@@ -967,17 +967,17 @@ function application_form_page1_validate($form, &$form_state) {
   if ($form_state['values']['number'] != "" && strlen($form_state['values']['number']) < 10) {
     form_set_error('number', t("Please enter a valid Permanent Resident Number"));
   }
-  if (substr($form_state['values']['dateofbirth'], 0, 4) >= (date("Y") - 10) ||
+ /* if (substr($form_state['values']['dateofbirth'], 0, 4) >= (date("Y") - 10) ||
       substr($form_state['values']['dateofbirth'], 0, 4) <= (date("Y") - 100)) {
     form_set_error('dateofbirth', t("Please enter a valid Date of Birth"));
-  }
+  }*/
 }
 function application_form_page1_submit($form, &$form_state) {
   global $user;
   date_default_timezone_set('UTC');
   $name = ($form_state['values']['preferred'] == ""?$form_state['values']['first']:$form_state['values']['preferred']);
-//  $dob = $form_state['values']['dateofbirth']['year'] .'-'. $form_state['values']['dateofbirth']['month'] .'-'. $form_state['values']['dateofbirth']['day'] .' 00:00:00';
-  $dob = $form_state['values']['dateofbirth'];
+  $dob = $form_state['values']['dateofbirth']['year'] .'-'. $form_state['values']['dateofbirth']['month'] .'-'. $form_state['values']['dateofbirth']['day'] .' 00:00:00';
+  //$dob = $form_state['values']['dateofbirth'];
   //null values are interperted to 0 by the db_query sql injection fixing this makes it difficult to leave GED date NULL an arbitrary date (1/1/1800) was chosen by the developer to represent lack of GED NULL values
   $GED_date = '1899-12-30 00:00:00';
   
@@ -1059,23 +1059,26 @@ function _application_form_page1_load_defaults(&$form_state) {
         $form_state['values']['last']                   = $a['Student_Lname'];
       if (!isset($form_state['values']['former_last']))
         $form_state['values']['former_last']             = $a['Student_FormerLname'];
-//       if (!isset($form_state['values']['dateofbirth'])) {
-//         $dob                                            = $a['Student_DOB'];
-//         $dob = split("-", $dob);
-//         $form_state['values']['dateofbirth']['year'] = $dob[0];
-//         $form_state['values']['dateofbirth']['month'] = $dob[1];
-//         $dob = split(" ", $dob[2]);
-//         $form_state['values']['dateofbirth']['day'] = $dob[0];
-//       }
-      if (!isset($form_state['values']['dateofbirth']) || substr($form_state['values']['dateofbirth'], 0, 1) == 0) {
+       if (!isset($form_state['values']['dateofbirth'])) {
+         $dob                                            = strtotime($a['Student_DOB']);
+         /*$dob = split("-", $dob);
+         $form_state['values']['dateofbirth']['year'] = $dob[0];
+         $form_state['values']['dateofbirth']['month'] = $dob[1];
+         $dob = split(" ", $dob[2]);
+         $form_state['values']['dateofbirth']['day'] = $dob[0];*/
+				 $form_state['values']['dateofbirth']['year'] = date('Y', $dob);
+         $form_state['values']['dateofbirth']['month'] = date('n', $dob);
+         $form_state['values']['dateofbirth']['day'] = date('j', $dob);
+       }
+//      if (!isset($form_state['values']['dateofbirth']) || substr($form_state['values']['dateofbirth'], 0, 1) == 0) {
 //         $dob                                            = $a['Student_DOB'];
 //         $dob = split("-", $dob);
 //         $tmpa = $dob[0];
 //         $tmpb = $dob[1];
 //         $dob = split(" ", $dob[2]);
 //         $form_state['values']['dateofbirth'] = $tmpb ."/". $dob[0] ."/". $tmpa ." ". $dob[1];
-        $form_state['values']['dateofbirth']             = $a['Student_DOB'];
-      }
+//				 $form_state['values']['dateofbirth']             = $a['Student_DOB'];
+//      }
       if (!isset($form_state['values']['ssn'])) {
         if ($a['Student_SSN'] == 0)
           $form_state['values']['ssn']                  = "";
