@@ -120,7 +120,7 @@
     '#submit' => array('ahah_helper_generic_submit'),
     '#attributes' => array('class' => 'no-js'),
   );
-  if ($form_state['values']['ethnicorigin'] == "0" || $form_state['values']['ethnicorigin'] == "I prefer not to share." ) {
+  if ($form_state['values']['ethnicorigin'] == "H" || $form_state['values']['ethnicorigin'] == "0" || $form_state['values']['ethnicorigin'] == "I prefer not to share.") {
     $ethnic = sonisweb_integration_dropbox_to_form_api_options_array(
               sonisweb_integration_api("CFC.ethnic", "ethnic_drop", "no", array(array('sonis_ds', '#sonis.ds#'),
                                        array('allow_blank', "yes"),
@@ -132,7 +132,7 @@
       '#type' => 'select',
       '#title' => t('Ethnic Origin'),
       '#default_value' => $form_state['values']['ethnicorigin2'],
-      '#required' => TRUE,
+      '#required' => ($form_state['values']['ethnicorigin'] == "0"), // Returns TRUE or FALSE
       '#options' => $ethnic,
     );
   }
