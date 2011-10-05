@@ -149,6 +149,20 @@ function application_schema() {
     ), 
     'primary key' => array('Student_StudentID'), 
     );
+	
+	$schema['application_fhchs_attendance'] = array(
+    'description' => t('The previous experience this student has had with FHCHS'), 
+    'fields' => array(
+      'sid' 						=> array('description' => t('Student_StudentID'), 'type' => 'serial'),
+      'attendance_type' => array('description' => t('Attendance_Type'), 	'type' => 'varchar', 'length' => 32, 'not null' => FALSE,'default' => ''),
+      'attendance_date' => array('description' => t('Attendance_Date'), 	'type' => 'varchar', 'length' => 32, 'not null' => FALSE, 'default' => ''),
+      ), 
+
+    'unique keys' => array(
+        'sid'     => array('sid')
+      ), 
+    'primary key' => array('sid'),   
+   );
   return $schema;
 }
 
@@ -191,5 +205,25 @@ function application_update_3() {
 function application_update_4() {
   $ret = array();
   db_add_field($ret, 'application_Biographic', 'HighSchool_Equivalent_Type', array('description' => t('HighSchool_Equivalent_Type'), 'type' => 'varchar', 'length' => 50, 'not null' => FALSE, 'default' => ''));
+  return $ret;
+}
+
+function application_update_5() {
+	$table = array(
+    'description' => t('The previous experience this student has had with FHCHS'), 
+    'fields' => array(
+      'sid' 						=> array('description' => t('Student_StudentID'), 'type' => 'serial'),
+      'attendance_type' => array('description' => t('Attendance_Type'), 	'type' => 'varchar', 'length' => 32, 'not null' => FALSE,'default' => ''),
+      'attendance_date' => array('description' => t('Attendance_Date'), 	'type' => 'varchar', 'length' => 32, 'not null' => FALSE, 'default' => ''),
+      ), 
+
+    'unique keys' => array(
+        'sid'     => array('sid')
+      ), 
+    'primary key' => array('sid'),   
+   );
+	 
+  $ret = array();
+  db_create_table($ret, 'application_fhchs_attendance', $table);
   return $ret;
 }
