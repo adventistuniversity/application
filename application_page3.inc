@@ -148,9 +148,12 @@ function application_form_page3($form_state) {
                                                  " 			name.div_cod = programfilter.div_cod and name.dept_cod = programfilter.dept_cod ".
                                                  " 	where name.camp_cod = '".$form_state['values']['campus']."' and name.dept_cod = '". $form_state['values']['department1'] ."'".
                                                  "         and rtrim(name.camp_cod)+rtrim(programfilter.prg_cod) not in ('DVASNM', 'DVCNMT') ".
+																								 // Manually Add the programs for Denver.
+																								 // Yup...
 																								 ( $form_state['values']['department1']=='NU' && $form_state['values']['campus']=='DV' ? " UNION SELECT 'BSN4YR'":"").
-																								 ( $form_state['values']['department1']=='SO' && $form_state['values']['campus']=='DV' ? " UNION SELECT 'ASSO'":"")
-																								 .") as a on".
+																								 ( $form_state['values']['department1']=='SO' && $form_state['values']['campus']=='DV' ? " UNION SELECT 'ASSO'":"").
+																								 ( $form_state['values']['department1']=='SO' && $form_state['values']['campus']=='DV' ? " UNION SELECT 'ASGS'":"").
+																								 ") as a on".
                                                  "  program.prg_cod = a.prg_cod ".
                                                  "order by prg_txt asc", FALSE);
     for ($i = 0; $i < count($limited_programs); $i++) {
