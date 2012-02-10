@@ -184,8 +184,75 @@ function application_form_page1($form_state) {
     '#maxlength' => 100,
     '#size' => 35,
   );
-// Licensure Eligibility
+  
+// Get authorize person
+$form['Authorized Person'] = array(
+   '#type' => 'fieldset',
+   '#title' => t('Authorized_Person'),
+   '#prefix' => '<div id="authorized-person-wrapper">', // This is our wrapper div.
+   '#suffix' => '</div>',
+   '#collapsible' => FALSE,
+   '#collapsed' => FALSE,
+ );
 
+$form['Authorized Person']['person1_first_name'] = array(
+  '#type' => 'textfield',
+  '#title' => t('First Name'),
+  '#default_value' => $form_state['values']['person1_first_name'],
+  '#required' => FALSE,
+  '#maxlength' => 30,
+  '#size' => 30,
+);
+
+$form['Authorized Person']['person1_last_name'] = array(
+  '#type' => 'textfield',
+  '#title' => t('Last Name'),
+  '#default_value' => $form_state['values']['person1_last_name'],
+  '#required' => FALSE,
+  '#maxlength' => 30,
+  '#size' => 30,
+);
+
+$form['Authorized Person']['person1_relationship'] = array(
+  '#type' => 'textfield',
+  '#title' => t('Relationship'),
+  '#description' => t('Persons relationsip to you.'),
+  '#default_value' => $form_state['values']['person1_last_name'],
+  '#required' => FALSE,
+  '#maxlength' => 50,
+  '#size' => 50,
+);
+
+
+$form['Authorized Person']['person2_first_name'] = array(
+  '#type' => 'textfield',
+  '#title' => t('First Name'),
+  '#default_value' => $form_state['values']['person1_first_name'],
+  '#required' => FALSE,
+  '#maxlength' => 30,
+  '#size' => 30,
+);
+
+$form['Authorized Person']['person2_last_name'] = array(
+  '#type' => 'textfield',
+  '#title' => t('Last Name'),
+  '#default_value' => $form_state['values']['person1_last_name'],
+  '#required' => FALSE,
+  '#maxlength' => 30,
+  '#size' => 30,
+);
+
+$form['Authorized Person']['person2_relationship'] = array(
+  '#type' => 'textfield',
+  '#title' => t('Relationship'),
+  '#description' => t('Persons relationsip to you.'),
+  '#default_value' => $form_state['values']['person1_last_name'],
+  '#required' => FALSE,
+  '#maxlength' => 50,
+  '#size' => 50,
+);
+
+// Licensure Eligibility
 $form['Licensure Eligibility'] = array(
    '#type' => 'fieldset',
    '#title' => t('Background Information'),

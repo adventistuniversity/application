@@ -142,6 +142,7 @@ function application_schema() {
       'Statistics_Home_Church_State'     => array('description' => t('Statistics_Home_Church_State'),     'type' => 'varchar', 'length' => 2 , 'not null' => FALSE, 'default' => ''),
       'Personal_Statement_Agreement'     => array('description' => t('Personal_Statement_Agreement.'),    'type' => 'int', 'size' => 'tiny'  , 'not null' => TRUE,  'default' => 0),
       'Application_Finished'             => array('description' => t('Application_Finished'),             'type' => 'datetime'               , 'not null' => FALSE),
+      'Reference'                        => array('description' => t('Reference'),                        'type' => 'varchar',  'length' => 100, 'not null' => TRUE,  'default' => ''),
       ),
 
     'unique keys' => array(
@@ -150,7 +151,7 @@ function application_schema() {
     'primary key' => array('Student_StudentID'), 
     );
 	
-	$schema['application_fhchs_attendance'] = array(
+    $schema['application_fhchs_attendance'] = array(
     'description' => t('The previous experience this student has had with FHCHS'), 
     'fields' => array(
       'sid' 						=> array('description' => t('Student_StudentID'), 'type' => 'serial'),
@@ -163,6 +164,23 @@ function application_schema() {
       ), 
     'primary key' => array('sid'),   
    );
+    
+  $schema['application_authorize_person'] =  array(
+    'description' => t('Table that stores people authorized to view student profile during enroment process.'), 
+    'fields' => array(
+      'sid'                  => array('description' => t('Student_StudentID'), 'type' => 'serial'),  
+      'person_id'            => array('description' => t('Person_Id'),            'type' => 'serial'),
+      'first_name'           => array('description' => t('First_Name'),           'type' => 'varchar', 'length' => 30,  'not null' => TRUE,  'default' => ''),
+      'last_name'            => array('description' => t('Last_Name'),            'type' => 'varchar', 'length' => 30, 'not null' => TRUE,  'default' => ''),
+      'relationship'         => array('description' => t('Relationship'),         'type' => 'varchar', 'length' => 25, 'not null' => TRUE,  'default' => ''),
+      ), 
+
+    'unique keys' => array(
+        'Person_Id'     => array('Person_Id')
+      ), 
+    'primary key' => array('Person_Id'),   
+    );
+  
   return $schema;
 }
 
@@ -212,7 +230,7 @@ function application_update_5() {
 	$table = array(
     'description' => t('The previous experience this student has had with FHCHS'), 
     'fields' => array(
-      'sid' 						=> array('description' => t('Student_StudentID'), 'type' => 'serial'),
+      'sid' => array('description' => t('Student_StudentID'), 'type' => 'serial'),
       'attendance_type' => array('description' => t('Attendance_Type'), 	'type' => 'varchar', 'length' => 32, 'not null' => FALSE,'default' => ''),
       'attendance_date' => array('description' => t('Attendance_Date'), 	'type' => 'varchar', 'length' => 32, 'not null' => FALSE, 'default' => ''),
       ), 
@@ -226,4 +244,36 @@ function application_update_5() {
   $ret = array();
   db_create_table($ret, 'application_fhchs_attendance', $table);
   return $ret;
+}
+
+function application_update_6() {
+  
+  // Create new table
+  $table =  array(
+    'description' => t('Table that stores people authorized to view student profile during enroment process.'), 
+    'fields' => array(
+      'sid'                  => array('description' => t('Student_StudentID'),    'type' => 'serial'),   
+      'person_id'            => array('description' => t('Person_Id'),            'type' => 'serial'),
+      'first_name'           => array('description' => t('First_Name'),           'type' => 'varchar', 'length' => 30,  'not null' => TRUE,  'default' => ''),
+      'last_name'            => array('description' => t('Last_Name'),            'type' => 'varchar', 'length' => 30, 'not null' => TRUE,  'default' => ''),
+      'relationship'         => array('description' => t('Relationship'),         'type' => 'varchar', 'length' => 50, 'not null' => TRUE,  'default' => ''),
+      ),
+    'unique keys' => array('Person_Id'     => array('Person_Id')), 
+    'primary key' => array('Person_Id'),   
+  );
+  
+  
+  $ret = array();
+  db_create_table($ret, 'application_authorize_person', $table);
+  return $ret;
+   
+}
+
+
+function application_update_7() {
+  
+  $ret = array();
+  db_add_field($ret, 'application_Biographic', 'referby', array('description' => t('Refer_by'), 'type' => 'varchar',  'length' => 100, 'not null' => TRUE,  'default' => ''));
+  return $ret;
+
 }

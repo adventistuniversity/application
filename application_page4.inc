@@ -192,6 +192,18 @@
       '#size' => 50,      
     );
   }
+ 
+  $options = sonisweb_integration_sql_to_options(sonisweb_integration_sql("SELECT refer_by_cod, ltrim(rtrim(refer_by)) FROM dbo.referby ORDER BY refer_by ASC;"));
+  //Get information from SONISWEB
+  
+  $form['Statistical Data']['referby'] = array(
+    '#type' => 'select',
+    '#title' => t('Refer By'),
+    '#options' => $options,
+    '#default_value' => $form_state['Statistical Data']['referby'],
+    '#required' => TRUE,
+    '#description' => t('Who informed you about FHCHS.'),
+  );
   
   $form['Submit'] = array(
   '#type' => 'submit',
