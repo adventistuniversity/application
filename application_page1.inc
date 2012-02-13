@@ -186,16 +186,16 @@ function application_form_page1($form_state) {
   );
   
 // Get authorize person
-$form['Authorized Person'] = array(
+$form['authorized_person'] = array(
    '#type' => 'fieldset',
-   '#title' => t('Authorized_Person'),
+   '#title' => t('Authorized Person'),
    '#prefix' => '<div id="authorized-person-wrapper">', // This is our wrapper div.
    '#suffix' => '</div>',
    '#collapsible' => FALSE,
    '#collapsed' => FALSE,
  );
 
-$form['Authorized Person']['person1_first_name'] = array(
+$form['authorized_person']['person1_first_name'] = array(
   '#type' => 'textfield',
   '#title' => t('First Name'),
   '#default_value' => $form_state['values']['person1_first_name'],
@@ -204,7 +204,7 @@ $form['Authorized Person']['person1_first_name'] = array(
   '#size' => 30,
 );
 
-$form['Authorized Person']['person1_last_name'] = array(
+$form['authorized_person']['person1_last_name'] = array(
   '#type' => 'textfield',
   '#title' => t('Last Name'),
   '#default_value' => $form_state['values']['person1_last_name'],
@@ -213,10 +213,10 @@ $form['Authorized Person']['person1_last_name'] = array(
   '#size' => 30,
 );
 
-$form['Authorized Person']['person1_relationship'] = array(
+$form['authorized_person']['person1_relationship'] = array(
   '#type' => 'textfield',
   '#title' => t('Relationship'),
-  '#description' => t('Persons relationsip to you.'),
+  '#description' => t('Enter the person relationship to you.'),
   '#default_value' => $form_state['values']['person1_last_name'],
   '#required' => FALSE,
   '#maxlength' => 50,
@@ -233,7 +233,7 @@ $form['Authorized Person']['person2_first_name'] = array(
   '#size' => 30,
 );
 
-$form['Authorized Person']['person2_last_name'] = array(
+$form['authorized_person']['person2_last_name'] = array(
   '#type' => 'textfield',
   '#title' => t('Last Name'),
   '#default_value' => $form_state['values']['person1_last_name'],
@@ -242,10 +242,10 @@ $form['Authorized Person']['person2_last_name'] = array(
   '#size' => 30,
 );
 
-$form['Authorized Person']['person2_relationship'] = array(
+$form['authorized_person']['person2_relationship'] = array(
   '#type' => 'textfield',
   '#title' => t('Relationship'),
-  '#description' => t('Persons relationsip to you.'),
+  '#description' => t('Enter the person relationship to you.'),
   '#default_value' => $form_state['values']['person1_last_name'],
   '#required' => FALSE,
   '#maxlength' => 50,
