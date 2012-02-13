@@ -1081,7 +1081,7 @@ function application_form_page1_submit($form, &$form_state) {
     module_invoke_all('application_changed', 'start', $user);
   }
   
-
+  
   $a = "SELECT count(Student_StudentID) as count FROM {application_Address} WHERE Student_StudentID = '%s'";
   $a = db_fetch_array(db_query($a, $user->uid));
 
@@ -1094,6 +1094,43 @@ function application_form_page1_submit($form, &$form_state) {
     db_query($address_sql, $user->uid, $form_state['values']['countryofresidence'], $form_state['values']['state'],   $form_state['values']['addresscity'], $form_state['values']['postalcode'], $form_state['values']['streetaddress'], $form_state['values']['primaryphone'], $form_state['values']['cellphone'], $form_state['values']['alternatephone'], $form_state['values']['email'], 'Pref Add', $form_state['values']['preferred']);
   }
 
+  //Enter authorized person one
+  $authorize_person1 = "SELECT person_id, Student_StudentID, first_name, last_name, relationship FROM {application_authorize_person} WHERE Student_StudentID = '%s' AND first_name = '%s' AND last_name = '%s'";
+  $authorize_person1 = db_fetch_array(db_query($a, $user->uid, $form_state['values']['person1_first_name'], $form_state['values']['person1_last_name']));
+  
+  if (!empty($authorize_person1)) {
+    
+    $authorized_sql = "UPDATE {application_authorize_person} SET first_name = '%s', last_name = '%s', relationship = '%s' WHERE Student_StudentID = '%s' and person_id = '%s'";
+    db_query($authorized_sql, $form_state['values']['person1_first_name'], $form_state['values']['person1_last_name'],$form_state['values']['person1_relationship'], $user->uid, $authorize_person1['person_id'] ); 
+    
+  }
+  else {
+    
+     $authorized_sql = "INSERT into {application_authorize_person} (Student_StudentID, first_name, last_name, relationship)
+                        VALUES('%s', '%s', '%s', '%s')";
+     db_query($authorized_sql, $user->uid, $form_state['values']['person1_first_name'], $form_state['values']['person1_last_name'],$form_state['values']['person1_relationship']); 
+    
+  }
+  
+  //Enter authorized person two
+  $authorize_person2 = "SELECT person_id, Student_StudentID, first_name, last_name, relationship FROM {application_authorize_person} WHERE Student_StudentID = '%s' AND first_name = '%s' AND last_name = '%s'";
+  $authorize_person2 = db_fetch_array(db_query($a, $user->uid, $form_state['values']['person2_first_name'], $form_state['values']['person2_last_name']));
+  
+  if (!empty($authorize_person2)) {
+    
+    $authorized_sql = "UPDATE {application_authorize_person} SET first_name = '%s', last_name = '%s', relationship = '%s' WHERE Student_StudentID = '%s' and person_id = '%s'";
+    db_query($authorized_sql, $form_state['values']['person2_first_name'], $form_state['values']['person2_last_name'],$form_state['values']['person2_relationship'], $user->uid, $authorize_person1['person_id'] ); 
+    
+  }
+  else {
+    
+     $authorized_sql = "INSERT into {application_authorize_person} (Student_StudentID, first_name, last_name, relationship)
+                        VALUES('%s', '%s', '%s', '%s')";
+     db_query($authorized_sql, $user->uid, $form_state['values']['person2_first_name'], $form_state['values']['person2_last_name'],$form_state['values']['person2_relationship']); 
+    
+  }
+  
+  
   //Fire Application Updated Trigger
   module_invoke_all('application_changed', 'update', $user);
 
