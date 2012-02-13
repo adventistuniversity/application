@@ -224,7 +224,7 @@ $form['authorized_person']['person1_relationship'] = array(
 );
 
 
-$form['Authorized Person']['person2_first_name'] = array(
+$form['authorized_person']['person2_first_name'] = array(
   '#type' => 'textfield',
   '#title' => t('First Name'),
   '#default_value' => $form_state['values']['person1_first_name'],
