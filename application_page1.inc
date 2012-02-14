@@ -227,7 +227,7 @@ $form['authorized_person']['person1_relationship'] = array(
 $form['authorized_person']['person2_first_name'] = array(
   '#type' => 'textfield',
   '#title' => t('First Name'),
-  '#default_value' => $form_state['values']['person1_first_name'],
+  '#default_value' => $form_state['values']['person2_first_name'],
   '#required' => FALSE,
   '#maxlength' => 30,
   '#size' => 30,
@@ -236,7 +236,7 @@ $form['authorized_person']['person2_first_name'] = array(
 $form['authorized_person']['person2_last_name'] = array(
   '#type' => 'textfield',
   '#title' => t('Last Name'),
-  '#default_value' => $form_state['values']['person1_last_name'],
+  '#default_value' => $form_state['values']['person2_last_name'],
   '#required' => FALSE,
   '#maxlength' => 30,
   '#size' => 30,
@@ -1091,8 +1091,8 @@ function application_form_page1_submit($form, &$form_state) {
   }
   
   //Delete authorized person before saving two more
-  $delete_authorized = "DELETE FROM {application_authorize_person} WHERE Student_StudentID = '%s'";
-  db_query($delete_authorized, $user->uid);
+  //$delete_authorized = "DELETE FROM {application_authorize_person} WHERE Student_StudentID = '%s'";
+  //db_query($delete_authorized, $user->uid);
   
   //Enter authorized person one  
   $authorize_sql = "SELECT person_id, Student_StudentID, first_name, last_name, relationship FROM {application_authorize_person} WHERE Student_StudentID = '%s' AND first_name = '%s' AND last_name = '%s'";
