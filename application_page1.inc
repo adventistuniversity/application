@@ -1154,7 +1154,7 @@ function _application_form_page1_load_defaults(&$form_state) {
   
   //Setting default value for authorize person
   $counter  = 1;
-  while (($row = db_fetch_array($authorized_sql)) AND $counter <= 2) {
+  while (($row = db_fetch_array($authorized_person)) AND $counter <= 2) {
     
     if (!isset($form_state['values']['person'.$counter.'_first_name']))
         $form_state['values']['person'.$counter.'_first_name']  = $row['first_name'];
