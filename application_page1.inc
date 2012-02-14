@@ -1148,6 +1148,28 @@ function _application_form_page1_load_defaults(&$form_state) {
 
   $biographic_sql = "SELECT Student_Nickname, Student_Fname, Student_Mname, Student_Lname, Student_FormerLname, Student_DOB, Student_SSN, Birth_Country, Birth_City, Birth_State, Felony, Citizenship_Country, Citizenship_ID_Number, Citizenship_ID_Type, Citizenship_Visa_Status, GED_Date_Of_Issue, Statistics_Native_English, Statistics_Native_Language FROM {application_Biographic} WHERE Student_StudentID = '%s'";
   $a = db_fetch_array(db_query($biographic_sql, $user->uid));
+  
+  $authorized_sql = "SELECT person_id, Student_StudentID, first_name, last_name, relationship FROM {application_authorize_person} WHERE  Student_StudentID = '%s'";
+  $authorized_person = db_query($authorized_sql, $user->uid);
+  
+  //Setting default value for authorize person
+  $counter  = 1;
+  while (($row = db_fetch_array($authorized_sql)) AND $counter <= 2) {
+    
+    if (!isset($form_state['values']['person'.$counter.'_first_name']))
+        $form_state['values']['person'.$counter.'_first_name']  = $row['first_name'];
+    
+    if (!isset($form_state['values']['person'.$counter.'_last_name']))
+        $form_state['values']['person'.$counter.'_last_name']  = $row['last_name'];
+        
+    if (!isset($form_state['values']['person'.$counter.'_relationship']))
+        $form_state['values']['person'.$counter.'_relationship']  = $row['relationship'];      
+    
+    $counter++;
+  }
+  
+  
+  
 
   if ($a) {
     $address_sql = "SELECT Country, State, City, Postal, Street, Primary_phone, Mobile_phone, Alternate_phone, Email, Type FROM {application_Address} WHERE Student_StudentID = '%s'";
