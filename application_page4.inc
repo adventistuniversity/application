@@ -273,6 +273,8 @@ function _application_form_page4_load_defaults(&$form_state) {
     $form_state['values']['veteran']                  = $a['Statistics_US_Military_Veteran'];
   if (!isset($form_state['values']['veteranbenefits']))
     $form_state['values']['veteranbenefits']          = $a['Statistics_Receiving_Veteran_Benefits'];
+  if(!isset($form_state['values']['referby']))
+    $form_state['values']['referby']                  = $a['referby'];
 
  //print_r($form_state);
   
