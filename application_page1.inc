@@ -1091,25 +1091,29 @@ function application_form_page1_submit($form, &$form_state) {
   }
   
   //Delete authorized person before saving two more
-  //$delete_authorized = "DELETE FROM {application_authorize_person} WHERE Student_StudentID = '%s'";
-  //db_query($delete_authorized, $user->uid);
+  $delete_authorized = "DELETE FROM {application_authorize_person} WHERE Student_StudentID = '%s'";
+  db_query($delete_authorized, $user->uid);
   
   //Enter authorized person one  
   $authorize_sql = "SELECT person_id, Student_StudentID, first_name, last_name, relationship FROM {application_authorize_person} WHERE Student_StudentID = '%s' AND first_name = '%s' AND last_name = '%s'";
   $authorize_person1 = db_fetch_array(db_query($authorize_sql, $user->uid, $form_state['values']['person1_first_name'], $form_state['values']['person1_last_name']));
   
+  echo "<pre>";
+  print_r($form_state['values']);
+  echo "</pre>";
+  
   if (!empty($authorize_person1)) {
     
     $authorized_sql = "UPDATE {application_authorize_person} SET first_name = '%s', last_name = '%s', relationship = '%s' WHERE Student_StudentID = '%s' and person_id = '%s'";
     db_query($authorized_sql, $form_state['values']['person1_first_name'], $form_state['values']['person1_last_name'],$form_state['values']['person1_relationship'], $user->uid, $authorize_person1['person_id'] ); 
-    
+    echo "Updating person 1";  
   }
   else {
     
      $authorized_sql = "INSERT into {application_authorize_person} (Student_StudentID, first_name, last_name, relationship)
                         VALUES('%s', '%s', '%s', '%s')";
      db_query($authorized_sql, $user->uid, $form_state['values']['person1_first_name'], $form_state['values']['person1_last_name'],$form_state['values']['person1_relationship']); 
-    
+     echo "Insert person 1";
   }
   
   //Enter authorized person two
@@ -1120,17 +1124,17 @@ function application_form_page1_submit($form, &$form_state) {
     
     $authorized_sql = "UPDATE {application_authorize_person} SET first_name = '%s', last_name = '%s', relationship = '%s' WHERE Student_StudentID = '%s' and person_id = '%s'";
     db_query($authorized_sql, $form_state['values']['person2_first_name'], $form_state['values']['person2_last_name'],$form_state['values']['person2_relationship'], $user->uid, $authorize_person1['person_id'] ); 
-    
+    echo "Update person 2";
   }
   else {
     
      $authorized_sql = "INSERT into {application_authorize_person} (Student_StudentID, first_name, last_name, relationship)
                         VALUES('%s', '%s', '%s', '%s')";
      db_query($authorized_sql, $user->uid, $form_state['values']['person2_first_name'], $form_state['values']['person2_last_name'],$form_state['values']['person2_relationship']); 
-    
+     echo "Insert person 2";
   }
   
-  
+  exit();
   //Fire Application Updated Trigger
   module_invoke_all('application_changed', 'update', $user);
 
