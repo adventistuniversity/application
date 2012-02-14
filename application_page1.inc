@@ -1058,10 +1058,6 @@ function application_form_page1_submit($form, &$form_state) {
   else {
     $ssn = '';
   }
-//
-//   print_r($form);
-//   print_r($form_state);
-//   exit;
 
   $felony = $form_state['values']['felony'];
 
@@ -1093,10 +1089,14 @@ function application_form_page1_submit($form, &$form_state) {
     $address_sql = "INSERT into {application_Address} (Student_StudentID, Country, State, City, Postal, Street, Primary_phone, Mobile_phone, Alternate_phone, Email, Type, Contact_Name)VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')";
     db_query($address_sql, $user->uid, $form_state['values']['countryofresidence'], $form_state['values']['state'],   $form_state['values']['addresscity'], $form_state['values']['postalcode'], $form_state['values']['streetaddress'], $form_state['values']['primaryphone'], $form_state['values']['cellphone'], $form_state['values']['alternatephone'], $form_state['values']['email'], 'Pref Add', $form_state['values']['preferred']);
   }
-
-  //Enter authorized person one
-  $authorize_person1 = "SELECT person_id, Student_StudentID, first_name, last_name, relationship FROM {application_authorize_person} WHERE Student_StudentID = '%s' AND first_name = '%s' AND last_name = '%s'";
-  $authorize_person1 = db_fetch_array(db_query($authorize_person1, $user->uid, $form_state['values']['person1_first_name'], $form_state['values']['person1_last_name']));
+  
+  //Delete authorized person before saving two more
+  $delete_authorized = "DELETE FROM {application_authorize_person} WHERE Student_StudentID = '%s'";
+  db_query($delete_authorized, $user->uid);
+  
+  //Enter authorized person one  
+  $authorize_sql = "SELECT person_id, Student_StudentID, first_name, last_name, relationship FROM {application_authorize_person} WHERE Student_StudentID = '%s' AND first_name = '%s' AND last_name = '%s'";
+  $authorize_person1 = db_fetch_array(db_query($authorize_sql, $user->uid, $form_state['values']['person1_first_name'], $form_state['values']['person1_last_name']));
   
   if (!empty($authorize_person1)) {
     
@@ -1113,8 +1113,8 @@ function application_form_page1_submit($form, &$form_state) {
   }
   
   //Enter authorized person two
-  $authorize_person2 = "SELECT person_id, Student_StudentID, first_name, last_name, relationship FROM {application_authorize_person} WHERE Student_StudentID = '%s' AND first_name = '%s' AND last_name = '%s'";
-  $authorize_person2 = db_fetch_array(db_query($authorize_person2, $user->uid, $form_state['values']['person2_first_name'], $form_state['values']['person2_last_name']));
+  $authorize_sql = "SELECT person_id, Student_StudentID, first_name, last_name, relationship FROM {application_authorize_person} WHERE Student_StudentID = '%s' AND first_name = '%s' AND last_name = '%s'";
+  $authorize_person2 = db_fetch_array(db_query($authorize_sql, $user->uid, $form_state['values']['person2_first_name'], $form_state['values']['person2_last_name']));
   
   if (!empty($authorize_person2)) {
     
@@ -1167,8 +1167,6 @@ function _application_form_page1_load_defaults(&$form_state) {
     
     $counter++;
   }
-  
-  
   
 
   if ($a) {
