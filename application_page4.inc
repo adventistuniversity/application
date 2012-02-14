@@ -193,7 +193,7 @@
     );
   }
  
-  $options = sonisweb_integration_sql_to_options(sonisweb_integration_sql("SELECT refer_by_cod, ltrim(rtrim(refer_by)) FROM dbo.referby ORDER BY refer_by ASC;"));
+  $options = sonisweb_integration_sql_to_options(sonisweb_integration_sql("SELECT ltrim(rtrim(refer_by)), ltrim(rtrim(refer_by)) FROM dbo.referby ORDER BY refer_by ASC;"));
   //Get information from SONISWEB
   
   $form['Statistical Data']['referby'] = array(
