@@ -191,7 +191,7 @@ function application_views_data() {
           'handler' => 'views_handler_sort',
         ),
       ),
-      
+    ),  
     'application_Institutions' => array(   
    
       'table' => array(
