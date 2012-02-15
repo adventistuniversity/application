@@ -200,7 +200,7 @@
     '#type' => 'select',
     '#title' => t('Refer By'),
     '#options' => $options,
-    '#default_value' => $form_state['Statistical Data']['referby'],
+    '#default_value' => $form_state['values']['referby'],
     '#required' => TRUE,
     '#description' => t('Who informed you about FHCHS.'),
   );
@@ -275,12 +275,13 @@ function _application_form_page4_load_defaults(&$form_state) {
     $form_state['values']['veteranbenefits']          = $a['Statistics_Receiving_Veteran_Benefits'];
   if(!isset($form_state['values']['referby']))
     $form_state['values']['referby']                  = $a['referby'];
-
+ /*
  echo '<pre>'; 
  print_r($form_state['values']);
  echo '<br />';
  echo '<br />';
  print_r($a);
- echo '</pre>'; 
+ echo '</pre>';
+ */
 }
   
