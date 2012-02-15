@@ -1525,6 +1525,21 @@ function application_views_data() {
           'handler' => 'views_handler_sort',
         ),
       ),
+      'Statistics_referby' => array(
+        'title' => t('Refer By'),
+        'help' => t('Who refer you to FHCHS.'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Statistics_referby as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Statistics_referby.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
       'Personal_Statement_Agreement' => array(
         'title' => t('Personal Statement'),
         'help' => t('Boolean represents agreement to student personal statement'),
