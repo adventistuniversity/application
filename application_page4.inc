@@ -276,7 +276,11 @@ function _application_form_page4_load_defaults(&$form_state) {
   if(!isset($form_state['values']['referby']))
     $form_state['values']['referby']                  = $a['referby'];
 
- //print_r($form_state);
-  
+ echo '<pre>'; 
+ print_r($form_state['values']);
+ echo '<br />';
+ echo '<br />';
+ print_r($a);
+ echo '</pre>'; 
 }
   
