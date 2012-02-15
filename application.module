@@ -393,7 +393,7 @@ function application_views_data() {
 		),
     
 		
-		'application_Programs' => array(
+      'application_Programs' => array(
    
       'table' => array(
         // Define the base group of this table. Fields that don't

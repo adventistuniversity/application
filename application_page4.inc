@@ -250,7 +250,7 @@ function application_form_page4_submit($form, &$form_state) {
 function _application_form_page4_load_defaults(&$form_state) {
   global $user;
 
-  $biographic_sql = "SELECT Statistics_Gender, Statistics_Hispanic, Statistics_Ethnic_Origin, Statistics_Native_English, Statistics_Native_Language, Statistics_Marital_Status, Statistics_Religious_Affiliation, Statistics_Home_Church, Statistics_Home_Church_City, Statistics_Home_Church_State, Statistics_First_Generation, Statistics_US_Military_Veteran, Statistics_Receiving_Veteran_Benefits FROM {application_Biographic} WHERE Student_StudentID = '%s'";
+  $biographic_sql = "SELECT Statistics_Gender, Statistics_Hispanic, Statistics_Ethnic_Origin, Statistics_Native_English, Statistics_Native_Language, Statistics_Marital_Status, Statistics_Religious_Affiliation, Statistics_Home_Church, Statistics_Home_Church_City, Statistics_Home_Church_State, Statistics_First_Generation, Statistics_US_Military_Veteran, Statistics_Receiving_Veteran_Benefits, referby FROM {application_Biographic} WHERE Student_StudentID = '%s'";
   $a = db_fetch_array(db_query($biographic_sql, $user->uid));
  
   if (!isset($form_state['values']['gender']))
