@@ -1525,7 +1525,7 @@ function application_views_data() {
           'handler' => 'views_handler_sort',
         ),
       ),
-      'Statistics_referby' => array(
+      'referby' => array(
         'title' => t('Refer By'),
         'help' => t('Who refer you to FHCHS.'),
         'field' => array(
