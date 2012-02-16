@@ -188,12 +188,17 @@ function application_form_page1($form_state) {
 // Get authorize person
 $form['authorized_person'] = array(
    '#type' => 'fieldset',
-   '#title' => t('Authorized Person'),
+   '#title' => t('Information Release'),
    '#prefix' => '<div id="authorized-person-wrapper">', // This is our wrapper div.
    '#suffix' => '</div>',
    '#collapsible' => FALSE,
    '#collapsed' => FALSE,
  );
+
+$form['authorized_person']['instructions'] = array(
+  '#value' => t("During the application process, our policy is to only share information specific to your file with you. If you would like to authorize anyone to discuss this information on your behalf, please provide their information below. Specific grade or GPA information listed on transcripts sent to FHCHS will never be shared with anyone other than the applicant.")
+);
+
 
 $form['authorized_person']['person1_first_name'] = array(
   '#type' => 'textfield',
