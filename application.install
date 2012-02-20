@@ -277,5 +277,4 @@ function application_update_7() {
   $ret = array();
   db_add_field($ret, 'application_Biographic', 'referby', array('description' => t('Refer_by'), 'type' => 'varchar',  'length' => 100, 'not null' => TRUE,  'default' => ''));
   return $ret;
-
 }

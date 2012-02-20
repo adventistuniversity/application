@@ -284,4 +284,3 @@ function _application_form_page4_load_defaults(&$form_state) {
  echo '</pre>';
  */
 }
-  

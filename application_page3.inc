@@ -152,7 +152,6 @@ function application_form_page3($form_state) {
 																								 // Yup...
 																								 ( $form_state['values']['department1']=='NU' && $form_state['values']['campus']=='DV' ? " UNION SELECT 'BSN4YR'":"").
 																								 ( $form_state['values']['department1']=='SO' && $form_state['values']['campus']=='DV' ? " UNION SELECT 'ASSO'":"").
-																								 ( $form_state['values']['department1']=='SO' && $form_state['values']['campus']=='DV' ? " UNION SELECT 'ASGS'":"").
 																								 ") as a on".
                                                  "  program.prg_cod = a.prg_cod ".
                                                  "order by prg_txt asc", FALSE);

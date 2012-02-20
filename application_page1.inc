@@ -1269,3 +1269,4 @@ function _application_form_page1_load_defaults(&$form_state) {
     module_invoke_all('application_changed', 'start', $user);
  }
 }
+
