@@ -192,6 +192,18 @@
       '#size' => 50,      
     );
   }
+ 
+  $options = sonisweb_integration_sql_to_options(sonisweb_integration_sql("SELECT ltrim(rtrim(refer_by)), ltrim(rtrim(refer_by)) FROM dbo.referby ORDER BY refer_by ASC;"));
+  //Get information from SONISWEB
+  
+  $form['Statistical Data']['referby'] = array(
+    '#type' => 'select',
+    '#title' => t('Refer By'),
+    '#options' => $options,
+    '#default_value' => $form_state['values']['referby'],
+    '#required' => TRUE,
+    '#description' => t('Who informed you about FHCHS.'),
+  );
   
   $form['Submit'] = array(
   '#type' => 'submit',
@@ -221,8 +233,8 @@ function application_form_page4_submit($form, &$form_state) {
     $form_state['values']['religion'] = 'O';
   }  
 
-  $biographic_sql = "UPDATE {application_Biographic} SET Statistics_Gender = '%s', Statistics_Hispanic = '%s',  Statistics_Ethnic_Origin = '%s',  Statistics_Religious_Affiliation = '%s', Statistics_Home_Church = '%s', Statistics_Home_Church_City = '%s', Statistics_Home_Church_State = '%s', Statistics_First_Generation = '%s', Statistics_US_Military_Veteran = '%s', Statistics_Receiving_Veteran_Benefits = '%s' WHERE Student_StudentID = '%s'";
-  db_query($biographic_sql, $form_state['values']['gender'], $form_state['values']['ethnicorigin'], $form_state['values']['ethnicorigin2'],  $form_state['values']['religion'], $form_state['values']['religionhomechurch'], $form_state['values']['religionhomechurchcity'], $form_state['values']['religionhomechurchstate'], $form_state['values']['attend'], $form_state['values']['veteran'], ($form_state['values']['veteranbenefits']==''?0:$form_state['values']['veteranbenefits']), $user->uid);
+  $biographic_sql = "UPDATE {application_Biographic} SET Statistics_Gender = '%s', Statistics_Hispanic = '%s',  Statistics_Ethnic_Origin = '%s',  Statistics_Religious_Affiliation = '%s', Statistics_Home_Church = '%s', Statistics_Home_Church_City = '%s', Statistics_Home_Church_State = '%s', Statistics_First_Generation = '%s', Statistics_US_Military_Veteran = '%s', Statistics_Receiving_Veteran_Benefits = '%s', referby = '%s' WHERE Student_StudentID = '%s'";
+  db_query($biographic_sql, $form_state['values']['gender'], $form_state['values']['ethnicorigin'], $form_state['values']['ethnicorigin2'],  $form_state['values']['religion'], $form_state['values']['religionhomechurch'], $form_state['values']['religionhomechurchcity'], $form_state['values']['religionhomechurchstate'], $form_state['values']['attend'], $form_state['values']['veteran'], ($form_state['values']['veteranbenefits']==''?0:$form_state['values']['veteranbenefits']),$form_state['values']['referby'], $user->uid);
   //Fire Application Updated Trigger
   module_invoke_all('application_changed', 'update', $user);
 
@@ -238,7 +250,7 @@ function application_form_page4_submit($form, &$form_state) {
 function _application_form_page4_load_defaults(&$form_state) {
   global $user;
 
-  $biographic_sql = "SELECT Statistics_Gender, Statistics_Hispanic, Statistics_Ethnic_Origin, Statistics_Native_English, Statistics_Native_Language, Statistics_Marital_Status, Statistics_Religious_Affiliation, Statistics_Home_Church, Statistics_Home_Church_City, Statistics_Home_Church_State, Statistics_First_Generation, Statistics_US_Military_Veteran, Statistics_Receiving_Veteran_Benefits FROM {application_Biographic} WHERE Student_StudentID = '%s'";
+  $biographic_sql = "SELECT Statistics_Gender, Statistics_Hispanic, Statistics_Ethnic_Origin, Statistics_Native_English, Statistics_Native_Language, Statistics_Marital_Status, Statistics_Religious_Affiliation, Statistics_Home_Church, Statistics_Home_Church_City, Statistics_Home_Church_State, Statistics_First_Generation, Statistics_US_Military_Veteran, Statistics_Receiving_Veteran_Benefits, referby FROM {application_Biographic} WHERE Student_StudentID = '%s'";
   $a = db_fetch_array(db_query($biographic_sql, $user->uid));
  
   if (!isset($form_state['values']['gender']))
@@ -261,8 +273,14 @@ function _application_form_page4_load_defaults(&$form_state) {
     $form_state['values']['veteran']                  = $a['Statistics_US_Military_Veteran'];
   if (!isset($form_state['values']['veteranbenefits']))
     $form_state['values']['veteranbenefits']          = $a['Statistics_Receiving_Veteran_Benefits'];
-
- //print_r($form_state);
-  
+  if(!isset($form_state['values']['referby']))
+    $form_state['values']['referby']                  = $a['referby'];
+ /*
+ echo '<pre>'; 
+ print_r($form_state['values']);
+ echo '<br />';
+ echo '<br />';
+ print_r($a);
+ echo '</pre>';
+ */
 }
-  

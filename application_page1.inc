@@ -184,8 +184,80 @@ function application_form_page1($form_state) {
     '#maxlength' => 100,
     '#size' => 35,
   );
-// Licensure Eligibility
+  
+// Get authorize person
+$form['authorized_person'] = array(
+   '#type' => 'fieldset',
+   '#title' => t('Information Release'),
+   '#prefix' => '<div id="authorized-person-wrapper">', // This is our wrapper div.
+   '#suffix' => '</div>',
+   '#collapsible' => FALSE,
+   '#collapsed' => FALSE,
+ );
 
+$form['authorized_person']['instructions'] = array(
+  '#value' => t("During the application process, our policy is to only share information specific to your file with you. If you would like to authorize anyone to discuss this information on your behalf, please provide their information below. Specific grade or GPA information listed on transcripts sent to FHCHS will never be shared with anyone other than the applicant.")
+);
+
+
+$form['authorized_person']['person1_first_name'] = array(
+  '#type' => 'textfield',
+  '#title' => t('First Name'),
+  '#default_value' => $form_state['values']['person1_first_name'],
+  '#required' => FALSE,
+  '#maxlength' => 30,
+  '#size' => 30,
+);
+
+$form['authorized_person']['person1_last_name'] = array(
+  '#type' => 'textfield',
+  '#title' => t('Last Name'),
+  '#default_value' => $form_state['values']['person1_last_name'],
+  '#required' => FALSE,
+  '#maxlength' => 30,
+  '#size' => 30,
+);
+
+$form['authorized_person']['person1_relationship'] = array(
+  '#type' => 'textfield',
+  '#title' => t('Relationship'),
+  '#description' => t('Enter the person relationship to you.'),
+  '#default_value' => $form_state['values']['person1_relationship'],
+  '#required' => FALSE,
+  '#maxlength' => 50,
+  '#size' => 50,
+);
+
+
+$form['authorized_person']['person2_first_name'] = array(
+  '#type' => 'textfield',
+  '#title' => t('First Name'),
+  '#default_value' => $form_state['values']['person2_first_name'],
+  '#required' => FALSE,
+  '#maxlength' => 30,
+  '#size' => 30,
+);
+
+$form['authorized_person']['person2_last_name'] = array(
+  '#type' => 'textfield',
+  '#title' => t('Last Name'),
+  '#default_value' => $form_state['values']['person2_last_name'],
+  '#required' => FALSE,
+  '#maxlength' => 30,
+  '#size' => 30,
+);
+
+$form['authorized_person']['person2_relationship'] = array(
+  '#type' => 'textfield',
+  '#title' => t('Relationship'),
+  '#description' => t('Enter the person relationship to you.'),
+  '#default_value' => $form_state['values']['person2_relationship'] ,
+  '#required' => FALSE,
+  '#maxlength' => 50,
+  '#size' => 50,
+);
+
+// Licensure Eligibility
 $form['Licensure Eligibility'] = array(
    '#type' => 'fieldset',
    '#title' => t('Background Information'),
@@ -991,10 +1063,6 @@ function application_form_page1_submit($form, &$form_state) {
   else {
     $ssn = '';
   }
-//
-//   print_r($form);
-//   print_r($form_state);
-//   exit;
 
   $felony = $form_state['values']['felony'];
 
@@ -1014,7 +1082,7 @@ function application_form_page1_submit($form, &$form_state) {
     module_invoke_all('application_changed', 'start', $user);
   }
   
-
+  
   $a = "SELECT count(Student_StudentID) as count FROM {application_Address} WHERE Student_StudentID = '%s'";
   $a = db_fetch_array(db_query($a, $user->uid));
 
@@ -1026,7 +1094,53 @@ function application_form_page1_submit($form, &$form_state) {
     $address_sql = "INSERT into {application_Address} (Student_StudentID, Country, State, City, Postal, Street, Primary_phone, Mobile_phone, Alternate_phone, Email, Type, Contact_Name)VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')";
     db_query($address_sql, $user->uid, $form_state['values']['countryofresidence'], $form_state['values']['state'],   $form_state['values']['addresscity'], $form_state['values']['postalcode'], $form_state['values']['streetaddress'], $form_state['values']['primaryphone'], $form_state['values']['cellphone'], $form_state['values']['alternatephone'], $form_state['values']['email'], 'Pref Add', $form_state['values']['preferred']);
   }
-
+  
+  //Delete authorized person before saving two more
+  $delete_authorized = "DELETE FROM {application_authorize_person} WHERE Student_StudentID = '%s'";
+  db_query($delete_authorized, $user->uid);
+  
+  //Enter authorized person one  
+  $authorize_sql = "SELECT person_id, Student_StudentID, first_name, last_name, relationship FROM {application_authorize_person} WHERE Student_StudentID = '%s' AND first_name = '%s' AND last_name = '%s'";
+  $authorize_person1 = db_fetch_array(db_query($authorize_sql, $user->uid, $form_state['values']['person1_first_name'], $form_state['values']['person1_last_name']));
+  
+  //Debuggin statement
+  //echo "<pre>";
+  //print_r($form_state['values']);
+  //echo "</pre>";
+  
+  if (!empty($authorize_person1)) {
+    
+    $authorized_sql = "UPDATE {application_authorize_person} SET first_name = '%s', last_name = '%s', relationship = '%s' WHERE Student_StudentID = '%s' and person_id = '%s'";
+    db_query($authorized_sql, $form_state['values']['person1_first_name'], $form_state['values']['person1_last_name'],$form_state['values']['person1_relationship'], $user->uid, $authorize_person1['person_id'] ); 
+    echo "Updating person 1";  
+  }
+  else {
+    
+     $authorized_sql = "INSERT into {application_authorize_person} (Student_StudentID, first_name, last_name, relationship)
+                        VALUES('%s', '%s', '%s', '%s')";
+     db_query($authorized_sql, $user->uid, $form_state['values']['person1_first_name'], $form_state['values']['person1_last_name'],$form_state['values']['person1_relationship']); 
+     //echo "Insert person 1";
+  }
+  
+  //Enter authorized person two
+  $authorize_sql = "SELECT person_id, Student_StudentID, first_name, last_name, relationship FROM {application_authorize_person} WHERE Student_StudentID = '%s' AND first_name = '%s' AND last_name = '%s'";
+  $authorize_person2 = db_fetch_array(db_query($authorize_sql, $user->uid, $form_state['values']['person2_first_name'], $form_state['values']['person2_last_name']));
+  
+  if (!empty($authorize_person2)) {
+    
+    $authorized_sql = "UPDATE {application_authorize_person} SET first_name = '%s', last_name = '%s', relationship = '%s' WHERE Student_StudentID = '%s' and person_id = '%s'";
+    db_query($authorized_sql, $form_state['values']['person2_first_name'], $form_state['values']['person2_last_name'],$form_state['values']['person2_relationship'], $user->uid, $authorize_person1['person_id'] ); 
+    //echo "Update person 2";
+  }
+  else {
+    
+     $authorized_sql = "INSERT into {application_authorize_person} (Student_StudentID, first_name, last_name, relationship)
+                        VALUES('%s', '%s', '%s', '%s')";
+     db_query($authorized_sql, $user->uid, $form_state['values']['person2_first_name'], $form_state['values']['person2_last_name'],$form_state['values']['person2_relationship']); 
+     //echo "Insert person 2";
+  }
+  
+  //exit();
   //Fire Application Updated Trigger
   module_invoke_all('application_changed', 'update', $user);
 
@@ -1044,6 +1158,26 @@ function _application_form_page1_load_defaults(&$form_state) {
 
   $biographic_sql = "SELECT Student_Nickname, Student_Fname, Student_Mname, Student_Lname, Student_FormerLname, Student_DOB, Student_SSN, Birth_Country, Birth_City, Birth_State, Felony, Citizenship_Country, Citizenship_ID_Number, Citizenship_ID_Type, Citizenship_Visa_Status, GED_Date_Of_Issue, Statistics_Native_English, Statistics_Native_Language FROM {application_Biographic} WHERE Student_StudentID = '%s'";
   $a = db_fetch_array(db_query($biographic_sql, $user->uid));
+  
+  $authorized_sql = "SELECT person_id, Student_StudentID, first_name, last_name, relationship FROM {application_authorize_person} WHERE  Student_StudentID = '%s'";
+  $authorized_person = db_query($authorized_sql, $user->uid);
+  
+  //Setting default value for authorize person
+  $counter  = 1;
+  while (($row = db_fetch_array($authorized_person)) AND $counter <= 2) {
+    
+    if (!isset($form_state['values']['person'.$counter.'_first_name']))
+        $form_state['values']['person'.$counter.'_first_name']  = $row['first_name'];
+    
+    if (!isset($form_state['values']['person'.$counter.'_last_name']))
+        $form_state['values']['person'.$counter.'_last_name']  = $row['last_name'];
+        
+    if (!isset($form_state['values']['person'.$counter.'_relationship']))
+        $form_state['values']['person'.$counter.'_relationship']  = $row['relationship'];      
+    
+    $counter++;
+  }
+  
 
   if ($a) {
     $address_sql = "SELECT Country, State, City, Postal, Street, Primary_phone, Mobile_phone, Alternate_phone, Email, Type FROM {application_Address} WHERE Student_StudentID = '%s'";

@@ -113,6 +113,85 @@ function application_views_api() {
 function application_views_data() {
   
   $data = array(
+      'application_authorize_person' => array(   
+   
+      'table' => array(
+        // Define the base group of this table. Fields that don't
+        // have a group defined will go into this field by default.
+        'group' => t('Authorize Person'),
+        // Link this table into the biographic table
+        // This also allows it to show in the same base as a separate group otherwise unlinked it will never show
+        'join' => array(
+          'application_Biographic' => array(
+            'left_field' => 'Student_StudentID',
+            'field' => 'Student_StudentID',
+          ),
+        ),
+      ),
+      
+      'person_id' => array(
+        'title' => t('Drupal ID of an authorized person'),
+        'help' => t('Drupal ID of an authorized person'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+      
+      'first_name' => array(
+        'title' => t('Name of First Name'),
+        'help' => t('Name of First Name'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a name as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a name.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+      
+      
+      'last_name' => array(
+        'title' => t('Name of Last Name'),
+        'help' => t('Name of Last Name'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a name as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a name.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+      
+      'relationship' => array(
+        'title' => t('Person Relationship to you.'),
+        'help' => t('Person Relationship to you.'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a name as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a name.
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+    ),  
     'application_Institutions' => array(   
    
       'table' => array(
@@ -393,7 +472,7 @@ function application_views_data() {
 		),
     
 		
-		'application_Programs' => array(
+      'application_Programs' => array(
    
       'table' => array(
         // Define the base group of this table. Fields that don't
@@ -1521,6 +1600,21 @@ function application_views_data() {
           'handler' => 'views_handler_filter_boolean_operator',
           'label' => t('Receiving Veteran Benefits'),
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+      ),
+      'referby' => array(
+        'title' => t('Refer By'),
+        'help' => t('Who refer you to FHCHS.'),
+        'field' => array(
+          'handler' => 'views_handler_field',
+        ),
+        // Information for accepting a Statistics_referby as a filter
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        // Information for sorting on a Statistics_referby.
         'sort' => array(
           'handler' => 'views_handler_sort',
         ),
