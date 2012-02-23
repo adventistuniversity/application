@@ -198,7 +198,7 @@
   
   $form['Statistical Data']['referby'] = array(
     '#type' => 'select',
-    '#title' => t('Refer By'),
+    '#title' => t('Referred By'),
     '#options' => $options,
     '#default_value' => $form_state['values']['referby'],
     '#required' => TRUE,
