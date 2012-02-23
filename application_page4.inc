@@ -193,12 +193,12 @@
     );
   }
  
-  $options = sonisweb_integration_sql_to_options(sonisweb_integration_sql("SELECT ltrim(rtrim(refer_by)), ltrim(rtrim(refer_by)) FROM dbo.referby ORDER BY refer_by ASC;"));
+  $options = sonisweb_integration_sql_to_options(sonisweb_integration_sql("SELECT LTRIM(RTRIM(categr_txt)) AS colum, LTRIM(RTRIM(categr_txt))FROM dbo.category WHERE disabled = 0 ORDER BY categr_txt ASC;"));
   //Get information from SONISWEB
   
   $form['Statistical Data']['referby'] = array(
     '#type' => 'select',
-    '#title' => t('Refer By'),
+    '#title' => t('Referred By'),
     '#options' => $options,
     '#default_value' => $form_state['values']['referby'],
     '#required' => TRUE,
