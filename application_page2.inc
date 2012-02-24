@@ -756,7 +756,7 @@ $form['Acknowledgement of Colleges Attended']['acknowledgement'] = array(
   '#type' => 'checkbox',
   '#title' => t('I understand that failure to disclose all colleges previously attended could result in denial or dismissal.'), 
   '#required' => TRUE,
-	'#default_value' => TRUE
+	'#default_value' => FALSE
 );
 
 
